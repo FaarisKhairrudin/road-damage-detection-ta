@@ -97,3 +97,23 @@ runs/rdd_yolov8n_local/
 ```
 
 Folder `runs/`, dataset, dokumen proposal, dan bobot model diabaikan oleh Git agar repository tetap ringan.
+
+## Penyimpanan Hasil Eksperimen
+
+Jangan commit bobot model dan folder output training langsung ke GitHub. GitHub memberi warning untuk file di atas 50 MiB dan menolak file di atas 100 MiB pada repository Git biasa. Bobot YOLOv8n masih bisa kecil, tetapi banyak eksperimen akan cepat membuat repository berat karena file `.pt` adalah binary dan tidak enak untuk versioning.
+
+Pola yang disarankan:
+
+- GitHub repository: kode, notebook, requirements, README, dan registry eksperimen.
+- `runs/`: output lokal sementara dari training/evaluasi.
+- `artifacts/`: paket lokal yang siap di-upload, tetap di-ignore oleh Git.
+- GitHub Releases/Hugging Face/Google Drive/Kaggle: tempat bobot `.pt` dan paket evaluasi `.zip`.
+- `experiments/registry.csv`: catatan link bobot, link eval artifact, metrik utama, commit, dan catatan run.
+
+Untuk membuat paket artefak dari satu run:
+
+```bash
+python scripts/package_experiment.py --run-dir runs/rdd_yolov8n_local/experiments/yolov8n_baseline_native_loss --run-id yolov8n_baseline_native_loss_v1
+```
+
+Upload file dari `artifacts/yolov8n_baseline_native_loss_v1/`, lalu isi link-nya di `experiments/registry.csv`.
