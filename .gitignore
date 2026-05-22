@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local datasets and research documents
+data/*
+!data/.gitkeep
+!data/README.md
+proposal.pdf
+
+# Training/inference outputs
+runs/
+wandb/
+mlruns/
+outputs/
+artifacts/
+
+# Model weights and exported model artifacts
+*.pt
+*.pth
+*.onnx
+*.engine
+*.tflite
+*.torchscript
+*.mlmodel
+
+# Archives and large generated files
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
