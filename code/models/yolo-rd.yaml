@@ -1,0 +1,78 @@
+# YOLO-RD — reconstruction of Wang, W. et al., "YOLO-RD: A Road Damage Detection
+# Method for Effective Pavement Maintenance", Sensors 25, 1442 (2025), Figure 2.
+#
+# Backbone (SOM-Backbone): standard YOLOv8 CSPDarknet, with a stack of SOM
+#           blocks (Star Operation Module) prepended to the C2f block in
+#           stage 3 (x8) and stage 4 (x5) — matches "SOM x8" / "SOM x5" in Fig 2.
+# Neck (MAF-PAFPN): ARM (Attention Refinement Module) applied to the stage
+#           2/3/4 backbone taps, then a top-down splice (Upsample+Concat+1x1,
+#           this file's interpretation of the Eq-4 fusion — see custom_modules.py
+#           docstring), feeding into an otherwise-standard YOLOv8 PANet neck.
+# Head (WT-Head): stock Detect-head layout with the first 3x3 conv in each
+#           branch replaced by WTConv (Wavelet Transform Convolution).
+#
+# Baseline in the paper is YOLOv8-s (11.14M params / 14.27 GFLOPs @ 4 classes).
+# scales below follow stock Ultralytics n/s/m/l/x so you can pick either,
+# per the "nano-only across the whole comparison" decision from our chat —
+# use 'n' unless you deliberately want the paper's own 's'-scale numbers.
+#
+# Requires custom_modules.patch_ultralytics() to be called before this file
+# is loaded, AND torchvision (for ARM's deformable conv).
+
+nc: 6  # N-RDD2024 Asia 6 kelas: Longitudinal_Crack, Transverse_Crack, Alligator_Crack, Pothole, manhole, patchy_road
+scales:
+  # [depth, width, max_channels]
+  n: [0.33, 0.25, 1024]
+  s: [0.33, 0.50, 1024]
+  m: [0.67, 0.75, 768]
+  l: [1.00, 1.00, 512]
+  x: [1.00, 1.25, 512]
+
+# SOM-Backbone
+backbone:
+  # [from, repeats, module, args]
+  - [-1, 1, Conv, [64, 3, 2]]      # 0-P1/2
+  - [-1, 1, Conv, [128, 3, 2]]     # 1-P2/4
+  - [-1, 3, C2f, [128, True]]      # 2  (stage 1)
+  - [-1, 1, Conv, [256, 3, 2]]     # 3-P3/8
+  - [-1, 6, C2f, [256, True]]      # 4  (stage 2 tap)
+  - [-1, 1, Conv, [512, 3, 2]]     # 5-P4/16
+  - [-1, 8, SOM, [512]]            # 6  "SOM x8" (Fig 2, Fig 3 / Eq 1-3)
+  - [-1, 6, C2f, [512, True]]      # 7  (stage 3 tap)
+  - [-1, 1, Conv, [1024, 3, 2]]    # 8-P5/32
+  - [-1, 5, SOM, [1024]]           # 9  "SOM x5"
+  - [-1, 3, C2f, [1024, True]]     # 10
+  - [-1, 1, SPPF, [1024, 5]]       # 11 (stage 4 tap)
+
+# MAF-PAFPN + WT-Head
+head:
+  - [4, 1, ARM, [256]]             # 12  ARM on stage-2 tap  (Fig 4, Eq 5-7)
+  - [7, 1, ARM, [512]]             # 13  ARM on stage-3 tap
+  - [11, 1, ARM, [1024]]           # 14  ARM on stage-4 tap
+
+  # top-down splice (this repo's Upsample+Concat+1x1 realization of Eq 4)
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]  # 15  (from 14)
+  - [[-1, 13], 1, Concat, [1]]                  # 16
+  - [-1, 1, Conv, [512]]                        # 17  M3 (enhanced stage-3 feature)
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]  # 18
+  - [[-1, 12], 1, Concat, [1]]                  # 19
+  - [-1, 1, Conv, [256]]                        # 20  M2 (enhanced stage-2 feature)
+
+  # standard YOLOv8 PANet neck, operating on the MAF-enhanced taps (20, 17, 14)
+  - [14, 1, nn.Upsample, [None, 2, "nearest"]]  # 21
+  - [[-1, 17], 1, Concat, [1]]                  # 22
+  - [-1, 3, C2f, [512]]                         # 23  N4
+
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]  # 24
+  - [[-1, 20], 1, Concat, [1]]                  # 25
+  - [-1, 3, C2f, [256]]                         # 26  -> P3/8-small
+
+  - [-1, 1, Conv, [256, 3, 2]]                  # 27
+  - [[-1, 23], 1, Concat, [1]]                  # 28
+  - [-1, 3, C2f, [512]]                         # 29  -> P4/16-medium
+
+  - [-1, 1, Conv, [512, 3, 2]]                  # 30
+  - [[-1, 14], 1, Concat, [1]]                  # 31
+  - [-1, 3, C2f, [1024]]                        # 32  -> P5/32-large
+
+  - [[26, 29, 32], 1, WTHead, [nc]]             # 33  Detect(P3,P4,P5) with WTConv (Fig 5-6, Eq 8-10)
