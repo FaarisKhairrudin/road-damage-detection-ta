@@ -125,10 +125,35 @@ kedua model adalah "reimplementasi berdasarkan arsitektur yang dipublikasikan
 
 ## Kompatibilitas versi
 
-Ditest dengan `ultralytics==8.4.108`, `torchvision==0.28.0+cu130`. Fungsi
-`_patched_parse_model` di `custom_modules.py` adalah salinan dimodifikasi
+Ditest dan berhasil dengan `ultralytics==8.4.114`, `torch==2.6.0+cu124`,
+`torchvision==0.21.0+cu124`, Python 3.12. Versi minimum yang didukung adalah
+`8.4.108` (karena `parse_model` versi ini yang menjadi basis
+`_patched_parse_model`). Requirements di `code/requirements_yolov8_local.txt`
+sudah dipin ke `ultralytics>=8.4.108`.
+
+Fungsi `_patched_parse_model` di `custom_modules.py` adalah salinan dimodifikasi
 dari `ultralytics.nn.tasks.parse_model` — kalau kamu pakai versi ultralytics
 lain dan dapat error saat `patch_ultralytics()` / build model, kemungkinan
 besar karena `parse_model` di versi itu sudah berubah strukturnya. Lihat
 catatan di akhir `custom_modules.py` untuk cara memperbaikinya.
+
+### Perbaikan yang sudah diverifikasi (smoke test 2 epoch, mini dataset)
+
+| Model | Training | Validation |
+|---|---|---|
+| YOLOv8n + focal loss | OK | OK |
+| YOLOv8-PD + pretrained + focal loss | OK | OK |
+| YOLO-RD + pretrained + focal loss | OK | OK |
+
+Dua bug yang ditemukan dan diperbaiki:
+
+1. **`WTConv` gagal pada feature map ganjil.** Wavelet Haar stride-2 hanya
+   lossless untuk dimensi genap. Saat `imgsz` menghasilkan feature map ganjil
+   (misal 10x10 -> 5x5 -> 2x2), inverse wavelet tidak bisa merekonstruksi
+   ukuran asli. Guard di `WTConv.forward` sekarang memerlukan dimensi genap
+   sebelum dekomposisi.
+2. **`MHSA` lazy position embedding merusak EMA.** Posisi embedding di-build
+   ulang saat ukuran feature map berubah, sehingga parameter berubah bentuk di
+   tengah training dan memutus optimizer/EMA Ultralytics. Sekarang embedding
+   dibuat sekali di `__init__` berukuran `max_hw=64` lalu di-slice saat forward.
 
