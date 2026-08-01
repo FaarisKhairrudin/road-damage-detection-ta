@@ -1,4 +1,9 @@
-ultralytics>=8.3,<9
+# Torch dan torchvision TIDAK dicantumkan di sini.
+# Install CUDA build dari index PyTorch terlebih dahulu:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+# Memasukkan torch/torchvision di file ini akan menarik build CPU dari PyPI
+# dan menimpa versi CUDA (torch.cuda.is_available() jadi False).
+ultralytics>=8.4.108,<9
 pandas>=2.0
 matplotlib>=3.8
 seaborn>=0.13

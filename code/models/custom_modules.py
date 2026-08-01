@@ -31,6 +31,7 @@ import ultralytics.nn.tasks as tasks
 from ultralytics.nn.tasks import *  # noqa: F401,F403 (pulls in Conv, C2f, Detect, GhostConv, GhostBottleneck,
                                      # LOGGER, make_divisible, colorstr, etc. — reused below and needed inside
                                      # the patched parse_model so its globals() lookups resolve)
+from ultralytics.nn.tasks import _SafeLoad
 from ultralytics.nn.modules.block import DFL
 
 
@@ -45,28 +46,27 @@ class MHSA(nn.Module):
     resolution instead of hard-coding a 20x20 feature map.
     """
 
-    def __init__(self, dim, heads=4):
+    def __init__(self, dim, heads=4, max_hw=64):
         super().__init__()
         assert dim % heads == 0, "MHSA channel dim must be divisible by heads"
         self.heads = heads
+        self.dim_head = dim // heads
         self.query = nn.Conv2d(dim, dim, kernel_size=1)
         self.key = nn.Conv2d(dim, dim, kernel_size=1)
         self.value = nn.Conv2d(dim, dim, kernel_size=1)
         self.softmax = nn.Softmax(dim=-1)
-        self._hw = None
-        self.rel_h = None
-        self.rel_w = None
-
-    def _build_pos_embed(self, dim_head, h, w, device, dtype):
-        self.rel_h = nn.Parameter(torch.randn(1, self.heads, dim_head, 1, h, device=device, dtype=dtype) * 0.02)
-        self.rel_w = nn.Parameter(torch.randn(1, self.heads, dim_head, w, 1, device=device, dtype=dtype) * 0.02)
-        self._hw = (h, w)
+        # Fixed-size relative position embeddings, sliced to the current spatial
+        # size at runtime. Built once in __init__ (not lazily) so parameter
+        # shapes never change after training starts, which would otherwise break
+        # Ultralytics' EMA/optimizer (params are registered with fixed shapes).
+        self.rel_h = nn.Parameter(torch.randn(1, self.heads, self.dim_head, max_hw, 1) * 0.02)
+        self.rel_w = nn.Parameter(torch.randn(1, self.heads, self.dim_head, 1, max_hw) * 0.02)
 
     def forward(self, x):
         b, c, h, w = x.shape
         dim_head = c // self.heads
-        if self._hw != (h, w):
-            self._build_pos_embed(dim_head, h, w, x.device, x.dtype)
+        rel_h = self.rel_h[:, :, :, :h, :]  # (1, heads, dim_head, h, 1)
+        rel_w = self.rel_w[:, :, :, :, :w]  # (1, heads, dim_head, 1, w)
 
         q = self.query(x).view(b, self.heads, dim_head, h * w)
         k = self.key(x).view(b, self.heads, dim_head, h * w)
@@ -74,7 +74,7 @@ class MHSA(nn.Module):
 
         content_content = torch.matmul(q.permute(0, 1, 3, 2), k)  # (b, heads, hw, hw)
 
-        pos = (self.rel_h + self.rel_w).view(1, self.heads, dim_head, h * w)
+        pos = (rel_h + rel_w).view(1, self.heads, dim_head, h * w)
         content_position = torch.matmul(pos.permute(0, 1, 3, 2), q)  # (b, heads, hw, hw)
 
         energy = content_content + content_position
@@ -420,8 +420,8 @@ class WTConv(nn.Module):
         cur = x
         bands = []
         for i in range(self.levels):
-            if cur.shape[-1] < 2 or cur.shape[-2] < 2:
-                break  # feature map too small to decompose further
+            if cur.shape[-1] < 2 or cur.shape[-2] < 2 or cur.shape[-1] % 2 or cur.shape[-2] % 2:
+                break  # need even spatial dims: Haar stride-2 wavelet is only lossless when both dims are even
             decomposed = self.band_convs[i](self.wt(cur))
             ll, lh, hl, hh = torch.chunk(decomposed, 4, dim=1)
             bands.append((lh, hl, hh))
@@ -480,11 +480,11 @@ class WTHead(Detect):
 # Patch: register the modules above with Ultralytics' YAML model parser
 # --------------------------------------------------------------------------- #
 def _patched_parse_model(d, ch, verbose=True):
-    """Copy of ultralytics.nn.tasks.parse_model (v8.4.34, versi terpasang) with
-    BoT, LSKA, C2fGhost added to base_modules/repeat_modules, and LSCDHead/WTHead
-    added to the Detect-family branch. Kept as a full copy (rather than a thin
-    wrapper) because the original logic is a single large function body, not a
-    registry that can be extended piecemeal.
+    """Copy of ultralytics.nn.tasks.parse_model (v8.4.108/8.4.114) with BoT, LSKA,
+    C2fGhost added to base_modules/repeat_modules, and LSCDHead/WTHead added to the
+    Detect-family branch. Kept as a full copy (rather than a thin wrapper) because
+    the original logic is a single large function body, not a registry that can be
+    extended piecemeal.
     """
     import ast
     import contextlib
@@ -501,8 +501,9 @@ def _patched_parse_model(d, ch, verbose=True):
             LOGGER.warning(f"no model scale passed. Assuming scale='{scale}'.")
         depth, width, max_channels = scales[scale]
 
+    restricted = _SafeLoad.restricted()
     if act:
-        Conv.default_act = eval(act)
+        Conv.default_act = _SafeLoad.activation(act) if restricted else eval(act)
         if verbose:
             LOGGER.info(f"{colorstr('activation:')} {act}")
 
@@ -542,11 +543,13 @@ def _patched_parse_model(d, ch, verbose=True):
     for i, (f, n, m, args) in enumerate(d["backbone"] + d["head"]):
         m = (
             getattr(torch.nn, m[3:])
-            if "nn." in m
+            if m.startswith("nn.")
             else getattr(__import__("torchvision").ops, m[16:])
-            if "torchvision.ops." in m
+            if m.startswith("torchvision.ops.")
             else globals()[m]
         )
+        if restricted and not (isinstance(m, type) and issubclass(m, torch.nn.Module)):
+            raise TypeError(emojis(f"ERROR ❌️ module '{m}' is not a permitted model layer under restricted loading."))
         for j, a in enumerate(args):
             if isinstance(a, str):
                 with contextlib.suppress(ValueError):
@@ -555,7 +558,7 @@ def _patched_parse_model(d, ch, verbose=True):
 
         if m in base_modules:
             c1, c2 = ch[f], args[0]
-            if c2 != nc:
+            if m is not Classify:
                 c2 = make_divisible(min(c2, max_channels) * width, 8)
             if m is C2fAttn:
                 args[1] = make_divisible(min(args[1], max_channels // 2) * width, 8)
@@ -592,8 +595,11 @@ def _patched_parse_model(d, ch, verbose=True):
             args.extend([reg_max, end2end, [ch[x] for x in f]])
             if m is Segment or m is YOLOESegment or m is Segment26 or m is YOLOESegment26:
                 args[2] = make_divisible(min(args[2], max_channels) * width, 8)
-            if m in {Detect, YOLOEDetect, Segment, Segment26, YOLOESegment, YOLOESegment26, Pose, Pose26, OBB, OBB26}:
-                m.legacy = legacy
+            m.legacy = legacy
+        elif m is Depth:
+            args = [*args[:1], [ch[x] for x in f]]
+        elif m is SemanticSegment:
+            args.append([ch[x] for x in f])
         elif m is v10Detect:
             args.append([ch[x] for x in f])
         elif m is ImagePoolingAttn:
