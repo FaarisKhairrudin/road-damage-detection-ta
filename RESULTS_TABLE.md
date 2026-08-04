@@ -16,43 +16,43 @@ Perbandingan metrik agregat (`all`) pada validasi (val) dan test, beserta estima
 
 ## ***Per-Kelas mAP50 — Val (Full 6 Kelas)***
 
-| Model | Longitudinal_Crack | Transverse_Crack | Alligator_Crack | Pothole | manhole | patchy_road |
-|---|---|---|---|---|---|---|
-| yolov8n_class_weight | 0.637 | 0.586 | 0.684 | 0.570 | 0.801 | 0.665 |
-| yolov12n_class_weight | 0.656 | 0.595 | 0.672 | 0.568 | 0.791 | 0.654 |
-| yolov26n_class_weight | 0.625 | 0.544 | 0.654 | 0.550 | 0.772 | 0.654 |
-| yolov8_pd_class_weight | 0.656 | 0.593 | 0.663 | 0.555 | 0.785 | 0.655 |
-| yolo_rd_class_weight | 0.460 | 0.405 | 0.403 | 0.539 | 0.769 | 0.383 |
+| Model | Longitudinal_Crack | Transverse_Crack | Alligator_Crack | Pothole | manhole | patchy_road | Overall (avg) |
+|---|---|---|---|---|---|---|---|
+| yolov8n_class_weight | 0.637 | 0.586 | 0.684 | 0.570 | 0.801 | 0.665 | 0.657 |
+| yolov12n_class_weight | 0.656 | 0.595 | 0.672 | 0.568 | 0.791 | 0.654 | 0.656 |
+| yolov26n_class_weight | 0.625 | 0.544 | 0.654 | 0.550 | 0.772 | 0.654 | 0.633 |
+| yolov8_pd_class_weight | 0.656 | 0.593 | 0.663 | 0.555 | 0.785 | 0.655 | 0.651 |
+| yolo_rd_class_weight | 0.460 | 0.405 | 0.403 | 0.539 | 0.769 | 0.383 | 0.493 |
 
 ## ***Per-Kelas mAP50 — Test (Full 6 Kelas)***
 
-| Model | Longitudinal_Crack | Transverse_Crack | Alligator_Crack | Pothole | manhole | patchy_road |
-|---|---|---|---|---|---|---|
-| yolov8n_class_weight | 0.664 | 0.599 | 0.700 | 0.526 | 0.825 | 0.571 |
-| yolov12n_class_weight | 0.680 | 0.582 | 0.708 | 0.535 | 0.833 | 0.587 |
-| yolov26n_class_weight | 0.639 | 0.567 | 0.675 | 0.538 | 0.820 | 0.512 |
-| yolov8_pd_class_weight | 0.678 | 0.572 | 0.702 | 0.541 | 0.819 | 0.562 |
-| yolo_rd_class_weight | 0.478 | 0.408 | 0.446 | 0.526 | 0.823 | 0.318 |
+| Model | Longitudinal_Crack | Transverse_Crack | Alligator_Crack | Pothole | manhole | patchy_road | Overall (avg) |
+|---|---|---|---|---|---|---|---|
+| yolov8n_class_weight | 0.664 | 0.599 | 0.700 | 0.526 | 0.825 | 0.571 | 0.648 |
+| yolov12n_class_weight | 0.680 | 0.582 | 0.708 | 0.535 | 0.833 | 0.587 | 0.654 |
+| yolov26n_class_weight | 0.639 | 0.567 | 0.675 | 0.538 | 0.820 | 0.512 | 0.625 |
+| yolov8_pd_class_weight | 0.678 | 0.572 | 0.702 | 0.541 | 0.819 | 0.562 | 0.646 |
+| yolo_rd_class_weight | 0.478 | 0.408 | 0.446 | 0.526 | 0.823 | 0.318 | 0.500 |
 
 ## ***Per-Kelas mAP50 — Val (4 Kelas Kerusakan Asli)***
 
-| Model | Longitudinal_Crack | Transverse_Crack | Alligator_Crack | Pothole |
-|---|---|---|---|---|
-| yolov8n_class_weight | 0.637 | 0.586 | 0.684 | 0.570 |
-| yolov12n_class_weight | 0.656 | 0.595 | 0.672 | 0.568 |
-| yolov26n_class_weight | 0.625 | 0.544 | 0.654 | 0.550 |
-| yolov8_pd_class_weight | 0.656 | 0.593 | 0.663 | 0.555 |
-| yolo_rd_class_weight | 0.460 | 0.405 | 0.403 | 0.539 |
+| Model | Longitudinal_Crack | Transverse_Crack | Alligator_Crack | Pothole | Overall (avg) |
+|---|---|---|---|---|---|
+| yolov8n_class_weight | 0.637 | 0.586 | 0.684 | 0.570 | 0.619 |
+| yolov12n_class_weight | 0.656 | 0.595 | 0.672 | 0.568 | 0.623 |
+| yolov26n_class_weight | 0.625 | 0.544 | 0.654 | 0.550 | 0.593 |
+| yolov8_pd_class_weight | 0.656 | 0.593 | 0.663 | 0.555 | 0.617 |
+| yolo_rd_class_weight | 0.460 | 0.405 | 0.403 | 0.539 | 0.452 |
 
 ## ***Per-Kelas mAP50 — Test (4 Kelas Kerusakan Asli)***
 
-| Model | Longitudinal_Crack | Transverse_Crack | Alligator_Crack | Pothole |
-|---|---|---|---|---|
-| yolov8n_class_weight | 0.664 | 0.599 | 0.700 | 0.526 |
-| yolov12n_class_weight | 0.680 | 0.582 | 0.708 | 0.535 |
-| yolov26n_class_weight | 0.639 | 0.567 | 0.675 | 0.538 |
-| yolov8_pd_class_weight | 0.678 | 0.572 | 0.702 | 0.541 |
-| yolo_rd_class_weight | 0.478 | 0.408 | 0.446 | 0.526 |
+| Model | Longitudinal_Crack | Transverse_Crack | Alligator_Crack | Pothole | Overall (avg) |
+|---|---|---|---|---|---|
+| yolov8n_class_weight | 0.664 | 0.599 | 0.700 | 0.526 | 0.622 |
+| yolov12n_class_weight | 0.680 | 0.582 | 0.708 | 0.535 | 0.626 |
+| yolov26n_class_weight | 0.639 | 0.567 | 0.675 | 0.538 | 0.605 |
+| yolov8_pd_class_weight | 0.678 | 0.572 | 0.702 | 0.541 | 0.623 |
+| yolo_rd_class_weight | 0.478 | 0.408 | 0.446 | 0.526 | 0.465 |
 
 ## ***Ringkasan F1 (Macro & Weighted)***
 
