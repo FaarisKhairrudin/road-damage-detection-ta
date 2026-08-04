@@ -46,27 +46,28 @@ class MHSA(nn.Module):
     resolution instead of hard-coding a 20x20 feature map.
     """
 
-    def __init__(self, dim, heads=4, max_hw=64):
+    def __init__(self, dim, heads=4):
         super().__init__()
         assert dim % heads == 0, "MHSA channel dim must be divisible by heads"
         self.heads = heads
-        self.dim_head = dim // heads
         self.query = nn.Conv2d(dim, dim, kernel_size=1)
         self.key = nn.Conv2d(dim, dim, kernel_size=1)
         self.value = nn.Conv2d(dim, dim, kernel_size=1)
         self.softmax = nn.Softmax(dim=-1)
-        # Fixed-size relative position embeddings, sliced to the current spatial
-        # size at runtime. Built once in __init__ (not lazily) so parameter
-        # shapes never change after training starts, which would otherwise break
-        # Ultralytics' EMA/optimizer (params are registered with fixed shapes).
-        self.rel_h = nn.Parameter(torch.randn(1, self.heads, self.dim_head, max_hw, 1) * 0.02)
-        self.rel_w = nn.Parameter(torch.randn(1, self.heads, self.dim_head, 1, max_hw) * 0.02)
+        self._hw = None
+        self.rel_h = None
+        self.rel_w = None
+
+    def _build_pos_embed(self, dim_head, h, w, device, dtype):
+        self.rel_h = nn.Parameter(torch.randn(1, self.heads, dim_head, 1, h, device=device, dtype=dtype) * 0.02)
+        self.rel_w = nn.Parameter(torch.randn(1, self.heads, dim_head, w, 1, device=device, dtype=dtype) * 0.02)
+        self._hw = (h, w)
 
     def forward(self, x):
         b, c, h, w = x.shape
         dim_head = c // self.heads
-        rel_h = self.rel_h[:, :, :, :h, :]  # (1, heads, dim_head, h, 1)
-        rel_w = self.rel_w[:, :, :, :, :w]  # (1, heads, dim_head, 1, w)
+        if self._hw != (h, w):
+            self._build_pos_embed(dim_head, h, w, x.device, x.dtype)
 
         q = self.query(x).view(b, self.heads, dim_head, h * w)
         k = self.key(x).view(b, self.heads, dim_head, h * w)
@@ -74,7 +75,7 @@ class MHSA(nn.Module):
 
         content_content = torch.matmul(q.permute(0, 1, 3, 2), k)  # (b, heads, hw, hw)
 
-        pos = (rel_h + rel_w).view(1, self.heads, dim_head, h * w)
+        pos = (self.rel_h + self.rel_w).view(1, self.heads, dim_head, h * w)
         content_position = torch.matmul(pos.permute(0, 1, 3, 2), q)  # (b, heads, hw, hw)
 
         energy = content_content + content_position
@@ -349,6 +350,17 @@ class ARM(nn.Module):
 
         self.k = k
         self.offset_conv = nn.Conv2d(c1, 2 * k * k * deform_groups, k, padding=k // 2)
+        # Zero-init the offset predictor: standard practice for deformable
+        # convolution (Dai et al. 2017; Zhu et al. 2019 DCNv2). Without this,
+        # ARM samples from essentially random spatial offsets from step 0 of
+        # training (verified empirically: default PyTorch init gives offset
+        # std ~0.5px, max ~2px at init), injecting noise into a pathway that
+        # feeds both the top-down splice and the final bottom-up concat in
+        # yolo-rd.yaml. Zero-init makes ARM behave like a plain conv at
+        # init (offsets=0 -> regular sampling grid) and lets it *learn* to
+        # deviate from the grid only where the gradient says it helps.
+        nn.init.zeros_(self.offset_conv.weight)
+        nn.init.zeros_(self.offset_conv.bias)
         self.deform_conv = DeformConv2d(c1, c2, k, padding=k // 2)
         self.sigmoid = nn.Sigmoid()
 
@@ -419,16 +431,31 @@ class WTConv(nn.Module):
         base = self.base_conv(x)
         cur = x
         bands = []
+        sizes = []  # exact (H, W) of `cur` BEFORE padding/decomposition at each level
         for i in range(self.levels):
-            if cur.shape[-1] < 2 or cur.shape[-2] < 2 or cur.shape[-1] % 2 or cur.shape[-2] % 2:
-                break  # need even spatial dims: Haar stride-2 wavelet is only lossless when both dims are even
+            h, w = cur.shape[-2], cur.shape[-1]
+            if h < 2 or w < 2:
+                break
+            # Haar WT downsamples via a stride-2, no-padding conv: if h or w is
+            # odd, the last row/col has no pairing and gets silently dropped,
+            # so IWT (which always doubles size exactly) reconstructs one
+            # pixel short at that level. Left unhandled, this desyncs the
+            # reconstructed tensor from the stored high-freq bands (lh/hl/hh)
+            # of the NEXT level up, and torch.cat crashes with a size
+            # mismatch. Fix: pad to even before decomposing, remember the
+            # true pre-pad size, and crop the corresponding IWT output back
+            # to it before it's consumed one level up.
+            sizes.append((h, w))
+            if h % 2 or w % 2:
+                cur = nn.functional.pad(cur, (0, w % 2, 0, h % 2))
             decomposed = self.band_convs[i](self.wt(cur))
             ll, lh, hl, hh = torch.chunk(decomposed, 4, dim=1)
             bands.append((lh, hl, hh))
             cur = ll
         z = cur
-        for lh, hl, hh in reversed(bands):
+        for (lh, hl, hh), (orig_h, orig_w) in zip(reversed(bands), reversed(sizes)):
             z = self.iwt(torch.cat([z, lh, hl, hh], dim=1))
+            z = z[..., :orig_h, :orig_w]  # crop back to this level's exact pre-pad size
         return self.out_conv(z + base)
 
 
@@ -480,14 +507,13 @@ class WTHead(Detect):
 # Patch: register the modules above with Ultralytics' YAML model parser
 # --------------------------------------------------------------------------- #
 def _patched_parse_model(d, ch, verbose=True):
-    """Copy of ultralytics.nn.tasks.parse_model (v8.4.108/8.4.114) with BoT, LSKA,
-    C2fGhost added to base_modules/repeat_modules, and LSCDHead/WTHead added to the
-    Detect-family branch. Kept as a full copy (rather than a thin wrapper) because
-    the original logic is a single large function body, not a registry that can be
-    extended piecemeal.
+    """Copy of ultralytics.nn.tasks.parse_model (v8.4.108) with BoT, LSKA,
+    C2fGhost added to base_modules/repeat_modules, and LSCDHead added to the
+    Detect-family branch. Kept as a full copy (rather than a thin wrapper)
+    because the original logic is a single large function body, not a
+    registry that can be extended piecemeal.
     """
     import ast
-    import contextlib
 
     legacy = True
     max_channels = float("inf")
@@ -552,6 +578,7 @@ def _patched_parse_model(d, ch, verbose=True):
             raise TypeError(emojis(f"ERROR ❌️ module '{m}' is not a permitted model layer under restricted loading."))
         for j, a in enumerate(args):
             if isinstance(a, str):
+                import contextlib
                 with contextlib.suppress(ValueError):
                     args[j] = locals()[a] if a in locals() else ast.literal_eval(a)
         n = n_ = max(round(n * depth), 1) if n > 1 else n
