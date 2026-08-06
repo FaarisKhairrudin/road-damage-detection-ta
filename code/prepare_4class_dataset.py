@@ -5,8 +5,8 @@ Membuat dataset 4-kelas dari dataset 6-kelas yang sudah ada.
 
 Yang dilakukan:
 - Label : copy + filter, hapus baris dengan class ID >= 4 (manhole & patchy_road)
-- Gambar : symlink ke folder asli di Linux/Mac; copy di Windows
-           (Windows memerlukan Developer Mode untuk symlink — fallback ke copy otomatis)
+- Gambar : hard link per-file (tidak copy, hemat disk, path tidak di-resolve YOLO)
+           Fallback: symlink per-file → copy jika beda filesystem atau Windows tanpa dev mode
 
 Jalankan sekali sebelum notebook 04_modelling_4class.ipynb:
     python code/prepare_4class_dataset.py
@@ -48,36 +48,64 @@ CLASS_NAMES_4 = [
 MAX_VALID_ID = len(CLASS_NAMES_4) - 1  # 3
 
 SPLITS = ["train", "val", "test"]
+IMG_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
 IS_WINDOWS = platform.system() == "Windows"
 
 
-def make_image_link(src_img_dir: Path, dst_img_dir: Path) -> str:
+def make_image_links(src_img_dir: Path, dst_img_dir: Path) -> str:
     """
-    Buat symlink (Linux/Mac) atau copy folder gambar (Windows fallback).
-    Mengembalikan string keterangan metode yang dipakai.
-    """
-    # Hapus target lama jika ada
-    if dst_img_dir.is_symlink():
-        dst_img_dir.unlink()
-    elif dst_img_dir.exists():
-        if not any(dst_img_dir.iterdir()):
-            dst_img_dir.rmdir()
-        else:
-            return "already exists (skipped)"
+    Buat hard link per-file gambar (bukan symlink folder).
 
-    if IS_WINDOWS:
-        # Coba symlink dulu (perlu Developer Mode); fallback ke copy
-        try:
-            dst_img_dir.symlink_to(src_img_dir.resolve())
-            return "symlink (Windows Developer Mode)"
-        except (OSError, NotImplementedError):
-            print(f"  [!] Symlink gagal di Windows — copy gambar (ini bisa memakan waktu)...")
-            shutil.copytree(str(src_img_dir), str(dst_img_dir))
-            return "copy (Windows fallback)"
-    else:
-        dst_img_dir.symlink_to(src_img_dir.resolve())
-        return "symlink"
+    Mengapa per-file, bukan symlink folder?
+    YOLO me-resolve symlink folder ke path asli saat scan, lalu mencari label
+    di path asli juga — menyebabkan label yang belum difilter terbaca.
+    Hard link per-file tidak punya masalah ini karena path-nya tetap
+    terbaca sebagai RDD_4class/.../images/filename.jpg.
+
+    Fallback priority:
+      1. os.link (hardlink)  — cross-platform, filesystem sama, tidak di-resolve
+      2. symlink per-file    — fallback jika beda filesystem
+      3. shutil.copy2        — fallback terakhir (Windows tanpa dev mode / NFS)
+    """
+    dst_img_dir.mkdir(parents=True, exist_ok=True)
+
+    images = [p for p in src_img_dir.iterdir() if p.suffix.lower() in IMG_EXTS]
+
+    # Jika sudah ada dan jumlah file sama → skip
+    dst_count = sum(1 for p in dst_img_dir.iterdir() if p.suffix.lower() in IMG_EXTS)
+    if dst_count == len(images):
+        return f"already exists ({dst_count} files, skipped)"
+
+    # Bersihkan isi lama jika ada
+    for f in dst_img_dir.iterdir():
+        f.unlink()
+
+    method = None
+    for src_file in images:
+        dst_file = dst_img_dir / src_file.name
+        if dst_file.exists() or dst_file.is_symlink():
+            dst_file.unlink()
+
+        if method in (None, "hardlink"):
+            try:
+                os.link(src_file, dst_file)
+                method = "hardlink"
+                continue
+            except OSError:
+                method = "symlink"
+
+        if method == "symlink":
+            try:
+                dst_file.symlink_to(src_file.resolve())
+                continue
+            except (OSError, NotImplementedError):
+                method = "copy"
+
+        shutil.copy2(str(src_file), str(dst_file))
+        method = "copy"
+
+    return f"{method} per-file ({len(images)} gambar)"
 
 
 def filter_labels(src_label_dir: Path, dst_label_dir: Path):
@@ -143,7 +171,7 @@ def main():
         dst_img_dir.parent.mkdir(parents=True, exist_ok=True)
 
         # Gambar
-        img_method = make_image_link(src_img_dir, dst_img_dir)
+        img_method = make_image_links(src_img_dir, dst_img_dir)
 
         # Label
         kept, removed, empty, n_files = filter_labels(src_label_dir, dst_label_dir)
