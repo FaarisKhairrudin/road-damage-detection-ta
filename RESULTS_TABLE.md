@@ -4,15 +4,17 @@ Rangkuman rapih dari `RESULTS.md`. Nilai diambil persis dari log Ultralytics, ti
 
 ## ***Ringkasan Model (Overall / Semua Kelas)***
 
-Perbandingan metrik agregat (`all`) pada validasi (val) dan test, beserta estimasi kecepatan inferensi test.
+Perbandingan metrik agregat (`all`) pada validasi (val) dan test, beserta estimasi kecepatan inferensi test, jumlah parameter, dan GFLOPs (nc=6, imgsz=640).
 
-| Model | val P | val R | val mAP50 | val mAP50-95 | test P | test R | test mAP50 | test mAP50-95 | FPS |
-|---|---|---|---|---|---|---|---|---|---|
-| yolov8n_class_weight | 0.684 | 0.598 | 0.657 | 0.365 | 0.643 | 0.599 | 0.648 | 0.364 | 219.7 |
-| yolov12n_class_weight | 0.669 | 0.600 | 0.656 | 0.368 | 0.638 | 0.608 | 0.654 | 0.371 | 319.3 |
-| yolov26n_class_weight | 0.681 | 0.572 | 0.633 | 0.360 | 0.642 | 0.580 | 0.625 | 0.358 | 293.3 |
-| yolov8_pd_class_weight | 0.677 | 0.604 | 0.651 | 0.366 | 0.675 | 0.591 | 0.646 | 0.362 | 368.4 |
-| yolo_rd_class_weight | 0.679 | 0.614 | 0.663 | 0.374 | 0.655 | 0.618 | 0.661 | 0.371 | 189.4 |
+| Model | Params | GFLOPs | val P | val R | val mAP50 | val mAP50-95 | test P | test R | test mAP50 | test mAP50-95 | FPS |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| yolov8n_class_weight | 3,012,018 | 8.2 | 0.684 | 0.598 | 0.657 | 0.365 | 0.643 | 0.599 | 0.648 | 0.364 | 219.7 |
+| yolov12n_class_weight | 2,569,218 | 7.5 | 0.669 | 0.600 | 0.656 | 0.368 | 0.638 | 0.608 | 0.654 | 0.371 | 319.3 |
+| yolov26n_class_weight | 2,506,140 | 5.9 | 0.681 | 0.572 | 0.633 | 0.360 | 0.642 | 0.580 | 0.625 | 0.358 | 293.3 |
+| yolov8_pd_class_weight | 2,459,509 | 7.7 | 0.677 | 0.604 | 0.651 | 0.366 | 0.675 | 0.591 | 0.646 | 0.362 | 368.4 |
+| yolo_rd_class_weight | 7,092,392 | 12.9 | 0.679 | 0.614 | 0.663 | 0.374 | 0.655 | 0.618 | 0.661 | 0.371 | 189.4 |
+
+Catatan: YOLO-RD (7.09M params / 12.9 GFLOPs) lebih berat dari YOLOv8n (3.01M / 8.2) namun lebih ringan dari YOLOv8s (11.14M / 28.7) — berada di antara keduanya. YOLOv8-PD (2.46M / 7.7) bahkan lebih ringan dari YOLOv8n.
 
 ## ***Per-Kelas mAP50 — Val (Full 6 Kelas)***
 
