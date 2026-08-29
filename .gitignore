@@ -19,7 +19,6 @@ ENV/
 data/*
 !data/.gitkeep
 !data/README.md
-proposal.pdf
 
 # Training/inference outputs
 runs/

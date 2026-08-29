@@ -1,4 +1,5 @@
-
+## Rules
+- Always ask permission before implementing anything
 
 ## Notebook conventions
 - **1 cell = 1 logical unit** (1 output or none). Never merge multiple independent outputs into one cell.
