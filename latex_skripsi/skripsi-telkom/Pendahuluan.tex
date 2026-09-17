@@ -1,0 +1,176 @@
+\chapter{Pendahuluan}
+\section{Latar Belakang}
+
+Infrastruktur jalan merupakan fondasi utama pengembangan ekonomi dan mobilitas suatu bangsa.
+Kondisi jaringan jalan yang baik menjadi prasyarat bagi urbanisasi, pertumbuhan industri,
+dan pemenuhan kebutuhan transportasi masyarakat \cite{Zeng2024, radopoulou2015detection}.
+Namun, seiring dengan meningkatnya beban lalu lintas dan paparan faktor lingkungan,
+kerusakan jalan berupa retak dan lubang tidak hanya menurunkan efisiensi
+perjalanan, tetapi juga meningkatkan risiko kecelakaan dan mengancam keselamatan pengemudi
+maupun penumpang \cite{Li2024}.
+
+Persoalan kerusakan jalan memiliki dimensi yang lebih kritis di Indonesia.
+Hugo dkk. mencatat bahwa penyebab utama kerusakan jalan di
+Indonesia meliputi kendaraan yang melebihi batas muatan, kondisi iklim
+tropis dengan curah hujan tinggi, drainase jalan yang buruk, kondisi tanah
+yang tidak stabil, serta kualitas material perkerasan yang tidak memadai
+\cite{hugo2025efficientdet}. Akibatnya, Indonesia secara konsisten
+menghadapi kecelakaan lalu lintas, kemacetan berkepanjangan, dan kerusakan
+kendaraan yang berkaitan langsung dengan kondisi jalan yang rusak
+\cite{hugo2025efficientdet}. Kusumah dkk. menunjukkan bahwa kerusakan
+jalan yang parah memaksa pengemudi untuk lebih waspada, dan kondisi ini secara langsung
+berpotensi menimbulkan kecelakaan serta tabrakan antar kendaraan di jalan raya Indonesia
+\cite{kusumah2023deep}.
+
+Secara tradisional, pemantauan kondisi jalan dilakukan melalui inspeksi manual menggunakan
+patroli kendaraan, pencatatan foto, serta tenaga pengawas lapangan. Metode ini dinilai tidak
+efisien, membutuhkan sumber daya yang besar, dan rentan terhadap subjektivitas penilaian
+\cite{Li2024}. Hosseini dan Smadi menegaskan bahwa tingkat akurasi prediksi kondisi jalan
+secara langsung memengaruhi proses pengambilan keputusan dalam sistem manajemen pemeliharaan
+infrastruktur \cite{hosseini2021prediction}. Selain itu, selama proses inspeksi berlangsung,
+kendaraan patroli dan petugas sering kali harus menduduki badan jalan sehingga berpotensi
+menimbulkan kemacetan dan risiko keselamatan tambahan \cite{Li2024}. Hugo dkk.
+juga menekankan bahwa metode konvensional ini bersifat \textit{labor-intensive}, berbiaya
+tinggi, dan tidak memiliki skalabilitas yang memadai untuk mencakup jaringan jalan nasional
+yang luas \cite{hugo2025efficientdet}.
+
+Perkembangan pesat \textit{deep learning} dalam dekade terakhir telah membuka peluang baru
+untuk otomasi deteksi kerusakan jalan. Berbeda dengan metode tradisional yang bergantung pada
+ekstraksi fitur manual, algoritma \textit{deep learning} mampu secara otomatis mengidentifikasi
+lokasi, jenis, dan batas kerusakan dalam citra secara cepat dan akurat \cite{Zeng2024}.
+Mandal dkk. melakukan analisis komparatif terhadap berbagai kerangka
+\textit{deep learning} untuk klasifikasi distres perkerasan, menemukan bahwa arsitektur
+YOLO mencapai F1-\textit{Score} tertinggi sebesar 0,5814 dan 0,5751 pada dua dataset
+pengujian yang berbeda, melampaui CenterNet dan EfficientDet \cite{mandal2020deep}.
+Sejalan dengan temuan tersebut, berbagai varian arsitektur berbasis YOLO telah dikembangkan khusus untuk
+deteksi kerusakan jalan, termasuk RDD-YOLO \cite{Li2024}, YOLOv8-PD \cite{Zeng2024},
+YOLO-RD \cite{Wang2025}, YOLO-LWD \cite{Shi_2026}, dan YOLO-LWNet \cite{Wu2023},
+yang masing-masing mengusulkan modifikasi arsitektur untuk meningkatkan presisi dan efisiensi
+komputasi.
+
+Pengembangan model-model tersebut sebagian besar mengandalkan \textit{Road Damage Dataset
+  2022} (RDD2022), sebuah dataset \textit{benchmark} multi-nasional yang dikembangkan oleh
+Arya dkk. melalui \textit{Crowdsensing-based Road Damage Detection Challenge}
+(CRDDC2022). Dataset ini terdiri atas 47.420 citra jalan dari enam negara (Jepang, India,
+Ceko, Norwegia, Amerika Serikat, dan China), dengan lebih dari 55.000 instans anotasi
+\textit{bounding box} yang mencakup empat kelas kerusakan struktural: retak memanjang (D00),
+retak melintang (D10), retak buaya (D20), dan lubang jalan (D40) \cite{Arya2024846}. Pada
+kompetisi CRDDC2022, model terbaik berhasil mencapai F1-\textit{Score} sebesar 0,770 untuk
+keenam negara secara agregat, dengan performa terbaik pada dataset Amerika Serikat
+(F1~=~0,844) \cite{Arya2024846}.
+
+Namun, di balik capaian tersebut, terdapat dua kesenjangan (\textit{research gap}) yang signifikan. Pertama, masalah \textit{domain shift}: model yang dilatih pada data dari satu negara mengalami degradasi performa yang nyata saat diuji pada data dari negara lain, suatu fenomena yang telah dilaporkan sejak RDD2019 dan dikonfirmasi kembali pada CRDDC2022 \cite{Arya2024846}. Fakta ini menjadi sangat relevan bagi Indonesia, yang sama sekali tidak terwakili dalam RDD2022. Hugo dkk. melaporkan bahwa penerapan EfficientDet-D0 yang dilatih pada data jalan Indonesia dengan 3.321 citra hanya mampu mencapai F1-\textit{Score} terbaik sebesar 59{,}7\%, yang mereka kaitkan dengan kompleksitas fitur visual kerusakan jalan lokal dan tantangan generalisasi pada data yang belum pernah dilihat (\textit{unseen data}) \cite{hugo2025efficientdet}.
+% Arya dkk. melalui studi
+% \textit{transfer learning} juga menunjukkan bahwa penambahan data dari negara-negara
+% tambahan secara substansial meningkatkan kemampuan generalisasi model, sekaligus
+% menggarisbawahi pentingnya kehadiran data lokal dalam proses pelatihan \cite{arya2021deep}.
+
+Kedua, terdapat masalah \textit{false positive} yang bersumber dari elemen
+permukaan jalan non-kerusakan yang memiliki kemiripan visual tinggi dengan
+kerusakan struktural. Matouq dkk. menyatakan secara eksplisit
+bahwa mayoritas algoritma berbasis citra yang berfokus pada deteksi lubang
+jalan gagal mempertimbangkan secara memadai kemiripan visual
+antara \textit{pothole}, \textit{manhole}, dan \textit{patch}, serta
+menegaskan adanya kebutuhan mendesak akan dataset pelatihan dan metodologi
+yang lebih baik untuk mengatasi tantangan ini secara efektif
+\cite{matouq2024ai, Shi_2026}. Konsekuensinya tercermin pada hasil Zeng
+dan Zhong, yang menemukan bahwa akurasi deteksi kelas D40
+(\textit{pothole}) pada YOLOv8-PD hanya mencapai 53,1\% dan mengakibatkan
+\textit{missed detection} yang berulang \cite{Zeng2024}. Rendahnya performa
+pada kelas lubang jalan ini merupakan masalah sistemik yang disebabkan oleh
+karakteristik objeknya yang tidak beraturan, ukurannya yang kecil, serta
+minimnya jumlah sampel latih jika dibandingkan dengan kelas kerusakan lain
+\cite{Zeng2024}. Sejalan dengan itu, Kaya dan \c{C}odur mempublikasikan
+dataset N-RDD2024, sebuah versi perluasan dari RDD2022 yang mempertahankan
+keenam negara asal tetapi memperluas cakupan anotasi menjadi 10 kelas cacat
+permukaan, meliputi retak yang telah diperbaiki (D30), penurunan visibilitas
+penyeberangan pejalan kaki (D50), penurunan visibilitas marka lajur (D60),
+penutup saluran air (\textit{manhole cover}) (D70), segmen jalan yang ditambal (\textit{patchy
+  road}, D80), dan \textit{rutting} (D90) \cite{kaya2024nrdd2024}. Dalam
+konteks penelitian ini, kelas D70 dan D80 secara khusus diadopsi sebagai
+kelas pengecoh (\textit{distractor classes}) selama pelatihan, mengacu pada
+temuan Matouq dkk. yang mengidentifikasi keduanya sebagai sumber
+utama \textit{false positive} \cite{matouq2024ai}.
+
+Berdasarkan tinjauan terhadap kondisi penelitian yang ada, terdapat celah yang belum terjawab: belum ada studi yang secara sistematis mengevaluasi dan membandingkan performa berbagai arsitektur \textit{deep learning} menggunakan dataset N-RDD2024 dengan anotasi kelas pengecoh (kelas D70 dan D80), sekaligus mengukur secara eksplisit \textit{domain gap} yang terjadi ketika model tersebut diuji pada kondisi jalan nyata di Indonesia melalui evaluasi \textit{zero-shot}. Hal ini menjadi sangat krusial mengingat karakteristik jalan Indonesia seperti tekstur aspal, pola retak, dan distribusi infrastruktur permukaan jalan (seperti penutup saluran dan tambalan) memiliki keunikan lokal yang secara langsung memengaruhi performa model yang dilatih pada dataset global  \cite{Arya2024846, hugo2025efficientdet}. Oleh karena itu, penelitian ini dirancang untuk mengisi kesenjangan tersebut melalui analisis komparatif arsitektur \textit{deep learning} secara terstruktur dengan mengintegrasikan kelas pengecoh dari N-RDD2024 dan menerapkan optimasi fungsi \textit{loss} untuk mengatasi ketimpangan distribusi kelas. Lebih lanjut, penelitian ini juga akan mengukur \textit{generalization gap} ke domain jalan Indonesia secara kuantitatif, serta mengevaluasi \textit{trade-off} antara akurasi dan efisiensi komputasi guna memastikan kelayakannya untuk diimplementasikan pada perangkat komputasi terbatas.
+
+\section{Rumusan Masalah}
+Berdasarkan latar belakang yang telah diuraikan, rumusan masalah dirumuskan ke dalam pertanyaan berikut:
+\begin{enumerate}
+  \item Bagaimana performa deteksi model \textit{deep learning} ketika dilatih menggunakan dataset N-RDD2024 yang memuat kelas kerusakan dan kelas pengecoh?
+  \item Bagaimana performa dan kelayakan model untuk skenario \textit{real-time} pada perangkat komputasi terbatas ditinjau dari efisiensi komputasi?
+  \item Bagaimana tingkat \textit{domain gap} atau kemampuan generalisasi model terbaik yang dilatih menggunakan dataset global N-RDD2024 ketika diuji secara langsung (\textit{zero-shot}) pada dataset primer kondisi jalan raya nyata di Indonesia?
+\end{enumerate}
+
+
+\section{Tujuan Penelitian}
+Sejalan dengan rumusan masalah di atas, tujuan dari penelitian ini dirancang secara berkesinambungan untuk mencapai target berikut:
+\begin{enumerate}
+  \item Mengevaluasi dan membandingkan performa deteksi dari arsitektur YOLO \textit{baseline}, YOLO modifikasi, dan YOLO terbaru dengan melatihnya menggunakan dataset global N-RDD2024. Evaluasi ini dilakukan untuk mengukur tingkat akurasi (mAP) setiap arsitektur dalam mengenali kelas kerusakan jalan utama, sekaligus menganalisis ketangguhannya dalam menekan tingkat kesalahan deteksi (\textit{false positive}) yang dipicu oleh kemiripan visual dengan objek pengecoh (seperti penutup saluran air dan tambalan jalan).
+
+  \item Menganalisis kelayakan implementasi \textit{real-time} dan efisiensi komputasi dari model yang telah dilatih dengan membandingkan capaian akurasinya terhadap beban komputasi jaringan, yang mencakup kecepatan inferensi dalam FPS, ukuran parameter, serta GFLOPs. Analisis keseimbangan kinerja (\textit{trade-off}) ini bertujuan untuk menemukan titik optimal guna menentukan satu model terbaik yang tidak hanya presisi secara deteksi, tetapi juga terbukti ringan dan layak untuk diimplementasikan pada perangkat dengan sumber daya komputasi terbatas.
+
+  \item Mengukur ketangguhan generalisasi dan tingkat \textit{domain gap} dari model terbaik yang terpilih melalui pengujian secara langsung (\textit{zero-shot}) menggunakan data primer citra jalan raya di wilayah Bandung, Indonesia, tanpa melakukan pelatihan ulang (\textit{fine-tuning}). Tahap evaluasi akhir ini akan membuktikan secara kuantitatif seberapa tangguh arsitektur tersebut mampu beradaptasi, sekaligus mengukur tingkat penurunan akurasi yang terjadi akibat perbedaan karakteristik visual antara jalan raya global dengan kompleksitas nyata infrastruktur jalanan lokal.
+\end{enumerate}
+
+\section{Batasan Masalah}
+Batasan-batasan yang diterapkan pada penelitian ini adalah sebagai berikut:
+\begin{enumerate}
+  \item Pelatihan model (\textit{global benchmarking}) dibatasi hanya menggunakan subset dataset \textcolor{blue}{\href{https://data.mendeley.com/datasets/27c8pwsd6v/3}{N-RDD2024}} dari negara Asia (India, Tiongkok, dan Jepang). Subset Asia ini dipilih bukan sebagai representasi langsung kondisi di Indonesia, melainkan sebagai domain sumber yang secara geografis dan visual diasumsikan lebih mirip, sehingga evaluasi \textit{domain gap} tetap perlu diuji pada data primer.
+  \item Deteksi difokuskan pada pengenalan anomali permukaan jalan raya aspal atau beton. Kelas yang dideteksi secara spesifik meliputi empat kelas kerusakan struktural utama (retak memanjang, retak melintang, retak buaya, dan lubang jalan), serta dua kelas pengecoh visual (penutup saluran dan jalan bertambal).
+  \item Penelitian ini berfokus pada tugas deteksi objek (lokalisasi serta klasifikasi). Penelitian ini tidak mencakup estimasi tingkat keparahan (\textit{severity}).
+  \item Evaluasi \textit{zero-shot} dan pengumpulan data primer dibatasi pada  rute jalan raya dan jalan besar beraspal di wilayah Bandung yang diambil pada kondisi siang hari (visibilitas normal) guna mengisolasi variabel pencahayaan.
+  \item Pengujian efisiensi komputasi terkait kelayakan implementasi dievaluasi menggunakan lingkungan perangkat keras NVIDIA RTX 4070 Ti 12GB, dan tidak mencakup tahap \textit{deployment} (\textit{build}) menjadi aplikasi lunak siap pakai.
+\end{enumerate}
+
+\section{Rencana Kegiatan}
+Rencana kegiatan adalah penjelasan mengenai rencana langkah-langkah yang akan dilakukan dalam pengerjaan Tugas Akhir yang memuat:
+\begin{enumerate}
+  \item \textbf{Studi Literatur Terkait dengan Deteksi Kerusakan Jalan}\\
+        Pada tahapan ini, penulis mengamati terkait metode-metode dan arsitektur \textit{deep learning} terbaru berbasis YOLO, penerapan kelas pengecoh untuk mengurangi tingkat \textit{false positive}, dan penyelesaian masalah \textit{domain shift}. Penulis akan menganalisis performa dari metode-metode tersebut dan merancang skenario evaluasi yang paling sesuai.
+
+
+  \item \textbf{Pengumpulan dan Prapemrosesan Data}\\
+        Dataset yang digunakan adalah dataset sekunder dan dataset primer. Dataset sekunder menggunakan N-RDD2024 yang memuat anotasi kerusakan jalan dan cacat permukaan. Dataset primer merupakan citra kondisi jalan nyata di Indonesia yang dikumpulkan di wilayah Bandung. Tahapan ini juga mencakup penyesuaian format agar siap digunakan untuk pelatihan model.
+
+  \item \textbf{Perancangan Skenario Evaluasi Model}\\
+        Penulis merancang tiga skenario pemodelan komparatif yang melibatkan arsitektur YOLO \textit{baseline}, YOLO modifikasi, dan iterasi YOLO versi mutakhir. Skenario penelitian dirancang secara terstruktur, yang difokuskan pada pengukuran standar performa model menggunakan dataset multinasional N-RDD2024 (\textit{global benchmarking}), dan dilanjutkan dengan pengujian kemampuan generalisasi model secara langsung pada citra jalan lokal di Indonesia melalui evaluasi \textit{zero-shot}.
+
+  \item \textbf{Pelatihan dan Implementasi Model}\\
+        Penulis mengimplementasikan kode program untuk melatih model menggunakan dataset N-RDD2024. Tahapan ini mencakup penerapan strategi optimasi fungsi \textit{loss} (seperti \textit{Focal Loss}) untuk menangani ketimpangan distribusi kelas. Penulis memastikan kode berjalan dengan benar untuk proses ekstraksi fitur, pelatihan, dan inferensi.
+
+  \item \textbf{Pengujian dan Analisis Hasil Evaluasi}\\
+        Penulis melakukan evaluasi terhadap model di seluruh skema penelitian. Model akan dinilai menggunakan metrik akurasi (\textit{Precision, Recall, mAP}) dan metrik efisiensi komputasi (FPS, Parameter, GFLOPs). Penulis juga melakukan \textit{error analysis} untuk melihat tingkat keberhasilan model membedakan lubang jalan asli dengan objek pengecoh.
+
+
+  \item \textbf{Penyusunan Laporan}\\
+        Penulis mendokumentasikan hasil performa dari seluruh skema eksperimen. Selain itu, penulis menulis analisis komparatif terkait \textit{trade-off} akurasi dan efisiensi komputasi yang telah didapatkan, serta analisis \textit{generalization gap} model ketika dihadapkan pada data jalan Indonesia (\textit{unseen data}).
+\end{enumerate}
+
+\section{Jadwal Kegiatan}
+Agar pelaksanaan penelitian dapat berjalan secara terstruktur, disusunlah jadwal kegiatan per bulan sebagai berikut:
+
+\begin{table}[h!]
+  \centering
+  \caption{Jadwal kegiatan proposal tugas akhir}
+  \label{tab:jadwal}
+  \begin{tabular}{|c|m{3cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|}
+    \hline
+    \multirow{2}{*}{\textbf{No}}        & \multirow{2}{*}{\textbf{Kegiatan}}                                      & \multicolumn{24}{|c|}{\textbf{Bulan ke-}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            \\
+    \hhline{~~------------------------}
+    {} & {}                                                                      & \multicolumn{4}{|c|}{\textbf{1}}          & \multicolumn{4}{|c|}{\textbf{2}} & \multicolumn{4}{|c|}{\textbf{3}} & \multicolumn{4}{|c|}{\textbf{4}} & \multicolumn{4}{|c|}{\textbf{5}} & \multicolumn{4}{|c|}{\textbf{6}}                                                                                                                                                                                                                                                                                                                                                                                                                                              \\
+    \hline
+    1                                   & Kajian Pustaka Terkait Deteksi Kerusakan Jalan                          & \cellcolor{blue!25}                       & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  \\
+    \hline
+    2                                   & Pengumpulan dan Prapemrosesan Data (N-RDD2024 dan data lokal)           & \cellcolor{blue!25}                       & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25} & \cellcolor{blue!25} & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  \\
+    \hline
+    3                                   & Perancangan Skenario Evaluasi Model (global benchmarking dan zero-shot) & {}                                        & {}                               & {}                               & {}                               & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  \\
+    \hline
+    4                                   & Pelatihan dan Implementasi Model Deteksi Berbasis YOLO                  & {}                                        & {}                               & {}                               & {}                               & {}                               & {}                               & {}                  & {}                  & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  \\
+    \hline
+    5                                   & Pengujian dan Analisis Hasil Evaluasi (akurasi dan efisiensi komputasi) & {}                                        & {}                               & {}                               & {}                               & {}                               & {}                               & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & {}                  & {}                  & {}                  & {}                  \\
+    \hline
+    6                                   & Penyusunan Laporan                                                      & {}                                        & {}                               & {}                               & {}                               & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} \\
+    \hline
+  \end{tabular}
+\end{table}

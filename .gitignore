@@ -48,3 +48,12 @@ artifacts/
 Thumbs.db
 .vscode/
 .idea/
+
+# LaTeX build artifacts
+latex_skripsi/skripsi-telkom/build/
+latex_skripsi/skripsi-telkom/*.aux
+latex_skripsi/skripsi-telkom/*.log
+latex_skripsi/skripsi-telkom/*.fls
+latex_skripsi/skripsi-telkom/*.toc
+latex_skripsi/skripsi-telkom/*.synctex.gz
+latex_skripsi/skripsi-telkom/*.synctex(busy)
