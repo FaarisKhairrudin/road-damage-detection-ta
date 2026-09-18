@@ -72,7 +72,7 @@ Merujuk pada Gambar \ref{fig:distribusi_kelas_global}, retakan memanjang dan ret
 	\label{fig:distribusi_objek_negara}
 \end{figure}
 
-Data dari Gambar \ref{fig:distribusi_objek_negara} menyoroti anomali distribusi lokal. Sebagai contoh, sebagian besar objek \textit{manhole} (3.051 dari 3.236 objek) secara eksklusif bersumber dari Jepang, sementara objek lubang jalan (\textit{pothole}) memiliki proporsi kemunculan yang cukup tinggi di India (994 objek dari total 1.055 citra India) dibandingkan negara lainnya. Fakta empiris terkait ketimpangan kelas yang ekstrem ini menjustifikasi perlunya penerapan modifikasi struktural dan fungsi kerugian adaptif, seperti \textit{Focal Loss}, guna mencegah model bias terhadap kelas mayoritas (retakan) dan mengabaikan objek minoritas (lubang dan pengecoh).
+Data dari Gambar \ref{fig:distribusi_objek_negara} menyoroti anomali distribusi lokal. Sebagai contoh, sebagian besar objek \textit{manhole} (3.051 dari 3.236 objek) secara eksklusif bersumber dari Jepang, sementara objek lubang jalan (\textit{pothole}) memiliki proporsi kemunculan yang cukup tinggi di India (994 objek dari total 1.055 citra India) dibandingkan negara lainnya. Fakta empiris terkait ketimpangan kelas ini menjustifikasi perlunya penerapan pembobotan fungsi kerugian teradaptasi berbasis \textit{Effective Number of Samples} \cite{cui2019class}, guna mencegah model terbias terhadap kelas mayoritas (retakan) dan mengabaikan objek minoritas (lubang dan pengecoh).
 
 Analisis komprehensif terhadap 24.290 kotak pembatas (\textit{bounding box}) pada dataset tersaring dilakukan untuk melihat proporsi luas objek relatif terhadap luas total citra. Hasil dari analisis metrik tersebut divisualisasikan melalui histogram pada Gambar \ref{fig:distribusi_luas_bbox}.
 
@@ -89,6 +89,35 @@ Analisis komprehensif terhadap 24.290 kotak pembatas (\textit{bounding box}) pad
 Berdasarkan Gambar \ref{fig:distribusi_luas_bbox}, distribusi persentase luas \textit{bounding box} menunjukkan kecondongan positif yang sangat ekstrem (\textit{highly right-skewed}). Nilai median tercatat pada angka 1,69\%, yang mengindikasikan bahwa separuh dari total keseluruhan objek target pada dataset berukuran kurang dari 1,7\% dari total keseluruhan area piksel gambar. Lebih lanjut, metrik persentil ke-90 (P90) yang hanya menyentuh angka 17,19\% menegaskan bahwa keberadaan objek kerusakan berukuran besar sangat jarang ditemukan di lapangan.
 
 Banyaknya objek berukuran sangat kecil dalam dataset ini menjadi tantangan visual tersendiri. Ukuran target yang minim, ditambah dengan tekstur latar belakang jalan raya yang kompleks, membuat anomali tersebut secara alami lebih sulit untuk dikenali secara akurat dalam proses deteksi.
+
+\subsection{Distribusi Pembagian Data (\textit{Data Splitting})}
+\label{subsec:distribusi_data}
+Dataset tersaring sebanyak 9.670 citra dibagi ke dalam himpunan data latih (\textit{train}), data validasi (\textit{validation}), dan data uji (\textit{test}) dengan rasio pembagian konsisten terstratifikasi (\textit{stratified}) sekitar 70:20:10. Rincian persebaran jumlah instans objek per kelas disajikan pada Tabel \ref{tab:distribusi_stratified}.
+
+\begin{table}[H]
+	\centering
+	\small
+	\caption{Distribusi Jumlah Instans Objek per Kelas pada Himpunan Data N-RDD2024}
+	\label{tab:distribusi_stratified}
+	\resizebox{\textwidth}{!}{
+	\begin{tabular}{|l|c|c|c|c|c|}
+		\hline
+		\textbf{Kelas Target} & \textbf{Latih (\textit{Train})} & \textbf{Validasi (\textit{Val})} & \textbf{Uji (\textit{Test})} & \textbf{Total Instans} & \textbf{Proporsi (\%)} \\
+		\hline
+		Retak Memanjang (\textit{Longitudinal}) & 4.555 & 1.257 & 635 & 6.447 & 26,54\% \\
+		Retak Melintang (\textit{Transverse}) & 3.219 & 897 & 446 & 4.562 & 18,78\% \\
+		Retak Buaya (\textit{Alligator}) & 4.385 & 1.245 & 642 & 6.272 & 25,82\% \\
+		Lubang Jalan (\textit{Pothole}) & 2.192 & 597 & 312 & 3.101 & 12,77\% \\
+		Penutup Saluran (\textit{Manhole}) & 2.270 & 645 & 321 & 3.236 & 13,32\% \\
+		Jalan Bertambal (\textit{Patchy Road}) & 471 & 132 & 69 & 672 & 2,77\% \\
+		\hline
+		\textbf{Total} & \textbf{17.092} & \textbf{4.773} & \textbf{2.425} & \textbf{24.290} & \textbf{100,00\%} \\
+		\hline
+	\end{tabular}
+	}
+\end{table}
+
+Berdasarkan Tabel \ref{tab:distribusi_stratified}, pembagian data berhasil mempertahankan proporsi kelas yang seragam di seluruh partisi. Analisis terhadap rasio ketimpangan menunjukkan bahwa pada empat kelas kerusakan inti, ketimpangan data tergolong ringan dengan rasio maksimum 2,08$\times$ (antara retak memanjang dan lubang jalan). Penutup saluran air (\textit{manhole}) memiliki jumlah instans (3.236) yang sebanding dengan lubang jalan (3.101). Ketimpangan ekstrem sebesar 9,67$\times$ pada keseluruhan enam kelas sepenuhnya didorong oleh kelangkaan kelas jalan bertambal (\textit{patchy road}) yang hanya berjumlah 672 instans secara keseluruhan.
 
 \section{Alur Penelitian}
 Penelitian ini dilaksanakan berdasarkan alur penelitian yang dirancang secara terstruktur dan sistematis. Rangkaian tahapan dari proses akuisisi data hingga penarikan kesimpulan divisualisasikan pada diagram alir (\textit{flowchart}) di Gambar \ref{fig:alur_penelitian}.
@@ -127,13 +156,28 @@ Algoritma deteksi objek berbasis keluarga YOLO beroperasi sebagai detektor satu 
 	\label{fig:arsitektur_yolo}
 \end{figure}
 
-Secara struktural, rancangan implementasi model jaringan YOLO pada penelitian ini bertumpu pada tiga komponen arsitektur utama, yaitu:
+Secara struktural, seluruh model yang dievaluasi pada penelitian ini bertumpu pada tiga komponen utama: \textit{Backbone} (pengekstraksi fitur), \textit{Neck} (fusi fitur multi-skala), dan \textit{Head} (kepala prediksi boks dan kelas). Untuk menjamin evaluasi yang objektif dan adil (\textit{apple-to-apple}), seluruh model dikonfigurasi pada skala terkecil yang setara, yaitu varian \textbf{nano (`n')}.
+
+\subsection{Arsitektur Model yang Dievaluasi}
+Penelitian ini menguji lima varian arsitektur yang mewakili tiga kelompok desain:
 \begin{enumerate}
-	\item \textbf{\textit{Backbone}:} Berfungsi sebagai pengekstraksi fitur utama dari citra masukan. Pada iterasi arsitektur mutakhir seperti YOLOv8, komponen ini memanfaatkan kombinasi modul konvolusi standar (Conv), modul C2f (\textit{Cross Stage Partial Bottleneck with 2 convolutions}) untuk memastikan aliran gradien yang kaya dan efisien selama propagasi balik, serta \textit{Spatial Pyramid Pooling - Fast} (SPPF) untuk mengekstrak fitur pada berbagai skala abstraksi spasial \cite{Li2024, Zeng2024}. Untuk meningkatkan sensitivitas terhadap objek berukuran kecil (seperti retakan halus), komponen \textit{backbone} ini sering kali menjadi target utama penyisipan mekanisme atensi, seperti modul SimAM \cite{Li2024} maupun SOM \cite{Wang2025}.
+	\item \textbf{YOLOv8n (\textit{Baseline}):} Menjadi basis tolok ukur standar. Menggunakan modul konvolusi Conv, blok C2f (\textit{Cross Stage Partial Bottleneck with 2 convolutions}), dan SPPF (\textit{Spatial Pyramid Pooling - Fast}) pada \textit{backbone}, modul fusi multi-skala PANet pada \textit{neck}, serta kepala \textit{decoupled head} anchor-free \cite{Li2024, Zeng2024}.
+	\item \textbf{Rekonstruksi YOLOv8-PD (\textit{Efficiency-Oriented}):} Arsitektur yang dirancang oleh Zeng dan Zhong \cite{Zeng2024} dengan filosofi efisiensi tinggi untuk mendeteksi kerusakan jalan. Model ini mengintegrasikan blok \textit{Bottleneck Transformer} (BoT) dan modul atensi \textit{Large Separable Kernel Attention} (LSKA) pada \textit{backbone}, menggantikan modul konvolusi leher dengan \textit{C2fGhost} berbasis operasi linear murah (\textit{GhostConv}) \cite{han2020ghostnet}, serta menerapkan kepala deteksi ringan berbagi bobot \textit{Lightweight Shared-parameter Decoupled Head} (LSCDHead) guna memangkas parameter secara drastis.
+	\item \textbf{Rekonstruksi YOLO-RD (\textit{Accuracy-Oriented}):} Arsitektur yang diusulkan oleh Wang dkk. \cite{Wang2025} yang mengutamakan presisi deteksi tinggi. Model ini mengintegrasikan modul operasi bintang \textit{Star Operation Module} (SOM) untuk interaksi fitur non-linear berdimensi tinggi, modul \textit{Attention Refinement Module} (ARM) berbasis konvolusi deformabel (\textit{Deformable Convolutional Networks} / DCNv2) \cite{dai2017deformable} untuk adaptasi kontur kerusakan ireguler, serta \textit{Wavelet Transform Convolution} (WTConv) pada kepala deteksi yang memanfaatkan dekomposisi frekuensi Haar wavelet untuk mengekstrak informasi detail multi-skala.
+	\item \textbf{Arsitektur Mutakhir (YOLOv12n dan YOLOv26n):} YOLOv12n mengusung mekanisme atensi mutakhir yang efisien \cite{tian2026yolov12}, sementara YOLOv26n mengadopsi struktur \textit{end-to-end} tanpa modul NMS serta regresi kotak tanpa DFL (\textit{DFL-free}) \cite{sapkota2025yolo26}.
+\end{enumerate}
 
-	\item \textbf{\textit{Neck}:} Bertugas melakukan fusi fitur multi-skala. Melalui hierarki operasi \textit{Upsample} dan penggabungan (\textit{Concatenation}), bagian ini memadukan peta fitur beresolusi tinggi (yang kaya akan detail spasial) dengan peta fitur beresolusi rendah (yang kaya akan informasi semantik global) \cite{Li2024, Shi_2026}. Fusi ini memungkinkan model untuk secara adaptif mengenali objek kerusakan jalan dalam rentang skala yang bervariasi. Pada implementasi model modifikasi (\textit{lightweight}), modul konvolusi standar pada \textit{Neck} umumnya digantikan oleh operasi linear hemat biaya seperti \textit{Ghost Convolution} guna mereduksi beban komputasi (GFLOPs) dan menekan redundansi parameter secara drastis \cite{Li2024, Zeng2024, Shi_2026}.
-
-	\item \textbf{\textit{Head}:} Merupakan komponen akhir jaringan yang mengadopsi struktur \textit{decoupled head} untuk memisahkan tugas klasifikasi dan pelokalisasian secara independen. Bagian ini memproses fitur hasil fusi dari \textit{Neck} guna menghasilkan keluaran prediksi secara paralel, yaitu koordinat kotak pelingkup (\textit{bounding boxes}), tingkat metrik keyakinan (\textit{confidence score}), dan probabilitas kelas (\textit{class probability map}) \cite{Li2024, Shi_2026}. Prediksi mentah yang saling tumpang tindih kemudian disaring melalui algoritma \textit{Non-Maximum Suppression} (NMS) untuk menghasilkan keputusan deteksi akhir yang tunggal dan presisi.
+\subsection{Transparansi Rekonstruksi dan Validasi Rekayasa Kode}
+\label{subsec:validasi_kode}
+Penulis artikel asli YOLOv8-PD \cite{Zeng2024} dan YOLO-RD \cite{Wang2025} \textbf{tidak merilis kode sumber arsitektur secara publik}. Oleh sebab itu, kedua arsitektur tersebut direkonstruksi secara mandiri oleh penulis berdasarkan diagram blok, persamaan matematis, dan deskripsi tekstual pada masing-masing paper di atas kerangka kerja \textit{Ultralytics}. Dalam proses penyesuaian dan validasi kode, penulis mengidentifikasi dan menyelesaikan enam kendala teknis krusial:
+\begin{enumerate}
+	\item \textbf{Penyederhanaan Modul Leher MAF:} Modul \textit{Multi-scale Attention Fusion} (MAF) pada persamaan 4 paper YOLO-RD direalisasikan menggunakan pola \textit{Upsample $\rightarrow$ Concat $\rightarrow$ Conv1x1} standar. Secara matematis, kombinasi ini mampu merepresentasikan kombinasi linear per-kanal secara umum dan menjaga konsistensi alur komputasi \textit{neck}.
+	\item \textbf{Penanganan Kegagalan Kernel (\textit{Segfault}) pada Profiling Komputasi:} Saat penghitungan GFLOPs menggunakan tensor acak belum terinisialisasi, kernel \textit{deform\_conv2d} milik pustaka \textit{torchvision} mengalami \textit{segmentation fault}. Masalah ini diselesaikan dengan menerapkan batasan nilai (\textit{clamping}) dan fungsi \texttt{torch.nan\_to\_num()} pada tensor \textit{offset} sebelum diteruskan ke kernel konvolusi deformabel.
+	\item \textbf{Penempatan \textit{Patch} Fungsi Kerugian:} Penyesuaian kriteria pembobotan kelas diterapkan pada tingkat kelas \textit{DetectionModel} (bukan tingkat \textit{instance}), sehingga penalti pembobotan kelas tetap aktif secara konsisten saat proses pelatihan membangun ulang objek model.
+	\item \textbf{Pemilihan Skema Pembobotan Kelas:} Menggantikan varian \textit{Focal Loss} skalar bawaan dengan pembobotan kelas teradaptasi berbasis \textit{Effective Number of Samples} \cite{cui2019class} dengan faktor $\beta = 0,999$ guna menjaga stabilitas gradien pada mode AMP.
+	\item \textbf{Percabangan Kriteria Kerugian YOLOv26:} Mempertahankan fungsi kerugian \texttt{E2ELoss} untuk arsitektur YOLOv26 yang beroperasi tanpa NMS, dan \texttt{v8DetectionLoss} untuk arsitektur berbasis YOLOv8.
+	\item \textbf{Inisialisasi Nol (\textit{Zero-Init}) pada Konvolusi Offset ARM:} Pada implementasi awal tanpa inisialisasi nol, model YOLO-RD mengalami degradasi akurasi ekstrem (mAP@0.5 hanya mencapai $\sim$0,50). Berpedoman pada prinsip standar DCNv2 \cite{dai2017deformable}, bobot dan bias pada lapisan \texttt{offset\_conv} modul ARM diinisialisasi secara eksplisit ke nol (\texttt{nn.init.zeros\_()}). Perbaikan ini secara dramatis memulihkan performa model hingga melonjak menjadi \textbf{0,661 mAP@0.5} (tertinggi di antara seluruh model pembanding).
+	\item \textbf{Penanganan Dimensi Ganjil pada WTConv:} Transformasi Haar wavelet membutuhkan dimensi spasial genap. Diterapkan mekanisme \textit{padding} simetris sebelum dekomposisi wavelet dan pemotongan (\textit{cropping}) presisi setelah transformasi balik.
 \end{enumerate}
 
 \section{Evaluasi Performa Model}
@@ -169,25 +213,20 @@ Dari perhitungan presisi pada berbagai ambang batas \textit{Recall}, diperoleh n
 \begin{equation}
 	mAP = \frac{1}{N} \sum_{i=1}^{N} AP_i
 \end{equation}
-Dalam penelitian ini, selain menggunakan metrik mAP@0.5 (mAP pada IoU 50\%), digunakan pula metrik evaluasi multi-skala seperti mAP$_s$ (untuk objek berukuran sangat kecil $< 32\times32$ piksel), mAP$_m$ (skala menengah), dan mAP$_l$ (skala besar) untuk menganalisis sensitivitas model terhadap variasi ukuran retakan jalan yang ekstrem \cite{Wang2025}.
 
 \subsection{Metrik Efisiensi Komputasi}
 Untuk mengukur kelayakan model pada perangkat komputasi bergerak (\textit{mobile terminal devices}), digunakan tiga metrik evaluasi efisiensi \cite{Wu2023, Wang2025}:
 \begin{itemize}
-	\item \textbf{\textit{Parameters} (Params):} Total kuantitas bobot yang dapat dipelajari (\textit{learnable parameters}) dalam jaringan saraf. Metrik ini, biasanya dalam satuan \textit{Million} (M), mengukur kompleksitas spasial dan ukuran ruang penyimpanan model.
+	\item \textbf{\textit{Parameters} (Params):} Total kuantitas bobot yang dapat dipelajari (\textit{learnable parameters}) dalam jaringan saraf. Metrik ini mengukur kompleksitas spasial dan ukuran ruang penyimpanan model.
 	\item \textbf{GFLOPs (\textit{Giga Floating-Point Operations Per Second}):} Kuantitas operasi komputasi yang dibutuhkan model dalam satu kali inferensi. Metrik ini secara langsung merepresentasikan beban komputasi jaringan.
 	\item \textbf{FPS (\textit{Frames Per Second}):} Indikator langsung dari kecepatan inferensi model dalam memproses citra per detiknya, yang menentukan kelayakan sistem untuk skenario pengawasan \textit{real-time}.
 \end{itemize}
 
 \section{Skenario Penelitian}
-Skenario pengujian merupakan inti eksperimental dari metodologi penelitian ini. Untuk menjawab ketiga rumusan masalah yang telah ditetapkan pada Bab 1 secara sistematis, skenario penelitian ini dipecah ke dalam tiga tahapan evaluasi utama:
+Skenario eksperimen dirancang secara sistematis untuk menjawab rumusan masalah penelitian:
+\begin{enumerate}
+	\item \textbf{Skenario 1 — Evaluasi Kinerja Multi-Kelas dan Analisis Kelas Pengecoh:} Melatih kelima konfigurasi model pada dataset sekunder N-RDD2024 (enam kelas target) menggunakan pembobotan kelas \textit{Effective Number of Samples}. Tahap ini dilanjutkan dengan studi ablasi pemodelan murni 4 kelas kerusakan struktural untuk menguji hipotesis reduksi \textit{false positive} menggunakan uji signifikansi statistik \textit{two-proportion z-test}.
+	\item \textbf{Skenario 2 — Analisis Keseimbangan Kinerja (\textit{Trade-Off}) dan Kelayakan \textit{Real-Time}:} Menyandingkan capaian akurasi (mAP@0.5) dengan metrik efisiensi komputasi (parameter, GFLOPs, FPS pada GPU NVIDIA RTX 4070 SUPER) guna mengidentifikasi titik kompromi optimal bagi implementasi praktis.
+	\item \textbf{Skenario 3 — Protokol Pengujian Generalisasi Lintas Domain (\textit{Zero-Shot Inference}):} Merancang protokol terstandar untuk pengujian generalisasi model terbaik langsung pada data primer jalan raya lokal di Indonesia tanpa proses pelatihan ulang (\textit{fine-tuning}). Pengujian empiris pada skenario ini diposisikan sebagai draf protokol terstandar yang siap dieksekusi seiring finalisasi akuisisi dataset jalan lokal.
+\end{enumerate}
 
-\subsection{Skenario 1: Evaluasi Kinerja pada Domain Sumber dan Analisis Kelas Pengecoh}
-Skenario pertama dirancang secara komparatif untuk melatih dan mengevaluasi konfigurasi arsitektur model menggunakan dataset sekunder N-RDD2024. Penelitian ini menguji YOLOv8n sebagai model \textit{baseline}, rancangan eksperimental model modifikasi yang dikonfigurasi dengan mengeksplorasi berbagai modul optimasi (seperti mekanisme atensi dan konvolusi ringan) yang diadaptasi dari arsitektur mutakhir seperti YOLO-RD \cite{Wang2025}, RDD-YOLO \cite{Li2024}, maupun YOLOv8-PD \cite{Zeng2024}, serta iterasi algoritma versi mutakhir berupa YOLOv12 \cite{tian2026yolov12} dan YOLOv26 \cite{sapkota2025yolo26}. Fokus utama pada tahap ini adalah mengukur tingkat akurasi (mAP) dari masing-masing arsitektur dalam mendeteksi kelas kerusakan jalan utama. Bersamaan dengan itu, evaluasi juga diarahkan untuk mengamati bagaimana model menangani ketimpangan data (\textit{class imbalance}) serta kemampuannya dalam membedakan kerusakan jalan asli dari kelas pengecoh berupa penutup saluran air (D70) dan tambalan aspal (D80). Kemampuan arsitektur dalam menghindari kebingungan visual terhadap objek pengecoh ini dibuktikan secara empiris melalui analisis maatriks kebingungan (\textit{Confusion Matrix}) guna melihat tingkat penekanan \textit{false positive}. Untuk memastikan model tidak bias terhadap kelas mayoritas selama proses pelatihan, strategi penanganan ketimpangan kelas melalui penerapan fungsi kerugian adaptif (\textit{Focal Loss}) atau pembobotan kelas bawaan dari kerangka kerja YOLO. Skenario ini akan menghasilkan capaian metrik mAP dan F1-\textit{Score} murni pada domain sumber yang menjadi \textit{benchmark} performa standar model.
-
-
-\subsection{Skenario 2: Analisis Keseimbangan Kinerja (\textit{Trade-Off}) dan Kelayakan \textit{Real-Time}}
-Skenario kedua berfokus pada analisis kelayakan penerapan model pada skenario \textit{real-time} dengan sumber daya komputasi terbatas. Pada tahap ini, metrik akurasi (mAP) dari model-model yang telah dilatih pada Skenario 1 akan dibandingkan dengan metrik efisiensi komputasinya, yang meliputi kecepatan inferensi (FPS), jumlah parameter (\textit{Params}), dan beban operasi (\textit{GFLOPs}). Seluruh pengujian efisiensi komputasi ini akan dievaluasi menggunakan perangkat keras NVIDIA RTX 4070 Ti 12GB sebagai basis tolok ukur (benchmark).Analisis keseimbangan kinerja (\textit{trade-off}) ini akan menentukan apakah modifikasi arsitektur \textit{lightweight} benar-benar mampu memberikan titik optimal terbaik antara menekan beban komputasi secara signifikan tanpa mengorbankan ketepatan deteksi. Dari skenario evaluasi komputasi ini, akan dipilih satu model terbaik untuk dilanjutkan ke tahap evaluasi akhir.
-
-\subsection{Skenario 3: Uji Ketangguhan Lintas Domain (\textit{Zero-Shot Inference})}
-Skenario ketiga bertujuan untuk mengukur secara kuantitatif tingkat kesenjangan domain (\textit{domain gap}) dari model terbaik yang telah terpilih. Model terbaik dari hasil analisis komputasi Skenario 2 akan diekstraksi bobotnya (\textit{weights}) dan diuji secara langsung (\textit{zero-shot}) menggunakan dataset primer jalan raya Bandung, tanpa memberikan model kesempatan untuk melakukan \textit{fine-tuning}. tahap evaluasi akhir ini akan membuktikan kemampuan generalisasi murni model dalam menghadapi data baru (\textit{unseen data}). Perbedaan selisih akurasi (\textit{accuracy drop}) antara kinerja di Skenario 1 dan Skenario 3 akan dianalisis sebagai representasi besaran \textit{domain shift}.

@@ -57,3 +57,8 @@ latex_skripsi/skripsi-telkom/*.fls
 latex_skripsi/skripsi-telkom/*.toc
 latex_skripsi/skripsi-telkom/*.synctex.gz
 latex_skripsi/skripsi-telkom/*.synctex(busy)
+
+# Generated PDFs (rebuild via compile.sh)
+latex_skripsi/skripsi-telkom/hasil/
+latex_skripsi/skripsi-telkom/main.pdf
+docs/proposal.pdf

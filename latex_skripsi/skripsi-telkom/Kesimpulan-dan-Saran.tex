@@ -1,0 +1,34 @@
+\chapter{Kesimpulan dan Saran}
+\label{chap:kesimpulan_saran}
+
+Pada bab ini dirumuskan kesimpulan akhir yang ditarik dari seluruh rangkaian eksperimen dan analisis yang telah dilakukan untuk menjawab rumusan masalah penelitian. Selain itu, disajikan pula saran-saran konstruktif sebagai pedoman pengembangan untuk penelitian selanjutnya.
+
+\section{Kesimpulan}
+\label{sec:kesimpulan}
+
+Berdasarkan hasil pengujian eksperimental komparatif, analisis studi ablasi, serta evaluasi efisiensi komputasi pada deteksi kerusakan jalan, dapat ditarik beberapa kesimpulan utama:
+\begin{enumerate}
+	\item \textbf{Kinerja Deteksi Multi-Kelas pada Domain Sumber (Rumusan Masalah 1):}
+	\begin{itemize}
+		\item Evaluasi terhadap lima konfigurasi arsitektur berskala nano (`n') pada dataset N-RDD2024 (enam kelas target) menunjukkan bahwa arsitektur modifikasi \textbf{YOLO-RD} berhasil meraih kinerja deteksi tertinggi dengan nilai test mAP@0.5 sebesar \textbf{0,661}, test mAP@0.5:0.95 sebesar \textbf{0,371}, dan \textit{macro F1} sebesar \textbf{0,633}. Pencapaian ini membuktikan efektivitas integrasi modul atensi spasial deformabel (\textit{ARM}) dan dekomposisi frekuensi wavelet (\textit{WTConv}) dalam menangani detail retakan jalan yang rumit.
+		\item Analisis per-kelas mengungkap bahwa lubang jalan (\textit{pothole}) konsisten menjadi kelas kerusakan struktural paling menantang di semua model (mAP@0.5 berkisar antara 0,526--0,541) akibat morfologinya yang amorf serta kemiripannya dengan tekstur bayangan dan cacat permukaan lainnya. Sebaliknya, kelas pengecoh penutup saluran air (\textit{manhole}) mencatatkan akurasi tertinggi (mAP@0.5 mencapai 0,819--0,845) berkat batas geometrisnya yang tegas.
+		\item Studi ablasi antara model 6-kelas dan 4-kelas melalui uji hipotesis \textit{two-proportion z-test} menunjukkan bahwa secara statistik, penambahan kelas pengecoh belum memberikan penurunan laju \textit{false positive} yang signifikan secara universal ($p > 0,05$). Efek penekanan kesalahan bersifat moderat dan spesifik arsitektur (sinyal terkuat pada YOLOv8n dengan $p = 0,087$). Mekanisme TAL pada model 6-kelas membentuk batas keputusan yang lebih ketat di sekitar kelas \textit{pothole}, yang sedikit menekan mAP \textit{pothole} (turun sekitar $-0,020$) namun secara agregat menghasilkan representasi fitur yang lebih kaya dengan skor \textit{macro F1} yang lebih tinggi dan seimbang.
+	\end{itemize}
+
+	\item \textbf{Keseimbangan Kinerja dan Kelayakan Real-Time (Rumusan Masalah 2):}
+	\begin{itemize}
+		\item Hasil pengujian membuktikan filosofi desain dari model-model yang diuji. \textbf{YOLOv8-PD} dinobatkan sebagai model paling optimal untuk skenario komputasi terbatas (\textit{edge computing}) dengan bobot teringan (\textbf{2,46M parameter}), beban komputasi rendah (\textbf{7,7 GFLOPs}), dan kecepatan inferensi tertinggi mencapai \textbf{368,4 FPS} (lonjakan kecepatan +67,7\% dibanding baseline YOLOv8n) tanpa mengorbankan akurasi secara berarti (test mAP@0.5 sebesar 0,646 vs. 0,648).
+		\item Arsitektur mutakhir \textbf{YOLOv12n} berhasil menjadi titik temu optimal (\textit{sweet spot}) yang menggabungkan akurasi tinggi (0,654 mAP@0.5), parameter efisien (2,57M), dan kecepatan tinggi (319,3 FPS). Sementara itu, YOLO-RD unggul dalam akurasi absolut namun menuntut kompensasi komputasi yang berat (7,09M parameter dan 189,4 FPS).
+	\end{itemize}
+\end{enumerate}
+
+\section{Saran}
+\label{sec:saran}
+
+Untuk mengatasi keterbatasan yang ada serta melanjutkan pengembangan penelitian ini, beberapa saran yang direkomendasikan adalah sebagai berikut:
+\begin{enumerate}
+	\item \textbf{Optimalisasi Inferensi Kernel Khusus:} Disarankan untuk melakukan kompilasi dan kuantisasi model (misalnya menggunakan TensorRT atau ONNX Runtime dengan optimasi kernel FP16/INT8), khususnya untuk modul konvolusi deformabel (ARM) dan transformasi Haar wavelet (WTConv) pada YOLO-RD, agar latensi pemrosesan dapat ditekan saat diimplementasikan pada perangkat keras \textit{edge} seperti NVIDIA Jetson.
+	\item \textbf{Penerapan Resep Pelatihan Khusus untuk YOLOv26:} Pada penelitian lanjutan yang menguji arsitektur tanpa DFL seperti YOLOv26, disarankan untuk mengintegrasikan tumpukan algoritma pelatihan aslinya, termasuk pengoptimal MuSGD, \textit{Progressive Loss} (ProgLoss), dan modul STAL, guna mengevaluasi potensi akurasi maksimal arsitektur tersebut.
+	\item \textbf{Penyelesaian Akuisisi Dataset Primer Indonesia:} Menyelesaikan pengumpulan dan standardisasi anotasi dataset citra jalan raya lokal di Indonesia sesuai dengan draf protokol yang telah dirancang, sehingga evaluasi \textit{zero-shot inference} lintas domain dapat dieksekusi secara empiris untuk mengukur besaran \textit{domain gap} pada kondisi jalan Indonesia.
+	\item \textbf{Evaluasi Multi-Benih (Multi-Seed):} Melakukan pelatihan ulang model dengan variasi benih acak (\textit{multi-seed}) guna menghasilkan analisis varians dan interval kepercayaan (\textit{confidence interval}) yang lebih kokoh secara inferensial statistik.
+\end{enumerate}

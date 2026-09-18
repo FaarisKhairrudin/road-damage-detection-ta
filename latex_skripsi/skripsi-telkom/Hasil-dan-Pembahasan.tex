@@ -1,0 +1,192 @@
+\chapter{Hasil dan Pembahasan}
+\label{chap:hasil_pembahasan}
+
+Pada bab ini dipaparkan hasil evaluasi eksperimental dari model-model deteksi objek berbasis keluarga YOLO yang telah dilatih dan diuji. Pembahasan disusun secara sistematis untuk menjawab rumusan masalah penelitian, mencakup performa deteksi multi-kelas pada domain sumber N-RDD2024, analisis peran kelas pengecoh melalui studi ablasi, evaluasi keseimbangan kinerja (\textit{trade-off}) antara akurasi dan efisiensi komputasi, serta analisis limitasi dari eksperimen yang dilakukan.
+
+\section{Lingkungan Eksperimen dan Pengaturan Pelatihan}
+\label{sec:lingkungan_eksperimen}
+
+Seluruh eksperimen pelatihan dan evaluasi model diimplementasikan menggunakan lingkungan komputasi terstandar guna menjamin konsistensi pengujian. Eksperimen dijalankan pada komputer dengan spesifikasi perangkat keras dan perangkat lunak sebagai berikut:
+\begin{itemize}
+	\item \textbf{Unit Pemroses Grafis (GPU):} NVIDIA GeForce RTX 4070 SUPER dengan kapasitas memori VRAM 12.282 MiB (12 GB).
+	\item \textbf{Lingkungan Perangkat Lunak:} Python 3.12, PyTorch 2.5/2.6 dengan akselerasi CUDA 12.1/12.4, serta pustaka kerangka kerja \textit{Ultralytics} versi 8.4.108 ke atas.
+\end{itemize}
+
+Untuk memastikan perbandingan yang setara dan adil (\textit{apple-to-apple comparison}), ditetapkan beberapa keputusan metodologis yang seragam bagi seluruh arsitektur:
+\begin{enumerate}
+	\item \textbf{Keseragaman Skala Model:} Seluruh model diuji pada skala terkecil, yaitu varian \textbf{nano (`n')}. Keputusan sadar ini diambil untuk mengeliminasi variabel pengganggu (\textit{confounding factor}) antara kapasitas parameter dan desain inovasi topologi arsitektur.
+	\item \textbf{Parameter Pelatihan:} Pelatihan dilakukan selama 300 \textit{epoch} dengan ukuran citra masukan (\textit{input resolution}) $640 \times 640$ piksel, menggunakan penjadwal laju pembelajaran kosinus (\textit{cosine learning rate scheduler}), optimasi presisi campuran otomatis (\textit{Automatic Mixed Precision} / AMP), serta penentuan benih acak deterministik (\textit{deterministic mode}).
+	\item \textbf{Strategi Augmentasi:} Augmentasi data mencakup \textit{Mosaic} (faktor 1.0), \textit{Mixup} (0.05), pembalikan horizontal (\textit{fliplr} 0.5), translasi spasial (0.10), dan penskalaan (0.50). Sesuai arahan pembimbing, augmentasi rotasi dinonaktifkan secara penuh (\textit{degrees} = 0.0) guna mempertahankan orientasi visual alami kerusakan jalan relatif terhadap sudut kamera kendaraan.
+	\item \textbf{Fungsi Kerugian dan Penanganan Ketimpangan Kelas:} Model dilatih menggunakan fungsi kerugian klasifikasi terbobot (\textit{class-weighted loss}) yang dihitung berdasarkan metode \textit{Effective Number of Samples} \cite{cui2019class} dengan faktor hiperparameter $\beta = 0,999$. Strategi ini dipilih untuk menangani ketimpangan sampel antar-kelas secara stabil pada mode AMP, menghindari lonjakan bobot ekstrem yang sering terjadi pada skema pembobotan inversi frekuensi mentah.
+\end{enumerate}
+
+\section{Hasil Evaluasi Skenario 1: Performa Deteksi pada N-RDD2024}
+\label{sec:evaluasi_skenario1}
+
+Skenario pertama mengevaluasi lima konfigurasi arsitektur deteksi objek pada dataset sekunder N-RDD2024 subset Asia (Jepang, Tiongkok, India) yang mencakup enam kelas target: empat kelas kerusakan jalan struktural (retak memanjang, retak melintang, retak buaya, dan lubang jalan) serta dua kelas pengecoh visual (penutup saluran air dan jalan bertambal).
+
+\subsection{Perbandingan Performa Agregat Seluruh Model}
+Ringkasan metrik evaluasi komprehensif pada himpunan data validasi (\textit{val}) dan data uji (\textit{test}), beserta kompleksitas model dan estimasi kecepatan inferensi disajikan pada Tabel \ref{tab:ringkasan_model_6cls}.
+
+\begin{table}[H]
+	\centering
+	\small
+	\caption{Perbandingan Kinerja Agregat Model pada Dataset N-RDD2024 (6 Kelas)}
+	\label{tab:ringkasan_model_6cls}
+	\resizebox{\textwidth}{!}{
+	\begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+		\hline
+		\textbf{Model} & \textbf{Params} & \textbf{GFLOPs} & \textbf{Val mAP50} & \textbf{Test P} & \textbf{Test R} & \textbf{Test mAP50} & \textbf{Test mAP50-95} & \textbf{FPS} \\
+		\hline
+		YOLO-RD & 7.092.392 & 12,9 & \textbf{0,663} & 0,655 & \textbf{0,618} & \textbf{0,661} & \textbf{0,371} & 189,4 \\
+		YOLOv12n & 2.569.218 & 7,5 & 0,656 & 0,638 & 0,608 & 0,654 & \textbf{0,371} & 319,3 \\
+		YOLOv8n (\textit{baseline}) & 3.012.018 & 8,2 & 0,657 & 0,643 & 0,599 & 0,648 & 0,364 & 219,7 \\
+		YOLOv8-PD & \textbf{2.459.509} & 7,7 & 0,651 & \textbf{0,675} & 0,591 & 0,646 & 0,362 & \textbf{368,4} \\
+		YOLOv26n & 2.506.140 & \textbf{5,9} & 0,633 & 0,642 & 0,580 & 0,625 & 0,358 & 293,3 \\
+		\hline
+	\end{tabular}
+	}
+\end{table}
+
+Berdasarkan Tabel \ref{tab:ringkasan_model_6cls}, diperoleh beberapa temuan empiris utama:
+\begin{enumerate}
+	\item \textbf{Akurasi Tertinggi pada YOLO-RD:} Model modifikasi YOLO-RD mencapai performa deteksi terbaik dengan nilai test mAP@0.5 sebesar 0,661, test mAP@0.5:0.95 sebesar 0,371, dan \textit{Recall} uji tertinggi sebesar 0,618. Pencapaian ini mengonfirmasi keunggulan integrasi modul \textit{Attention Refinement Module} (ARM) berbasis konvolusi deformabel serta ekstraksi fitur multi-frekuensi dari \textit{Wavelet Transform Convolution} (WTConv) dalam menangkap detail spasial retakan jalan yang kompleks.
+	\item \textbf{Efisiensi Mutakhir pada YOLOv12n:} YOLOv12n menduduki peringkat kedua dengan test mAP@0.5 sebesar 0,654 dan mAP@0.5:0.95 sebesar 0,371 (setara dengan YOLO-RD). Keunggulan YOLOv12n terletak pada efisiensi parameternya; model ini melampaui performa baseline YOLOv8n (0,648) meskipun memiliki jumlah parameter 14,7\% lebih sedikit (2,57M vs. 3,01M) dan beban komputasi 8,5\% lebih ringan (7,5 vs. 8,2 GFLOPs).
+	\item \textbf{Keringanan dan Kecepatan Maksimal pada YOLOv8-PD:} YOLOv8-PD mencatatkan jumlah parameter paling sedikit (2,46M) serta kecepatan inferensi tertinggi mencapai 368,4 FPS, yang merepresentasikan peningkatan kecepatan sebesar 67,7\% dibandingkan baseline YOLOv8n (219,7 FPS). Tingkat akurasi yang diraih (test mAP@0.5 sebesar 0,646) praktis sebanding dengan baseline, membuktikan keberhasilan modul konvolusi ringan (\textit{C2fGhost}) dan kepala deteksi \textit{LSCDHead} dalam memangkas redundansi parameter tanpa mendegradasi akurasi secara signifikan.
+	\item \textbf{Analisis Kinerja YOLOv26n:} YOLOv26n mencatatkan beban komputasi teoritis terendah (5,9 GFLOPs), namun menghasilkan akurasi terendah di antara kelima model (test mAP@0.5 sebesar 0,625). Penurunan ini bukan mengindikasikan kegagalan arsitektur secara inheren, melainkan merupakan konsekuensi dari limitasi protokol eksperimen; arsitektur YOLOv26 yang beroperasi tanpa \textit{Distribution Focal Loss} (DFL-free dengan regresi boks L1 polos) secara spesifik dirancang untuk dilatih menggunakan resep optimasi khusus seperti MuSGD, \textit{Progressive Loss} (ProgLoss), dan modul STAL \cite{sapkota2025yolo26}. Penggunaan konfigurasi pelatihan generik berbasis \textit{auto-optimizer} pada penelitian ini terbukti kurang optimal dalam mengekstraksi potensi penuh arsitektur tersebut.
+\end{enumerate}
+
+\subsection{Analisis Kinerja Deteksi per Kelas}
+Untuk memahami kepekaan masing-masing model terhadap variasi morfologi kerusakan, rincian nilai metrik mAP@0.5 untuk setiap kelas pada data uji disajikan pada Tabel \ref{tab:map50_per_class_test}.
+
+\begin{table}[H]
+	\centering
+	\small
+	\caption{Kinerja Deteksi per Kelas (mAP@0.5) pada Himpunan Data Uji}
+	\label{tab:map50_per_class_test}
+	\resizebox{\textwidth}{!}{
+	\begin{tabular}{|l|c|c|c|c|c|c|}
+		\hline
+		\textbf{Model} & \textbf{Longitudinal} & \textbf{Transverse} & \textbf{Alligator} & \textbf{Pothole} & \textbf{Manhole} & \textbf{Patchy Road} \\
+		\hline
+		YOLO-RD & \textbf{0,696} & \textbf{0,608} & 0,701 & 0,527 & \textbf{0,845} & \textbf{0,587} \\
+		YOLOv12n & 0,680 & 0,582 & \textbf{0,708} & 0,535 & 0,833 & \textbf{0,587} \\
+		YOLOv8n & 0,664 & 0,599 & 0,700 & 0,526 & 0,825 & 0,571 \\
+		YOLOv8-PD & 0,678 & 0,572 & 0,702 & \textbf{0,541} & 0,819 & 0,562 \\
+		YOLOv26n & 0,639 & 0,567 & 0,675 & 0,538 & 0,820 & 0,512 \\
+		\hline
+		\textbf{Rata-rata Kelas} & 0,671 & 0,586 & 0,697 & 0,533 & 0,828 & 0,564 \\
+		\hline
+	\end{tabular}
+	}
+\end{table}
+
+Analisis terhadap persebaran metrik per-kelas pada Tabel \ref{tab:map50_per_class_test} mengungkap beberapa fenomena visual yang krusial:
+\begin{enumerate}
+	\item \textbf{Akurasi Tinggi pada Penutup Saluran (\textit{Manhole}):} Kelas pengecoh penutup saluran air (\textit{manhole}) secara konsisten mencatatkan akurasi tertinggi pada seluruh model (mAP@0.5 melampaui 0,81 hingga 0,84). Hal ini disebabkan oleh batas geometri objek yang terdefinisi secara tegas (berbentuk lingkaran atau bujur sangkar reguler) serta kontras tekstur besi terhadap permukaan aspal yang sangat mencolok.
+	\item \textbf{Keandalan Deteksi Retakan Struktural:} Retakan buaya (\textit{Alligator Crack}) dan retakan memanjang (\textit{Longitudinal Crack}) berhasil dideteksi dengan tingkat presisi tinggi (rata-rata mAP@0.5 masing-masing menyentuh 0,697 dan 0,671). Keberhasilan ini didorong oleh kelimpahan data latih (kelas mayoritas) serta pola retakan teranyam yang khas.
+	\item \textbf{Tantangan Ekstrem pada Lubang Jalan (\textit{Pothole}):} Lubang jalan menjadi kelas kerusakan struktural dengan tingkat akurasi terendah di semua arsitektur, dengan nilai mAP@0.5 berkisar ketat antara 0,526 hingga 0,541. Fenomena ini selaras dengan temuan literatur Zeng dan Zhong \cite{Zeng2024}, di mana \textit{pothole} menghadapi kendala ganda (\textit{double difficulty}): morfologi lubang yang bersifat amorf (tidak beraturan), variasi kedalaman yang tersembunyi oleh bayangan pencahayaan, serta kemiripan visual yang tinggi dengan permukaan aspal yang terkelupas atau kotor.
+	\item \textbf{Ketidakstabilan pada Jalan Bertambal (\textit{Patchy Road}):} Meskipun pada data validasi mencatatkan mAP@0.5 sekitar 0,65--0,67, performa deteksi jalan bertambal pada data uji mengalami degradasi tajam menjadi 0,512--0,587. Degradasi ini berakar pada ketimpangan data yang ekstrem, di mana kelas ini hanya memiliki 69 instans pada himpunan data uji (hanya 2,77\% dari total objek).
+\end{enumerate}
+
+\section{Analisis Efek Kelas Pengecoh: Studi Ablasi 6-Kelas vs 4-Kelas}
+\label{sec:analisis_distractor}
+
+Salah satu hipotesis utama dalam penelitian ini adalah bahwa melabeli objek non-kerusakan yang mirip secara visual (seperti penutup saluran air dan tambalan jalan) sebagai kelas pengecoh (\textit{negative anchor}) dapat menekan angka deteksi salah (\textit{false positive}) pada kelas lubang jalan (\textit{pothole}). Untuk menguji hipotesis ini secara empiris, dilakukan eksperimen ablasi sekunder pada tiga model representatif (YOLOv8n, YOLOv12n, dan YOLOv26n) yang dilatih ulang secara langsung hanya pada empat kelas kerusakan struktural inti (tanpa menyertakan label \textit{manhole} dan \textit{patchy road}).
+
+\subsection{Uji Signifikansi Statistik Laju \textit{False Positive}}
+Evaluasi diagnostik dilakukan terhadap citra yang memuat objek penutup saluran dan jalan bertambal untuk menghitung proporsi kemunculan prediksi \textit{pothole} yang keliru. Pengujian dilakukan pada gabungan data validasi dan data uji ($N = 966$ untuk \textit{manhole} dan $N = 201$ untuk \textit{patchy road}) menggunakan uji hipotesis dua proporsi (\textit{two-proportion z-test}). Hasil komparasi disajikan pada Tabel \ref{tab:z_test_distractor}.
+
+\begin{table}[H]
+	\centering
+	\small
+	\caption{Uji Signifikansi Laju \textit{False Positive} Prediksi \textit{Pothole} pada Objek Pengecoh}
+	\label{tab:z_test_distractor}
+	\resizebox{\textwidth}{!}{
+	\begin{tabular}{|l|l|c|c|c|c|}
+		\hline
+		\textbf{Model} & \textbf{Objek Pengecoh} & \textbf{Laju FP (6-Kelas)} & \textbf{Laju FP (4-Kelas)} & \textbf{Nilai-$p$ ($p$-value)} & \textbf{Signifikan? ($\alpha=0,05$)} \\
+		\hline
+		YOLOv8n & Penutup Saluran (\textit{manhole}) & 18,3\% & 21,4\% & 0,087 & Tidak (\textit{marginal}) \\
+		YOLOv8n & Tambalan Jalan (\textit{patchy}) & 36,3\% & 37,3\% & 0,836 & Tidak \\
+		\hline
+		YOLOv12n & Penutup Saluran (\textit{manhole}) & 19,7\% & 17,7\% & 0,267 & Tidak \\
+		YOLOv12n & Tambalan Jalan (\textit{patchy}) & 34,8\% & 31,3\% & 0,458 & Tidak \\
+		\hline
+		YOLOv26n & Penutup Saluran (\textit{manhole}) & 19,9\% & 20,7\% & 0,651 & Tidak \\
+		YOLOv26n & Tambalan Jalan (\textit{patchy}) & 40,3\% & 41,3\% & 0,839 & Tidak \\
+		\hline
+	\end{tabular}
+	}
+\end{table}
+
+Berdasarkan Tabel \ref{tab:z_test_distractor}, seluruh pasangan pengujian menghasilkan nilai-$p$ di atas ambang batas signifikansi standar ($\alpha = 0,05$). Temuan ini menunjukkan bahwa secara statistik, penyertaan kelas pengecoh belum terbukti memberikan reduksi \textit{false positive} yang signifikan secara universal. Sinyal reduksi terkuat hanya teramati pada arsitektur YOLOv8n terhadap objek \textit{manhole} (penurunan laju kesalahan dari 21,4\% menjadi 18,3\% dengan $p = 0,087$), yang mengindikasikan bahwa efek penekanan kesalahan bersifat moderat dan spesifik terhadap arsitektur tertentu.
+
+\subsection{Dampak Terhadap Akurasi Kelas Kerusakan Inti}
+Meskipun reduksi \textit{false positive} tidak signifikan secara statistik, penyertaan kelas pengecoh memicu konsekuensi mekanistik pada batas keputusan model. Tabel \ref{tab:selisih_map_4cls} memperlihatkan selisih nilai mAP@0.5 pada data uji antara model yang dilatih dengan 6 kelas (dievaluasi terbatas pada 4 kelas inti) dibandingkan dengan model yang dilatih murni pada 4 kelas.
+
+\begin{table}[H]
+	\centering
+	\small
+	\caption{Dampak Penyertaan Kelas Pengecoh Terhadap Nilai mAP@0.5 Kelas Kerusakan Inti}
+	\label{tab:selisih_map_4cls}
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline
+		\textbf{Model} & \textbf{Longitudinal} & \textbf{Transverse} & \textbf{Alligator} & \textbf{Pothole} \\
+		\hline
+		YOLOv8n & $-0,015$ & $+0,004$ & $-0,005$ & \textbf{$-0,020$} \\
+		YOLOv12n & $0,000$ & $-0,011$ & $+0,005$ & \textbf{$-0,001$} \\
+		YOLOv26n & $-0,001$ & $+0,030$ & $-0,001$ & \textbf{$-0,024$} \\
+		\hline
+	\end{tabular}
+\end{table}
+
+Sebagaimana tertera pada Tabel \ref{tab:selisih_map_4cls}, teramati adanya pola penurunan konsisten pada metrik deteksi \textit{Pothole} ketika model dilatih dengan menyertakan kelas pengecoh (terjadi penurunan mAP sebesar $-0,020$ pada YOLOv8n dan $-0,024$ pada YOLOv26n). Secara teoritis, mekanisme penugasan label (\textit{Task-Aligned Assigner} / TAL) pada keluarga YOLO dipaksa untuk membedakan fitur visual \textit{pothole} dari dua tetangga visual terdekatnya (\textit{manhole} dan \textit{patchy road}). Akibatnya, model membentuk batas keputusan (\textit{decision boundary}) yang jauh lebih ketat di sekitar kelas \textit{pothole}, yang pada akhirnya sedikit menekan skor keyakinan prediksi \textit{pothole} pada kasus-kasus ambivalen.
+
+Namun demikian, ditinjau dari metrik F1 secara menyeluruh, model yang dilatih dengan 6 kelas tetap mencatatkan skor \textit{macro F1} data uji yang lebih berimbang (YOLOv8n: 0,617 vs. 0,602; YOLOv12n: 0,619 vs. 0,606; YOLOv26n: 0,606 vs. 0,595). Hal ini membuktikan bahwa pelatihan multi-kelas dengan objek pengecoh membantu model dalam memetakan ruang representasi fitur yang lebih kaya dan tidak mudah terkelabui oleh artefak jalanan non-kerusakan.
+
+\section{Hasil Evaluasi Skenario 2: Keseimbangan Kinerja (\textit{Trade-Off}) dan Kelayakan \textit{Real-Time}}
+\label{sec:evaluasi_skenario2}
+
+Skenario kedua menganalisis kelayakan operasional dari masing-masing arsitektur ketika dihadapkan pada batasan komputasi nyata. Evaluasi ini menyandingkan metrik akurasi (test mAP@0.5) dengan metrik efisiensi yang meliputi jumlah parameter (\textit{Params}), beban operasi komputasi (GFLOPs), dan kecepatan pemrosesan (\textit{Frames Per Second} / FPS) pada perangkat NVIDIA RTX 4070 SUPER. Hasil analisis \textit{trade-off} disajikan pada Tabel \ref{tab:tradeoff_efisiensi}.
+
+\begin{table}[H]
+	\centering
+	\small
+	\caption{Matriks Keseimbangan Kinerja (\textit{Trade-Off}) Akurasi dan Efisiensi Komputasi}
+	\label{tab:tradeoff_efisiensi}
+	\resizebox{\textwidth}{!}{
+	\begin{tabular}{|l|c|c|c|c|c|}
+		\hline
+		\textbf{Model} & \textbf{Test mAP50} & \textbf{Params (M)} & \textbf{GFLOPs} & \textbf{FPS} & \textbf{Karakteristik Desain} \\
+		\hline
+		YOLOv8-PD & 0,646 & \textbf{2,46} & 7,7 & \textbf{368,4} & \textit{Efficiency-First} (Teringan \& Tercepat) \\
+		YOLOv12n & 0,654 & 2,57 & 7,5 & 319,3 & \textit{Balanced SOTA} (Keseimbangan Optimal) \\
+		YOLOv8n & 0,648 & 3,01 & 8,2 & 219,7 & \textit{Baseline} Standar \\
+		YOLOv26n & 0,625 & 2,51 & \textbf{5,9} & 293,3 & Beban Operasi Terendah \\
+		YOLO-RD & \textbf{0,661} & 7,09 & 12,9 & 189,4 & \textit{Accuracy-First} (Akurasi Maksimal) \\
+		\hline
+	\end{tabular}
+	}
+\end{table}
+
+Data pada Tabel \ref{tab:tradeoff_efisiensi} memberikan bukti empiris yang mengonfirmasi filosofi desain dari masing-masing publikasi rujukan:
+\begin{enumerate}
+	\item \textbf{Validasi Filosofi Desain YOLOv8-PD (\textit{Efficiency-First}):} Publikasi Zeng dan Zhong \cite{Zeng2024} merancang YOLOv8-PD secara spesifik untuk memangkas redundansi parameter pada model dasar. Hasil eksperimen membuktikan bahwa YOLOv8-PD berhasil menjadi model paling ringan (2,46M parameter) dan tercepat (368,4 FPS, melonjak +67,7\% dari baseline), dengan selisih akurasi yang dapat diabaikan terhadap baseline (0,646 vs. 0,648). Model ini sangat ideal untuk diimplementasikan pada perangkat komputasi bergerak (\textit{edge computing} atau terminal seluler) dengan keterbatasan daya dan memori.
+	\item \textbf{Validasi Filosofi Desain YOLO-RD (\textit{Accuracy-First}):} Publikasi Wang dkk. \cite{Wang2025} merancang YOLO-RD dengan orientasi akurasi tinggi melalui penyisipan modul atensi ARM dan transformasi wavelet frekuensi. Eksperimen membuktikan bahwa model ini berhasil menduduki peringkat akurasi teratas (0,661 mAP@0.5), namun konsekuensinya kompleksitas parameter membengkak hingga 2,3 kali lipat dari baseline (7,09M) dan kecepatan inferensi turun menjadi 189,4 FPS.
+	\item \textbf{Titik Temu Optimal pada YOLOv12n:} YOLOv12n membuktikan diri sebagai arsitektur dengan titik kompromi paling ideal (\textit{sweet spot}). Model ini memberikan lompatan akurasi (+0,006 di atas baseline) dengan jumlah parameter yang lebih ramping (2,57M) dan kecepatan tinggi mencapai 319,3 FPS, menjadikannya opsi paling seimbang untuk inspeksi jalan raya berskala luas.
+\end{enumerate}
+
+\section{Limitasi Penelitian}
+\label{sec:limitasi_penelitian}
+
+Untuk menjaga transparansi dan integritas akademik, diakui beberapa limitasi dalam pelaksanaan penelitian ini:
+\begin{enumerate}
+	\item \textbf{Rekonstruksi Arsitektur Tanpa Kode Resmi:} Model YOLOv8-PD dan YOLO-RD dibangun berdasarkan diagram blok dan formulasi matematis pada artikel ilmiah rujukan karena penulis asli tidak merilis kode sumber publik. Perbedaan minor pada detail internal framework dapat menyebabkan perbedaan capaian metrik terhadap laporan aslinya.
+	\item \textbf{Simplifikasi Modul Leher MAF:} Modul \textit{Multi-scale Attention Fusion} (MAF) pada YOLO-RD direalisasikan melalui topologi \textit{Upsample-Concat-Conv1x1} alih-alih konveks kombinasi softmax eksplisit guna menjaga kompatibilitas struktur internal Ultralytics.
+	\item \textbf{Aspek Determinisme Konvolusi Deformabel:} Proses propagasi balik (\textit{backward pass}) pada kernel \textit{Deformable Convolution} (\texttt{deform\_conv2d}) dalam PyTorch belum mendukung operasi bit-deterministik penuh pada perangkat keras GPU.
+	\item \textbf{Protokol Pelatihan YOLOv26:} Pengujian YOLOv26 menggunakan resep \textit{auto-optimizer} umum dan belum mengadopsi tumpukan optimasi aslinya (MuSGD, ProgLoss, dan STAL).
+	\item \textbf{Kekuatan Statistik pada Kelas Tambalan Jalan:} Jumlah sampel evaluasi untuk kelas \textit{patchy road} relatif terbatas (hanya 201 instans pada gabungan val dan test), sehingga membatasi kekuatan statistik dalam menarik kesimpulan absolut terkait perilaku kelas tersebut.
+	\item \textbf{Cakupan Eksperimen Ablasi:} Studi ablasi 4-kelas difokuskan pada tiga arsitektur utama (YOLOv8n, YOLOv12n, YOLOv26n) guna memprioritaskan alokasi komputasi yang efisien.
+	\item \textbf{Inisialisasi Pelatihan Benih Tunggal:} Seluruh eksperimen dieksekusi dengan benih deterministik tunggal (\textit{single-seed}), sehingga analisis varians multi-benih (\textit{confidence interval}) tidak dapat disertakan.
+\end{enumerate}

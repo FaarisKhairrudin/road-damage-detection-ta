@@ -56,7 +56,15 @@ Salah satu teknik modifikasi yang terbukti efektif adalah integrasi mekanisme at
 
 Selain mekanisme atensi, efisiensi model juga dapat ditingkatkan melalui modifikasi pada struktur konvolusi, sebagaimana diilustrasikan pada Gambar \ref{fig:yolov8_modifikasi}. Penggantian modul konvolusi standar pada bagian \textit{Neck} dengan \textit{Ghost Convolution} (\textit{GhostConv}) \cite{han2020ghostnet} mampu mereduksi redundansi fitur melalui operasi linear berbiaya rendah. Pendekatan ini secara drastis menurunkan jumlah parameter dan beban komputasi (GFLOPs) dengan tetap mempertahankan kemampuan ekstraksi fitur yang tangguh \cite{Zeng2024, Shi_2026}.
 
-Di samping optimasi struktural, penyempurnaan pada fungsi kerugian (\textit{loss function}) juga mutlak diperlukan pada tahap pelatihan. Mengingat distribusi data kerusakan jalan (seperti lubang jalan) sering kali mengalami ketimpangan ekstrem (\textit{class imbalance}), fungsi kerugian adaptif seperti \textit{Focal Loss} atau \textit{Refined Generalized Focal Loss} (REG) diterapkan untuk memaksa model memberikan pembobotan penalti yang lebih besar pada kelas minoritas yang sulit dideteksi \cite{panboonyuen2025reg}. Penggabungan teknik atensi, konvolusi ringan, dan fungsi kerugian adaptif ini merupakan landasan utama dalam menghasilkan model deteksi yang komprehensif, efisien, dan siap diimplementasikan secara nyata.
+Di samping optimasi struktural, penanganan ketimpangan distribusi data (\textit{class imbalance}) mutlak diperlukan pada tahap pelatihan, terutama karena frekuensi kemunculan lubang jalan dan jalan bertambal jauh lebih sedikit dibandingkan dengan retakan memanjang dan buaya. Untuk mengatasi masalah ini secara stabil pada pelatihan presisi campuran (\textit{Automatic Mixed Precision} / AMP), pendekatan pembobotan kelas adaptif berbasis \textit{Effective Number of Samples} yang diperkenalkan oleh Cui dkk. \cite{cui2019class} diadopsi. Metode ini menghitung volume ruang fitur efektif yang dicakup oleh $n$ sampel menggunakan formulasi:
+\begin{equation}
+  E_n = \frac{1 - \beta^n}{1 - \beta}
+\end{equation}
+dengan $\beta \in [0, 1)$ sebagai hiperparameter yang merepresentasikan probabilitas tumpang tindih fitur. Bobot kerugian untuk setiap kelas $i$ kemudian dinormalisasi sebagai proporsi terbalik dari volume efektifnya:
+\begin{equation}
+  W_i = \frac{1 - \beta}{1 - \beta^{n_i}}
+\end{equation}
+Pendekatan ini mencegah ledakan bobot numerik ekstrem yang kerap terjadi pada skema pembobotan frekuensi terbalik mentah (\textit{inverse class frequency}), sehingga menjaga kestabilan konvergensi gradien tanpa mengabaikan penalti pada kelas minoritas \cite{cui2019class}. Penggabungan teknik atensi, konvolusi ringan, dan pembobotan kerugian efektif ini menjadi landasan kokoh bagi rancangan model deteksi yang tangguh dan seimbang.
 
 
 \section{\textit{Domain Shift} dan Evaluasi \textit{Zero-Shot}}

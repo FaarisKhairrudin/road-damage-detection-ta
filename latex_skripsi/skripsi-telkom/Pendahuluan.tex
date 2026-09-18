@@ -116,61 +116,27 @@ Sejalan dengan rumusan masalah di atas, tujuan dari penelitian ini dirancang sec
 \section{Batasan Masalah}
 Batasan-batasan yang diterapkan pada penelitian ini adalah sebagai berikut:
 \begin{enumerate}
-  \item Pelatihan model (\textit{global benchmarking}) dibatasi hanya menggunakan subset dataset \textcolor{blue}{\href{https://data.mendeley.com/datasets/27c8pwsd6v/3}{N-RDD2024}} dari negara Asia (India, Tiongkok, dan Jepang). Subset Asia ini dipilih bukan sebagai representasi langsung kondisi di Indonesia, melainkan sebagai domain sumber yang secara geografis dan visual diasumsikan lebih mirip, sehingga evaluasi \textit{domain gap} tetap perlu diuji pada data primer.
-  \item Deteksi difokuskan pada pengenalan anomali permukaan jalan raya aspal atau beton. Kelas yang dideteksi secara spesifik meliputi empat kelas kerusakan struktural utama (retak memanjang, retak melintang, retak buaya, dan lubang jalan), serta dua kelas pengecoh visual (penutup saluran dan jalan bertambal).
-  \item Penelitian ini berfokus pada tugas deteksi objek (lokalisasi serta klasifikasi). Penelitian ini tidak mencakup estimasi tingkat keparahan (\textit{severity}).
-  \item Evaluasi \textit{zero-shot} dan pengumpulan data primer dibatasi pada  rute jalan raya dan jalan besar beraspal di wilayah Bandung yang diambil pada kondisi siang hari (visibilitas normal) guna mengisolasi variabel pencahayaan.
-  \item Pengujian efisiensi komputasi terkait kelayakan implementasi dievaluasi menggunakan lingkungan perangkat keras NVIDIA RTX 4070 Ti 12GB, dan tidak mencakup tahap \textit{deployment} (\textit{build}) menjadi aplikasi lunak siap pakai.
+  \item Pelatihan model komparatif dibatasi pada subset dataset \textcolor{blue}{\href{https://data.mendeley.com/datasets/27c8pwsd6v/3}{N-RDD2024}} dari negara Asia (India, Tiongkok, dan Jepang).
+  \item Seluruh arsitektur model dievaluasi secara adil pada skala yang seragam, yaitu varian skala nano (`n'), guna mengeliminasi pengaruh kapasitas model (\textit{model capacity}) sebagai variabel pengganggu terhadap perbandingan inovasi topologi arsitektur.
+  \item Deteksi difokuskan pada pengenalan anomali permukaan jalan raya aspal atau beton yang mencakup enam kelas target: empat kelas kerusakan struktural utama (retak memanjang, retak melintang, retak buaya, dan lubang jalan), serta dua kelas pengecoh visual (penutup saluran dan jalan bertambal). Kelas-kelas lain pada N-RDD2024 seperti retak diperbaiki (D30), pejalan kaki/marka (D50/D60), dan \textit{rutting} (D90) dieksklusi karena berada di luar fokus studi kemiripan visual terhadap lubang jalan.
+  \item Penelitian ini berfokus pada tugas deteksi objek (lokalisasi koordinat boks dan klasifikasi kategori). Penelitian ini tidak mencakup estimasi tingkat keparahan (\textit{severity}) maupun rekonstruksi geometri tiga dimensi.
+  \item Pengujian efisiensi komputasi dievaluasi menggunakan lingkungan perangkat keras NVIDIA RTX 4070 SUPER 12GB pada resolusi masukan standar $640 \times 640$ piksel, dan tidak mencakup tahap \textit{deployment} aplikasi lunak siap pakai.
+  \item Pengujian inferensi \textit{zero-shot} lintas domain ke jalan raya lokal di Indonesia dirancang sebagai protokol eksperimen terstandar untuk penelitian lanjutan seiring tahap pengumpulan dan anotasi data primer yang sedang berlangsung.
 \end{enumerate}
 
-\section{Rencana Kegiatan}
-Rencana kegiatan adalah penjelasan mengenai rencana langkah-langkah yang akan dilakukan dalam pengerjaan Tugas Akhir yang memuat:
+\section{Sistematika Penulisan}
+\label{sec:sistematika_penulisan}
+Penyusunan naskah tugas akhir ini diorganisasikan ke dalam lima bab utama dengan sistematika sebagai berikut:
 \begin{enumerate}
-  \item \textbf{Studi Literatur Terkait dengan Deteksi Kerusakan Jalan}\\
-        Pada tahapan ini, penulis mengamati terkait metode-metode dan arsitektur \textit{deep learning} terbaru berbasis YOLO, penerapan kelas pengecoh untuk mengurangi tingkat \textit{false positive}, dan penyelesaian masalah \textit{domain shift}. Penulis akan menganalisis performa dari metode-metode tersebut dan merancang skenario evaluasi yang paling sesuai.
-
-
-  \item \textbf{Pengumpulan dan Prapemrosesan Data}\\
-        Dataset yang digunakan adalah dataset sekunder dan dataset primer. Dataset sekunder menggunakan N-RDD2024 yang memuat anotasi kerusakan jalan dan cacat permukaan. Dataset primer merupakan citra kondisi jalan nyata di Indonesia yang dikumpulkan di wilayah Bandung. Tahapan ini juga mencakup penyesuaian format agar siap digunakan untuk pelatihan model.
-
-  \item \textbf{Perancangan Skenario Evaluasi Model}\\
-        Penulis merancang tiga skenario pemodelan komparatif yang melibatkan arsitektur YOLO \textit{baseline}, YOLO modifikasi, dan iterasi YOLO versi mutakhir. Skenario penelitian dirancang secara terstruktur, yang difokuskan pada pengukuran standar performa model menggunakan dataset multinasional N-RDD2024 (\textit{global benchmarking}), dan dilanjutkan dengan pengujian kemampuan generalisasi model secara langsung pada citra jalan lokal di Indonesia melalui evaluasi \textit{zero-shot}.
-
-  \item \textbf{Pelatihan dan Implementasi Model}\\
-        Penulis mengimplementasikan kode program untuk melatih model menggunakan dataset N-RDD2024. Tahapan ini mencakup penerapan strategi optimasi fungsi \textit{loss} (seperti \textit{Focal Loss}) untuk menangani ketimpangan distribusi kelas. Penulis memastikan kode berjalan dengan benar untuk proses ekstraksi fitur, pelatihan, dan inferensi.
-
-  \item \textbf{Pengujian dan Analisis Hasil Evaluasi}\\
-        Penulis melakukan evaluasi terhadap model di seluruh skema penelitian. Model akan dinilai menggunakan metrik akurasi (\textit{Precision, Recall, mAP}) dan metrik efisiensi komputasi (FPS, Parameter, GFLOPs). Penulis juga melakukan \textit{error analysis} untuk melihat tingkat keberhasilan model membedakan lubang jalan asli dengan objek pengecoh.
-
-
-  \item \textbf{Penyusunan Laporan}\\
-        Penulis mendokumentasikan hasil performa dari seluruh skema eksperimen. Selain itu, penulis menulis analisis komparatif terkait \textit{trade-off} akurasi dan efisiensi komputasi yang telah didapatkan, serta analisis \textit{generalization gap} model ketika dihadapkan pada data jalan Indonesia (\textit{unseen data}).
+  \item \textbf{BAB I — PENDAHULUAN:}\\
+        Memuat latar belakang permasalahan deteksi kerusakan jalan otomatis, fenomena \textit{domain shift} dan \textit{false positive}, rumusan masalah, tujuan penelitian, batasan masalah, serta sistematika penulisan laporan tugas akhir.
+  \item \textbf{BAB II — KAJIAN PUSTAKA:}\\
+        Menguraikan landasan teori mengenai karakteristik kerusakan jalan pada dataset N-RDD2024, prinsip deteksi keluarga YOLO, konsep mekanisme atensi (SOM, ARM, BoT, LSKA) dan konvolusi wavelet (WTConv), penanganan ketimpangan kelas berbasis \textit{Effective Number of Samples}, serta tinjauan kritis terhadap penelitian-penelitian terdahulu yang relevan.
+  \item \textbf{BAB III — METODOLOGI DAN DESAIN SISTEM:}\\
+        Menjelaskan tahapan alur penelitian, analisis eksplorasi data (EDA) beserta distribusi pembagian data terstratifikasi, rancangan rekonstruksi arsitektur model (YOLOv8n, YOLOv8-PD, YOLO-RD, YOLOv12n, YOLOv26n), transparansi rekayasa kode dan validasi perbaikan kendala teknis, serta perancangan skenario evaluasi performa dan komputasi.
+  \item \textbf{BAB IV — HASIL DAN PEMBAHASAN:}\\
+        Menyajikan hasil evaluasi eksperimental komparatif pada Skenario 1 (performa deteksi multi-kelas dan analisis per-kelas), studi ablasi peran kelas pengecoh melalui uji hipotesis \textit{two-proportion z-test}, evaluasi Skenario 2 terkait keseimbangan kinerja (\textit{trade-off}) akurasi dan efisiensi komputasi, serta pembahasan komprehensif mengenai limitasi penelitian.
+  \item \textbf{BAB V — KESIMPULAN DAN SARAN:}\\
+        Merumuskan kesimpulan akhir yang menjawab rumusan masalah secara kuantitatif berdasarkan data empiris, serta memberikan saran-saran strategis untuk pengembangan penelitian selanjutnya.
 \end{enumerate}
 
-\section{Jadwal Kegiatan}
-Agar pelaksanaan penelitian dapat berjalan secara terstruktur, disusunlah jadwal kegiatan per bulan sebagai berikut:
-
-\begin{table}[h!]
-  \centering
-  \caption{Jadwal kegiatan proposal tugas akhir}
-  \label{tab:jadwal}
-  \begin{tabular}{|c|m{3cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|m{0.01cm}|}
-    \hline
-    \multirow{2}{*}{\textbf{No}}        & \multirow{2}{*}{\textbf{Kegiatan}}                                      & \multicolumn{24}{|c|}{\textbf{Bulan ke-}}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            \\
-    \hhline{~~------------------------}
-    {} & {}                                                                      & \multicolumn{4}{|c|}{\textbf{1}}          & \multicolumn{4}{|c|}{\textbf{2}} & \multicolumn{4}{|c|}{\textbf{3}} & \multicolumn{4}{|c|}{\textbf{4}} & \multicolumn{4}{|c|}{\textbf{5}} & \multicolumn{4}{|c|}{\textbf{6}}                                                                                                                                                                                                                                                                                                                                                                                                                                              \\
-    \hline
-    1                                   & Kajian Pustaka Terkait Deteksi Kerusakan Jalan                          & \cellcolor{blue!25}                       & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  \\
-    \hline
-    2                                   & Pengumpulan dan Prapemrosesan Data (N-RDD2024 dan data lokal)           & \cellcolor{blue!25}                       & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25} & \cellcolor{blue!25} & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  \\
-    \hline
-    3                                   & Perancangan Skenario Evaluasi Model (global benchmarking dan zero-shot) & {}                                        & {}                               & {}                               & {}                               & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  \\
-    \hline
-    4                                   & Pelatihan dan Implementasi Model Deteksi Berbasis YOLO                  & {}                                        & {}                               & {}                               & {}                               & {}                               & {}                               & {}                  & {}                  & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  \\
-    \hline
-    5                                   & Pengujian dan Analisis Hasil Evaluasi (akurasi dan efisiensi komputasi) & {}                                        & {}                               & {}                               & {}                               & {}                               & {}                               & {}                  & {}                  & {}                  & {}                  & {}                  & {}                  & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & {}                  & {}                  & {}                  & {}                  \\
-    \hline
-    6                                   & Penyusunan Laporan                                                      & {}                                        & {}                               & {}                               & {}                               & \cellcolor{blue!25}              & \cellcolor{blue!25}              & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} & \cellcolor{blue!25} \\
-    \hline
-  \end{tabular}
-\end{table}
