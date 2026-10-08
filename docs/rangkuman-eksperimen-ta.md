@@ -54,7 +54,7 @@ Kedua model modifikasi **membuktikan filosofi desain paper aslinya masing-masing
 
 - **YOLO-RD** (desain *akurasi-first*, sengaja menambah beban komputasi) → akurasi terbaik di semua metrik, tapi terberat (7.09M params) & terlambat (189 FPS). Sesuai klaim paper.
 - **YOLOv8-PD** (desain *efisiensi-first*) → **teringan (2.46M) dan tercepat (368 FPS, 68% lebih cepat dari baseline)** dengan akurasi praktis setara baseline (0.646 vs 0.648). Sesuai klaim paper.
-- **YOLOv26n** konsisten **terjelek di semua metrik**. Hipotesis: resep training generik (`optimizer="auto"`) tidak cocok — YOLO26 didesain untuk dipasangkan dengan MuSGD + ProgLoss + STAL. Plus arsitekturnya DFL-free (regresi box pakai L1 polos), butuh adaptasi hyperparameter berbeda. → laporkan sebagai **limitasi eksperimen**, bukan kegagalan model.
+- **YOLOv26n** konsisten **terjelek di semua metrik**. Hipotesis presisi: `optimizer="auto"` terkonfirmasi memilih MuSGD (lr=0.01) untuk kelima model (cek log training), dan ProgLoss aktif via `E2ELoss` — jadi bukan soal optimizer. Gap yang riil: bobot `dfl` default (1.5 vs 6.0 resmi; kritis karena YOLO26 DFL-free, regresi box = L1 polos), batch 16 vs 128 resmi, dan **STAL tidak terimplementasi** di ultralytics 8.4.108/8.4.115 (TAL standar saja). Plus arsitektur end-to-end one-to-one = masalah belajar lebih sulit (butuh konvergensi lebih lama). → laporkan sebagai **limitasi eksperimen**, bukan kegagalan model.
 
 ### Insight per-kelas: Pothole adalah kelas tersulit
 mAP50 Pothole konsisten ~0.53 di semua model — **lebih rendah** dari Longitudinal (0.64–0.70) dan Alligator (0.68–0.71), bahkan sering di bawah `patchy_road`. Konsisten dengan temuan paper YOLOv8-PD asli ("D40/potholes akurasi terendah karena objek kecil & sampel sedikit"). Pothole **sulit dua kali lipat**: sulit dideteksi sendiri + paling sering tertukar dengan distractor.
@@ -142,7 +142,7 @@ Karena YOLOv8-PD & YOLO-RD **direkonstruksi dari paper tanpa kode resmi**, ada b
 1. **Rekonstruksi, bukan kode resmi** — YOLOv8-PD & YOLO-RD dibangun dari figure/persamaan paper; angka mAP tidak akan persis sama dengan yang dipublikasikan
 2. **MAF disederhanakan** — Eq.4 (weighted sum dengan Σα=1) direalisasikan sebagai Upsample→Concat→Conv1×1
 3. **Reproducibility YOLO-RD tidak bit-exact** — backward `deform_conv2d` tidak deterministik di PyTorch (limitasi library)
-4. **YOLOv26n tidak pakai resep training aslinya** (MuSGD/ProgLoss/STAL)
+4. **YOLOv26n di bawah protokol bersama, bukan resep resmi penuh** — `optimizer="auto"` terkonfirmasi memilih MuSGD (lr=0.01) untuk kelima model (cek log training) dan ProgLoss aktif via `E2ELoss`; namun bobot `dfl` default (1.5 vs 6.0 resmi), batch 16 vs 128, dan hyperparameter evolution-search COCO tidak direplikasi, serta STAL tidak ditemukan di codebase ultralytics 8.4.108/8.4.115. Penyamaan protokol adalah keputusan sadar demi fairness komparasi arsitektur
 5. **Eksperimen distractor kurang statistical power** — `patchy_road` hanya 201 instance evaluasi
 6. **Eksperimen distractor hanya 3 model** — PD & RD tidak dijalankan (keterbatasan waktu 4–6 jam/model)
 7. **Single-seed** — tidak ada confidence interval untuk selisih mAP antar model

@@ -1,0 +1,238 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{balance}
+\usepackage{flafter}
+\usepackage{stfloats}
+\usepackage[hidelinks]{hyperref}
+
+\begin{document}
+
+\title{A Comparative Evaluation of Lightweight YOLO Detectors for Road Damage Detection under Cross-Domain Shift}
+
+\author{\IEEEauthorblockN{Faaris Khairrudin}
+\IEEEauthorblockA{\textit{School of Computing}\\
+\textit{Telkom University}\\
+Bandung, Indonesia\\
+faariskhairrudin@student.telkomuniversity.ac.id}
+\and
+\IEEEauthorblockN{Gamma Kosala}
+\IEEEauthorblockA{\textit{School of Computing}\\
+\textit{Telkom University}\\
+Bandung, Indonesia\\
+gammakosala@telkomuniversity.ac.id}
+}
+
+\maketitle
+
+\begin{abstract}
+Automated road-damage detection must balance detection accuracy, computational cost, and robustness to changes in image domain. This paper presents a controlled comparison of five nano-scale YOLO detectors for six-class road-surface analysis using the Asia subset of N-RDD2024. The target classes include four structural damage types---longitudinal crack, transverse crack, alligator crack, and pothole---and two visually similar distractor classes, manhole and patchy road. YOLOv8n, YOLOv8-PD, YOLO-RD, YOLOv12n, and YOLOv26n are trained with the same input resolution, training duration, augmentation policy, and class-balanced weighting. The experiments evaluate detection quality, model complexity, throughput, and the effect of explicitly labeling distractors. YOLO-RD obtains the highest source-domain test mAP@0.5 of 0.661, while YOLOv8-PD provides the smallest model and highest measured throughput. YOLOv12n provides the strongest balance between accuracy and efficiency and obtains the highest zero-shot mAP@0.5 on the current Indonesian target set. However, all models experience a substantial performance decrease across domains, demonstrating that high source-domain accuracy does not guarantee cross-domain robustness. The results are reported as an interim draft because the target-data provenance, hardware protocol, and some profiling values still require final validation.
+\end{abstract}
+
+\begin{IEEEkeywords}
+road damage detection, YOLO, lightweight detector, distractor classes, domain shift, zero-shot inference
+\end{IEEEkeywords}
+
+\section{Introduction}
+Road-surface damage such as cracks and potholes affects driving safety, maintenance planning, and infrastructure management. Manual inspection is expensive, time-consuming, and difficult to scale consistently. Object detectors based on the You Only Look Once (YOLO) family have therefore been widely studied for automatic road-damage detection because they can jointly localize and classify multiple objects in a single forward pass \cite{redmon2016you,arya2021deep}.
+
+Despite their practical potential, road-damage detectors face three recurring challenges. First, damage objects can be small and embedded in visually complex pavement backgrounds. Second, class distributions are often imbalanced, particularly for potholes and less frequent surface defects. Third, objects that are not structural damage, such as manholes and repaired or patched surfaces, can be visually confused with potholes. Explicitly modeling such objects as distractor classes is a possible way to improve decision boundaries, but its benefit should be measured rather than assumed \cite{matouq2024ai,kaya2024nrdd2024}.
+
+A further challenge is domain shift. Models trained on one set of countries may encounter different pavement materials, camera viewpoints, weather conditions, road markings, and damage appearances when deployed in Indonesia. RDD2022 established the value of multi-national road-damage data, but cross-domain degradation remains a practical concern \cite{Arya2024846,arya2021deep}. Recent studies have proposed lightweight or modified YOLO architectures for road-damage detection, including YOLOv8-PD and YOLO-RD \cite{Zeng2024,Li2024,Wang2025}. However, their accuracy and efficiency are not always compared under a single controlled protocol, and source-domain performance may not reflect zero-shot generalization to Indonesian roads.
+
+This paper presents an interim experimental study with three objectives: (1) compare five nano-scale YOLO detectors on a six-class road-damage task, (2) analyze the accuracy--efficiency trade-off and the effect of distractor classes, and (3) measure cross-domain performance using zero-shot inference on an Indonesian target set. The main contributions are:
+\begin{itemize}
+    \item a controlled comparison of a baseline, two reconstructed road-damage architectures, and two newer YOLO variants;
+    \item an evaluation that includes both structural damage and visually similar distractor classes; and
+    \item an explicit comparison between source-domain performance and zero-shot target-domain performance.
+\end{itemize}
+
+\section{Related Work}
+\subsection{Road-Damage Detection}
+RDD2022 provides a multi-national benchmark for road-damage detection and defines several common damage categories across countries \cite{Arya2024846}. N-RDD2024 extends this setting with additional road defects and surface objects, which makes it suitable for studying confusion between damage and non-damage objects \cite{kaya2024nrdd2024}. Previous studies have used YOLO-based detectors to improve localization accuracy, reduce computation, or address small and imbalanced damage objects \cite{Li2024,Zeng2024,Wu2023}.
+
+\subsection{Lightweight and Modified YOLO Models}
+YOLOv8-PD introduces lightweight components to reduce redundant computation while retaining the YOLOv8 detection pipeline \cite{Zeng2024}. YOLO-RD uses additional feature-refinement and multi-frequency components to improve road-damage recognition \cite{Wang2025}. In this study, both architectures are reconstructed within the Ultralytics framework because official implementation code was not available in the project resources. YOLOv12n and YOLOv26n are included as newer native YOLO alternatives \cite{tian2026yolov12,sapkota2025yolo26}. All compared models use the nano scale to reduce the confounding effect of model size.
+
+\section{Methodology}
+\subsection{Dataset and Target Classes}
+The source data are drawn from the China, Japan, and India subsets of N-RDD2024. After filtering images to retain the six target classes, 9,670 images and 24,290 annotated instances were used. The data were divided into training, validation, and test partitions using an approximately 70:20:10 stratified split. The complete instance distribution is shown in Table~\ref{tab:dataset}.
+
+\begin{table}[!ht]
+\caption{Source-Domain Dataset Distribution}
+\label{tab:dataset}
+\centering
+\scriptsize
+\begin{tabular}{lrrrr}
+\toprule
+Class & Train & Val. & Test & Total \\
+\midrule
+Longitudinal crack & 4,555 & 1,257 & 635 & 6,447 \\
+Transverse crack & 3,219 & 897 & 446 & 4,562 \\
+Alligator crack & 4,385 & 1,245 & 642 & 6,272 \\
+Pothole & 2,192 & 597 & 312 & 3,101 \\
+Manhole & 2,270 & 645 & 321 & 3,236 \\
+Patchy road & 471 & 132 & 69 & 672 \\
+\midrule
+Total & 17,092 & 4,773 & 2,425 & 24,290 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The four crack and pothole categories are treated as structural damage classes. Manhole and patchy road are treated as distractors because their visual appearance can overlap with potholes. The class distribution is strongly affected by the low number of patchy-road instances. Examples of the six annotated classes are shown in Fig.~\ref{fig:classes}.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\columnwidth]{gambar/class_examples.png}
+\caption{Examples of the six source-domain target classes with bounding-box annotations.}
+\label{fig:classes}
+\end{figure}
+
+The target-domain experiment uses the current `RDD-indo-v2' test set without fine-tuning. The target labels are remapped to the source-class order before evaluation. At the current draft stage, the target set contains 308 test images and 585 annotated instances; its geographic and acquisition metadata are still being finalized.
+
+\subsection{Compared Detectors and Training Protocol}
+Five detectors are compared: YOLOv8n as the baseline, YOLOv8-PD as an efficiency-oriented modification, YOLO-RD as an accuracy-oriented modification, and YOLOv12n and YOLOv26n as newer YOLO variants. All models use the nano scale and a 640$\times$640 input. Training uses 300 epochs, cosine learning-rate scheduling, automatic mixed precision, deterministic execution, Mosaic augmentation, light MixUp, horizontal flipping, translation, and scale augmentation. Image rotation is disabled. The shared configuration uses `optimizer=\texttt{auto}', which selected MuSGD in the recorded runs. To address class imbalance, the classification loss uses class-balanced weights based on the effective number of samples with $\beta=0.999$ \cite{cui2019class}.
+
+The two modified architectures are reconstructed from their published descriptions. YOLOv8-PD uses lightweight convolutional components and a shared-parameter detection head. YOLO-RD includes feature refinement based on deformable convolution and a wavelet-based component; deformable convolution is motivated by its ability to adapt sampling locations to irregular structures \cite{dai2017deformable}. These implementations are treated as reproductions rather than exact official implementations. For YOLOv26n, the end-to-end loss branch activates ProgLoss through `E2ELoss'. However, the experiment does not reproduce the complete reported YOLOv26 recipe: the default DFL weight is 1.5 rather than 6.0, the batch size is 16 rather than 128, and STAL is unavailable in the evaluated Ultralytics versions. This distinction is important when interpreting the YOLOv26n result.
+
+\subsection{Evaluation Metrics}
+Detection quality is reported using precision, recall, macro F1, mAP@0.5, and mAP@0.5:0.95. Computational efficiency is summarized using the number of trainable parameters, GFLOPs, and frames per second (FPS). The source-domain FPS values are provisional throughput estimates measured at an input size of 640$\times$640 and batch size one. The final paper will state one consistent hardware and timing protocol.
+
+For the distractor analysis, the false-positive rate of pothole predictions on manhole and patchy-road objects is compared between models trained with six classes and models trained with only the four structural-damage classes. Two-proportion z-tests are used for the interim comparison. For cross-domain analysis, the absolute domain gap is defined as
+\begin{equation}
+\Delta_{\mathrm{abs}} = mAP_{\mathrm{target}} - mAP_{\mathrm{source}},
+\label{eq:gap}
+\end{equation}
+and the relative decrease is reported as a percentage of source-domain mAP.
+
+\section{Experimental Results}
+\subsection{Source-Domain Comparison}
+Table~\ref{tab:main-results} summarizes the current source-domain test results. YOLO-RD achieves the highest test mAP@0.5 (0.661), mAP@0.5:0.95 (0.371), and macro F1 (0.633). This result suggests that the additional feature-refinement and multi-frequency components can improve detection quality under the source-domain protocol. However, YOLO-RD is also the heaviest model in the current table and has the lowest reported throughput.
+
+YOLOv12n is the second-best model by test mAP@0.5 at 0.654 and matches YOLO-RD on mAP@0.5:0.95. It uses 2.57M parameters and reaches 319.3 FPS in the current measurement. YOLOv8-PD has the smallest parameter count, 2.46M, and the highest reported throughput, 368.4 FPS. Its mAP@0.5 of 0.646 is close to the baseline value of 0.648. YOLOv26n has the lowest GFLOPs, but its mAP@0.5 is also the lowest among the five models. This result should not be interpreted as evidence that YOLOv26 is intrinsically inferior: the model was evaluated under the shared comparison protocol, while its complete architecture-specific recipe was not available in the current implementation. These observations indicate that accuracy, parameter count, theoretical computation, and measured throughput do not necessarily rank models identically.
+
+\begin{table*}[!b]
+\caption{Source-Domain Test Performance on Six Classes}
+\label{tab:main-results}
+\centering
+\scriptsize
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Model & Params (M) & GFLOPs & P & R & mAP50 & mAP50-95 & Macro F1 & FPS \\
+\midrule
+YOLOv8n & 3.01 & 8.2 & 0.643 & 0.599 & 0.648 & 0.364 & 0.617 & 219.7 \\
+YOLOv8-PD & 2.46 & 7.7 & 0.675 & 0.591 & 0.646 & 0.362 & 0.627 & 368.4 \\
+YOLO-RD & 7.09 & 12.9 & 0.655 & 0.618 & \textbf{0.661} & \textbf{0.371} & \textbf{0.633} & 189.4 \\
+YOLOv12n & 2.57 & 7.5 & 0.638 & 0.608 & 0.654 & \textbf{0.371} & 0.619 & 319.3 \\
+YOLOv26n & 2.51 & \textbf{5.9} & 0.642 & 0.580 & 0.625 & 0.358 & 0.606 & 293.3 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Table~\ref{tab:perclass} details the per-class test mAP@0.5. Pothole is consistently the most difficult structural-damage class, with test mAP@0.5 between 0.526 and 0.541 across the five models. In contrast, manhole reaches 0.819--0.845 mAP@0.5. The difference is consistent with the visual ambiguity and irregular shape of potholes, while manholes often have clearer geometric boundaries. Patchy road reaches 0.512--0.587 mAP@0.5 and should be interpreted cautiously because it contributes only 69 test instances.
+
+\begin{table}[!ht]
+\caption{Per-Class Test mAP@0.5 (Six Classes)}
+\label{tab:perclass}
+\centering
+\scriptsize
+\begin{tabular}{lrrrrrr}
+\toprule
+Model & Long. & Trans. & Allig. & Pot. & Man. & Patch. \\
+\midrule
+YOLOv8n & 0.664 & 0.599 & 0.700 & 0.526 & 0.825 & 0.571 \\
+YOLOv8-PD & 0.678 & 0.572 & 0.702 & 0.541 & 0.819 & 0.562 \\
+YOLO-RD & 0.696 & 0.608 & 0.701 & 0.527 & 0.845 & 0.587 \\
+YOLOv12n & 0.680 & 0.582 & 0.708 & 0.535 & 0.833 & 0.587 \\
+YOLOv26n & 0.639 & 0.567 & 0.675 & 0.538 & 0.820 & 0.512 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Country-Wise Source-Domain Variation}
+The source-domain aggregate score hides substantial variation between countries. For example, YOLOv12n obtains mAP@0.5 values of 0.890 on China, 0.587 on Japan, and 0.433 on India. The corresponding overall score is 0.654. Similar patterns are observed for the other models, as shown in Fig.~\ref{fig:country}.
+
+\begin{figure}[!b]
+\centering
+\includegraphics[width=\columnwidth]{gambar/country_heatmap.png}
+\caption{Test mAP@0.5 by source country and overall score.}
+\label{fig:country}
+\end{figure}
+
+The country-wise results suggest that the number of training images alone does not determine performance. Japan contains substantially more training images than China, yet its test performance is lower for every model. This result motivates the cross-domain experiment and supports reporting domain-specific performance rather than only a single aggregate value.
+
+\subsection{Distractor-Class Ablation}
+The interim ablation compares six-class training with four-class training for YOLOv8n, YOLOv12n, and YOLOv26n, as summarized in Table~\ref{tab:ablation}. No comparison produces a statistically significant reduction in pothole false-positive rate at $\alpha=0.05$. The strongest signal occurs for YOLOv8n on manhole objects, where the false-positive rate decreases from 21.4\% to 18.3\% ($p=0.087$), which remains non-significant.
+
+\begin{table}[!ht]
+\caption{Distractor Ablation: Pothole FP Rate and Pothole mAP Change}
+\label{tab:ablation}
+\centering
+\scriptsize
+\begin{tabular}{llrrrc}
+\toprule
+Model & Distr. & 6-cls & 4-cls & $p$ & $\Delta$ Pot. \\
+\midrule
+\multirow{2}{*}{YOLOv8n} & Man. & 18.3\% & 21.4\% & 0.087 & \multirow{2}{*}{$-$0.020} \\
+ & Patch. & 36.3\% & 37.3\% & 0.836 & \\
+\multirow{2}{*}{YOLOv12n} & Man. & 19.7\% & 17.7\% & 0.267 & \multirow{2}{*}{$-$0.001} \\
+ & Patch. & 34.8\% & 31.3\% & 0.458 & \\
+\multirow{2}{*}{YOLOv26n} & Man. & 19.9\% & 20.7\% & 0.651 & \multirow{2}{*}{$-$0.024} \\
+ & Patch. & 40.3\% & 41.3\% & 0.839 & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The results do not support a universal claim that explicitly labeling distractors suppresses pothole false positives. Nevertheless, the six-class models achieve higher test macro F1 than their four-class counterparts for all three evaluated architectures. The observed changes should be treated as descriptive because the experiment uses a single seed and the patchy-road sample is small.
+
+\subsection{Zero-Shot Cross-Domain Evaluation}
+The current target-domain results are summarized in Table~\ref{tab:zeroshot}. YOLOv12n obtains the highest target mAP@0.5 of 0.172, followed by YOLO-RD at 0.149 and YOLOv8-PD at 0.149. The source-to-target decrease ranges from 73.7\% for YOLOv12n to 78.2\% for YOLOv26n. Figure~\ref{fig:domain-gap} visualizes the large separation between source and target performance.
+
+\begin{table}[!ht]
+\caption{Interim Zero-Shot Results on the Indonesian Target Set}
+\label{tab:zeroshot}
+\centering
+\scriptsize
+\begin{tabular}{lrrrr}
+\toprule
+Model & Source & Target & Abs. gap & Rel. drop \\
+\midrule
+YOLOv12n & 0.654 & \textbf{0.172} & $-$0.482 & 73.7\% \\
+YOLO-RD & 0.661 & 0.149 & $-$0.512 & 77.4\% \\
+YOLOv8-PD & 0.646 & 0.149 & $-$0.497 & 76.9\% \\
+YOLOv8n & 0.648 & 0.145 & $-$0.503 & 77.6\% \\
+YOLOv26n & 0.625 & 0.136 & $-$0.489 & 78.2\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\columnwidth]{gambar/domain_gap.png}
+\caption{Source-domain and Indonesian target-domain mAP@0.5 under zero-shot inference.}
+\label{fig:domain-gap}
+\end{figure}
+
+The ranking changes across domains: YOLO-RD is the best source-domain model, whereas YOLOv12n is the best target-domain model. This finding is important for deployment because optimizing only source-domain mAP can select a model that is less robust to new road environments. The target results also indicate that the domain gap is not a small calibration effect; it is large enough to substantially change the practical interpretation of the source-domain benchmark.
+
+\section{Limitations and Pending Validation}
+This paper is an interim draft. First, the geographic provenance and acquisition description of the `RDD-indo-v2' target set must be finalized before making a specific claim about Bandung or a particular collection protocol. Second, the source-domain FPS and YOLO-RD complexity values must be reconciled across the available logs and measured using one hardware and timing protocol. Third, the comparisons use a deterministic single seed, so confidence intervals and multi-seed variance are not available. Fourth, YOLOv8-PD and YOLO-RD are reconstructed implementations, not official released code. For YOLOv26n, ProgLoss is active through the end-to-end loss branch, but the default DFL weight, batch size, and unavailable STAL component differ from the reported architecture-specific recipe. Finally, the distractor ablation has limited statistical power, especially for patchy road.
+
+\section{Conclusion}
+This interim study compares five nano-scale YOLO detectors for six-class road-damage detection with explicit distractor classes. YOLO-RD provides the highest source-domain accuracy, YOLOv8-PD provides the smallest model and highest current throughput, and YOLOv12n provides the most favorable combination of source-domain efficiency and zero-shot target-domain performance. Explicit distractor labeling does not yet show a statistically significant reduction in pothole false positives, although six-class models obtain higher macro F1 in the evaluated ablation. Most importantly, all models suffer a substantial cross-domain performance decrease. The final version should therefore report the validated target-data provenance, a reconciled efficiency protocol, and, if computationally feasible, multi-seed uncertainty estimates.
+
+\section*{Acknowledgment}
+The author thanks the academic supervisor and the open dataset contributors whose resources supported this study. The wording and affiliation details in this acknowledgment are provisional.
+
+\balance
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,references}
+
+\end{document}

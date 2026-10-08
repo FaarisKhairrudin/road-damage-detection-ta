@@ -46,28 +46,27 @@ class MHSA(nn.Module):
     resolution instead of hard-coding a 20x20 feature map.
     """
 
-    def __init__(self, dim, heads=4):
+    def __init__(self, dim, heads=4, max_hw=64):
         super().__init__()
         assert dim % heads == 0, "MHSA channel dim must be divisible by heads"
         self.heads = heads
+        self.dim_head = dim // heads
         self.query = nn.Conv2d(dim, dim, kernel_size=1)
         self.key = nn.Conv2d(dim, dim, kernel_size=1)
         self.value = nn.Conv2d(dim, dim, kernel_size=1)
         self.softmax = nn.Softmax(dim=-1)
-        self._hw = None
-        self.rel_h = None
-        self.rel_w = None
-
-    def _build_pos_embed(self, dim_head, h, w, device, dtype):
-        self.rel_h = nn.Parameter(torch.randn(1, self.heads, dim_head, 1, h, device=device, dtype=dtype) * 0.02)
-        self.rel_w = nn.Parameter(torch.randn(1, self.heads, dim_head, w, 1, device=device, dtype=dtype) * 0.02)
-        self._hw = (h, w)
+        # Fixed-size relative position embeddings, sliced to the current spatial
+        # size at runtime. Built once in __init__ (not lazily) so parameter
+        # shapes never change after training starts, which would otherwise break
+        # Ultralytics' EMA/optimizer (params are registered with fixed shapes).
+        self.rel_h = nn.Parameter(torch.randn(1, self.heads, self.dim_head, max_hw, 1) * 0.02)
+        self.rel_w = nn.Parameter(torch.randn(1, self.heads, self.dim_head, 1, max_hw) * 0.02)
 
     def forward(self, x):
         b, c, h, w = x.shape
         dim_head = c // self.heads
-        if self._hw != (h, w):
-            self._build_pos_embed(dim_head, h, w, x.device, x.dtype)
+        rel_h = self.rel_h[:, :, :, :h, :]  # (1, heads, dim_head, h, 1)
+        rel_w = self.rel_w[:, :, :, :, :w]  # (1, heads, dim_head, 1, w)
 
         q = self.query(x).view(b, self.heads, dim_head, h * w)
         k = self.key(x).view(b, self.heads, dim_head, h * w)
@@ -75,7 +74,7 @@ class MHSA(nn.Module):
 
         content_content = torch.matmul(q.permute(0, 1, 3, 2), k)  # (b, heads, hw, hw)
 
-        pos = (self.rel_h + self.rel_w).view(1, self.heads, dim_head, h * w)
+        pos = (rel_h + rel_w).view(1, self.heads, dim_head, h * w)
         content_position = torch.matmul(pos.permute(0, 1, 3, 2), q)  # (b, heads, hw, hw)
 
         energy = content_content + content_position

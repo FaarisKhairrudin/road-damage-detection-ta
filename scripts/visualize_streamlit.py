@@ -5,12 +5,30 @@ Built with Streamlit and OpenCV.
 """
 
 from pathlib import Path
+from typing import Any, cast
+
 import cv2
 import numpy as np
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 import streamlit as st
 import yaml
+
+REPO = Path(__file__).resolve().parent.parent
+SOURCE_TEST_METRICS = {
+    "yolov8n": 0.648,
+    "yolov12n": 0.654,
+    "yolov26n": 0.625,
+    "yolov8_pd": 0.646,
+    "yolo_rd": 0.661,
+}
+SOURCE_WEIGHTS = {
+    "yolov8n": REPO / "runs/rdd_yolov8n_local/experiments/yolov8n_class_weight/weights/best.pt",
+    "yolov12n": REPO / "runs/rdd_yolov8n_local/experiments/yolov12n_class_weight/weights/best.pt",
+    "yolov26n": REPO / "runs/rdd_yolov8n_local/experiments/yolov26n_class_weight/weights/best.pt",
+    "yolov8_pd": REPO / "runs/rdd_yolov8n_local/experiments/yolov8_pd_class_weight/weights/best.pt",
+    "yolo_rd": REPO / "runs/rdd_yolov8n_local/experiments/yolo_rd_class_weight/weights/best.pt",
+}
 
 # Page configuration
 st.set_page_config(
@@ -44,32 +62,36 @@ def extract_country(filename: str) -> str:
     return "Other"
 
 
-def parse_yolo_txt(txt_path: Path):
+def parse_yolo_txt(txt_path: Path, class_names: dict | None = None):
     """Parse YOLO label file and return list of dicts."""
+    names = class_names or CLASS_ID_TO_NAME
     boxes = []
     if not txt_path.exists():
         return boxes
 
-    with open(txt_path, "r", encoding="utf-8") as f:
-        for line in f:
-            parts = line.strip().split()
-            if len(parts) >= 5:
-                try:
-                    cls_id = int(float(parts[0]))
-                    xc = float(parts[1])
-                    yc = float(parts[2])
-                    w = float(parts[3])
-                    h = float(parts[4])
-                    boxes.append({
-                        "class_id": cls_id,
-                        "class_name": CLASS_ID_TO_NAME.get(cls_id, f"Class_{cls_id}"),
-                        "xc": xc,
-                        "yc": yc,
-                        "w": w,
-                        "h": h,
-                    })
-                except ValueError:
-                    continue
+    try:
+        with open(txt_path, "r", encoding="utf-8") as f:
+            for line in f:
+                parts = line.strip().split()
+                if len(parts) >= 5:
+                    try:
+                        cls_id = int(float(parts[0]))
+                        xc = float(parts[1])
+                        yc = float(parts[2])
+                        w = float(parts[3])
+                        h = float(parts[4])
+                        boxes.append({
+                            "class_id": cls_id,
+                            "class_name": names.get(cls_id, f"Class_{cls_id}"),
+                            "xc": xc,
+                            "yc": yc,
+                            "w": w,
+                            "h": h,
+                        })
+                    except ValueError:
+                        continue
+    except OSError:
+        return boxes
     return boxes
 
 
@@ -80,8 +102,11 @@ def scan_dataset(yaml_path_str: str):
     if not yaml_file.exists():
         return pd.DataFrame(), {}
 
-    with open(yaml_file, "r", encoding="utf-8") as f:
-        data_cfg = yaml.safe_load(f)
+    try:
+        with open(yaml_file, "r", encoding="utf-8") as f:
+            data_cfg = cast(dict, yaml.safe_load(f) or {})
+    except (OSError, yaml.YAMLError):
+        return pd.DataFrame(), {}
 
     base_dir = yaml_file.parent
     records = []
@@ -135,6 +160,7 @@ def draw_bounding_boxes(
     show_labels: bool = True,
     box_thickness: int = 3,
     alpha_overlay: float = 0.0,
+    class_colors: dict | None = None,
 ):
     """Render bounding boxes on image with high contrast colors and labels."""
     image = Image.open(image_path).convert("RGB")
@@ -154,9 +180,10 @@ def draw_bounding_boxes(
     except Exception:
         font = ImageFont.load_default()
 
+    colors = class_colors or CLASS_ID_TO_RGB
     for box in boxes:
         cls_id = box["class_id"]
-        color = CLASS_ID_TO_RGB.get(cls_id, (255, 255, 255))
+        color = colors.get(cls_id, (255, 255, 255))
         label_text = box["class_name"]
 
         # Normalized coordinates to pixel coordinates
@@ -192,18 +219,156 @@ def draw_bounding_boxes(
     return image
 
 
+@st.cache_resource(show_spinner="Memuat bobot model...")
+def load_source_test_model(name: str):
+    import sys
+
+    sys.path.insert(0, str(REPO / "code/models"))
+    if name in ("yolov8_pd", "yolo_rd"):
+        from custom_modules import patch_ultralytics
+        patch_ultralytics()
+    from ultralytics import YOLO
+
+    weight_path = SOURCE_WEIGHTS[name]
+    if not weight_path.exists():
+        raise FileNotFoundError(f"Bobot tidak ditemukan: {weight_path}")
+    return YOLO(str(weight_path))
+
+
+def render_source_test_prediction_page(test_df: Any):
+    st.title("Hasil Prediksi pada Test Set N-RDD2024")
+    st.caption(
+        "Pilih citra dari split test dataset sumber N-RDD2024 untuk melihat ground truth dan "
+        "prediksi model berdampingan. Inferensi dilakukan on-demand, tanpa training ulang."
+    )
+
+    result_rows = [
+        {"Model": name, "mAP50 test sumber": score}
+        for name, score in sorted(SOURCE_TEST_METRICS.items(), key=lambda item: item[1], reverse=True)
+    ]
+    results_df = pd.DataFrame(result_rows)
+    best_name = results_df.iloc[0]["Model"]
+    metric_cols = st.columns(3)
+    metric_cols[0].metric("Citra test", f"{len(test_df):,}")
+    metric_cols[1].metric("Model terbaik (mAP50)", str(best_name))
+    metric_cols[2].metric("mAP50 test", f"{SOURCE_TEST_METRICS[best_name]:.3f}")
+    st.subheader("Ringkasan metrik evaluasi test sumber")
+    st.dataframe(results_df, hide_index=True, width="stretch")
+    st.caption("mAP50 adalah hasil evaluasi tersimpan pada eksperimen sumber; gambar di bawah menampilkan inferensi per-citra dengan threshold confidence yang dapat diubah.")
+
+    if test_df.empty:
+        st.warning("Dataset yaml tidak memiliki citra pada split test.")
+        return
+
+    with st.sidebar:
+        st.markdown("---")
+        st.subheader("Prediksi test")
+        available_models = [name for name, path in SOURCE_WEIGHTS.items() if path.exists()]
+        if not available_models:
+            st.error("Tidak ada file bobot model yang tersedia.")
+            return
+        default_model = best_name if best_name in available_models else available_models[0]
+        model = st.selectbox("Model", available_models, index=available_models.index(default_model), key="source_test_model")
+        confidence = st.slider("Confidence", 0.05, 0.90, 0.25, 0.05, key="source_test_confidence")
+        only_gt = st.checkbox("Hanya citra ber-GT", value=False, key="source_test_only_gt")
+        query = st.text_input("Cari nama file", placeholder="Contoh: China_MotorBike", key="source_test_search")
+        show_labels = st.checkbox("Tampilkan label box", value=True, key="source_test_show_labels")
+
+    view: Any = test_df[test_df["num_boxes"] > 0] if only_gt else test_df
+    if query.strip():
+        view = view[view["filename"].str.contains(query.strip(), case=False, na=False)]
+    if view.empty:
+        st.warning("Tidak ada citra test yang cocok dengan filter.")
+        return
+    view = view.reset_index(drop=True)
+
+    if len(view) > 1:
+        stored_idx = min(int(st.session_state.get("source_test_image_index", 0)), len(view) - 1)
+        st.session_state["source_test_image_index"] = stored_idx
+        idx = st.slider("Navigasi citra test", 0, len(view) - 1, key="source_test_image_index")
+    else:
+        idx = 0
+        st.caption("1 citra cocok dengan filter.")
+    row = view.iloc[idx]
+    image_path = row["image_path"]
+    gt_boxes = parse_yolo_txt(Path(row["label_path"])) if row["label_path"] else []
+
+    import torch
+
+    device = 0 if torch.cuda.is_available() else "cpu"
+    try:
+        model_instance = load_source_test_model(model)
+        results = list(model_instance.predict(
+            image_path, imgsz=640, conf=confidence, iou=0.6,
+            verbose=False, device=device,
+        ) or [])
+    except Exception as exc:
+        st.error(f"Gagal menjalankan prediksi {model}: {exc}")
+        return
+
+    if not results:
+        st.warning("Model tidak mengembalikan hasil untuk citra ini.")
+        return
+    result: Any = results[0]
+    pred_boxes = []
+    if result.boxes is not None:
+        width, height = Image.open(image_path).size
+        for box in result.boxes:
+            x1, y1, x2, y2 = [float(v) for v in box.xyxy[0].tolist()]
+            class_id, conf = int(box.cls), float(box.conf)
+            pred_boxes.append({
+                "class_id": class_id,
+                "class_name": f"{CLASS_ID_TO_NAME.get(class_id, f'Class_{class_id}')} {conf:.2f}",
+                "xc": ((x1 + x2) / 2) / width,
+                "yc": ((y1 + y2) / 2) / height,
+                "w": (x2 - x1) / width,
+                "h": (y2 - y1) / height,
+                "confidence": conf,
+            })
+
+    gt_col, pred_col = st.columns(2)
+    with gt_col:
+        st.subheader(f"Ground truth ({len(gt_boxes)} box)")
+        st.image(draw_bounding_boxes(
+            image_path, gt_boxes, show_labels=show_labels,
+        ), width="stretch", caption=row["filename"])
+    with pred_col:
+        st.subheader(f"Prediksi {model} ({len(pred_boxes)} box, conf ≥ {confidence:.2f})")
+        st.image(draw_bounding_boxes(
+            image_path, pred_boxes, show_labels=show_labels,
+        ), width="stretch", caption=row["filename"])
+
+    if pred_boxes:
+        st.subheader("Detail prediksi")
+        st.dataframe(pd.DataFrame([
+            {"Kelas": box["class_name"].rsplit(" ", 1)[0], "Confidence": box["confidence"]}
+            for box in pred_boxes
+        ]), hide_index=True, width="stretch")
+
+
 def main():
-    st.title("🛣️ Road Damage Detection — Dataset & Annotation Explorer")
-    st.caption("Eksplorasi interaktif dataset 6 kelas (China, India, Japan) dengan filter negara, split, dan kelas kerusakan.")
+    page = st.sidebar.radio(
+        "Halaman",
+        ["Inspect Dataset", "Prediksi pada Test Set N-RDD2024"],
+        key="app_page",
+    )
 
     default_yaml = "data/NRDD-2024/RDD_Split_Final_china_japan_india_6_classes/RDD_Split_Final_china_japan_india_6_classes/data.yaml"
-
+    df: Any
+    cfg: Any
     with st.spinner("Memindai dan mengindeks dataset..."):
         df, cfg = scan_dataset(default_yaml)
-
     if df.empty:
         st.error(f"Dataset tidak ditemukan di path: `{default_yaml}`")
         return
+
+    if page == "Prediksi pada Test Set N-RDD2024":
+        test_df: Any = df[df["split"] == "test"].copy()
+        render_source_test_prediction_page(test_df)
+        return
+
+    st.title("🛣️ Road Damage Detection — Dataset & Annotation Explorer")
+    st.caption("Eksplorasi interaktif dataset 6 kelas (China, India, Japan) dengan filter negara, split, dan kelas kerusakan.")
 
     # --- SIDEBAR FILTERS ---
     st.sidebar.header("🔍 Filter Dataset")
@@ -299,7 +464,7 @@ def main():
     # TAB 1: SINGLE IMAGE INSPECTOR
     with tab_single:
         num_items = len(filtered_df)
-        
+
         c_slider, c_btn1, c_btn2 = st.columns([4, 1, 1])
         with c_slider:
             img_index = st.slider("Navigasi Gambar (Index)", min_value=0, max_value=num_items - 1, value=0)

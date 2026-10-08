@@ -99,3 +99,83 @@ Eksperimen terpisah: model dilatih langsung hanya pada 4 kelas kerusakan utama (
 | yolov8n_4cls_class_weights | 0.598 | 0.606 | 0.602 | 0.617 |
 | yolov12n_4cls_class_weights | 0.608 | 0.618 | 0.606 | 0.620 |
 | yolov26n_4cls_class_weights | 0.592 | 0.602 | 0.595 | 0.606 |
+
+## ***Per-Negara mAP50 — Test (Semua Model)***
+
+Test N-RDD2024 dipecah per negara via prefix nama file (`China_*` 180 citra, `Japan_*` 705 citra, `India_*` 110 citra), dievaluasi tiap bobot (conf=0.001, iou=0.6, imgsz=640). Dihasilkan oleh `code/06_per_country_analysis.ipynb`; heatmap di `runs/rdd_yolov8n_local/per_country/per_country_heatmap.png`. Kolom Indonesia V4\* berasal dari uji zero-shot tanpa fine-tuning (lihat bagian ***Hasil Zero-Shot RDD-indo-v4*** di bawah).
+
+| Model | China | Japan | India | Indonesia V4* | Gabungan |
+|---|---|---:|---:|---:|
+| yolov8n_class_weight | 0.883 | 0.581 | 0.426 | 0.250 | 0.648 |
+| yolov12n_class_weight | 0.890 | 0.587 | 0.433 | **0.332** | 0.654 |
+| yolov26n_class_weight | 0.869 | 0.546 | 0.443 | 0.239 | 0.625 |
+| yolov8_pd_class_weight | 0.907 | 0.570 | 0.438 | 0.279 | 0.646 |
+| yolo_rd_class_weight | 0.892 | 0.594 | 0.442 | 0.297 | 0.661 |
+
+\*Indonesia V4: 5 kelas (tanpa manhole), 307 citra; angka China/Japan/India/Gabungan = 6 kelas pada test sumber. Karena itu perbandingan bersifat indikatif, bukan apel-ke-apel penuh.
+
+### ***Per-Kelas per Negara — China***
+
+| Model | Longitudinal | Transverse | Alligator | Pothole | manhole | patchy_road |
+|---|---|---|---|---|---|---|
+| yolov8n_class_weight | 0.875 | 0.918 | 0.946 | 0.984 | 0.581 | 0.995 |
+| yolov12n_class_weight | 0.900 | 0.911 | 0.959 | 0.962 | 0.616 | 0.995 |
+| yolov26n_class_weight | 0.879 | 0.913 | 0.953 | 0.986 | 0.486 | 0.995 |
+| yolov8_pd_class_weight | 0.918 | 0.925 | 0.975 | 0.995 | 0.634 | 0.995 |
+| yolo_rd_class_weight | 0.903 | 0.934 | 0.947 | 0.995 | 0.581 | 0.995 |
+
+### ***Per-Kelas per Negara — Japan***
+
+| Model | Longitudinal | Transverse | Alligator | Pothole | manhole | patchy_road |
+|---|---|---|---|---|---|---|
+| yolov8n_class_weight | 0.545 | 0.494 | 0.689 | 0.582 | 0.843 | 0.331 |
+| yolov12n_class_weight | 0.559 | 0.471 | 0.690 | 0.595 | 0.850 | 0.359 |
+| yolov26n_class_weight | 0.488 | 0.456 | 0.654 | 0.573 | 0.832 | 0.272 |
+| yolov8_pd_class_weight | 0.517 | 0.451 | 0.684 | 0.615 | 0.845 | 0.306 |
+| yolo_rd_class_weight | 0.579 | 0.489 | 0.690 | 0.589 | 0.874 | 0.344 |
+
+### ***Per-Kelas per Negara — India***
+
+| Model | Longitudinal | Transverse | Alligator | Pothole | manhole (n=1) | patchy_road (n=0) |
+|---|---|---|---|---|---|---|
+| yolov8n_class_weight | 0.273 | 0.038 | 0.501 | 0.323 | 0.995 | — |
+| yolov12n_class_weight | 0.234 | 0.056 | 0.539 | 0.341 | 0.995 | — |
+| yolov26n_class_weight | 0.282 | 0.002 | 0.526 | 0.408 | 0.995 | — |
+| yolov8_pd_class_weight | 0.244 | 0.129 | 0.507 | 0.314 | 0.995 | — |
+| yolo_rd_class_weight | 0.184 | 0.214 | 0.494 | 0.325 | 0.995 | — |
+
+## ***Distribusi Train per Negara vs Akurasi***
+
+| Negara | Train citra | Longitudinal | Transverse | Alligator | Pothole | manhole | patchy_road | Total instance | Test mAP50 |
+|---|---|---|---|---|---|---|---|---|---|
+| Japan | 4624 | 2250 | 2385 | 3449 | 1270 | 2139 | 260 | 11753 | 0.581 |
+| China | 1423 | 1942 | 815 | 460 | 191 | 123 | 208 | 3739 | 0.883 |
+| India | 730 | 363 | 19 | 476 | 731 | 8 | 3 | 1600 | 0.426 |
+
+Catatan: volume train tidak menjelaskan peringkat (Japan 3x China tapi kalah jauh) — kesulitan domain yang menjelaskan. Tautan representasi terbersih: Transverse India (19 instance train → 0.038 test). Sel India manhole (n=1) dan patchy_road (n=0) tidak bisa diklaim.
+
+## ***Hasil Zero-Shot RDD-indo-v4***
+
+Uji tanpa fine-tuning (conf=0.001, iou=0.6, imgsz=640) pada RDD-indo-v4 (307 citra, 514 instans, 5 kelas tanpa manhole). Sumber perbandingan: rata-rata mAP50 5 kelas bersama dari dataset sumber.
+
+### ***Ringkasan (mAP50 + F1)***
+
+| Model | Source mAP50 (6 cls) | Source mAP50 (5 cls) | Target V4 mAP50 | Penurunan | Source macro-F1 | Target V4 macro-F1 | Penurunan macro | Source weighted-F1 | Target V4 weighted-F1 | Penurunan weighted |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| yolov12n_class_weight | 0.654 | 0.618 | **0.332** | 46.3% | 0.584 | **0.378** | 35.3% | 0.613 | **0.464** | 24.2% |
+| yolo_rd_class_weight | 0.661 | 0.624 | 0.297 | 52.3% | 0.596 | 0.332 | 44.4% | 0.625 | 0.431 | 31.0% |
+| yolov8_pd_class_weight | 0.646 | 0.611 | 0.279 | 54.3% | 0.594 | 0.305 | 48.7% | 0.617 | 0.402 | 34.9% |
+| yolov8n_class_weight | 0.648 | 0.612 | 0.250 | 59.2% | 0.581 | 0.306 | 47.3% | 0.612 | 0.392 | 36.0% |
+| yolov26n_class_weight | 0.625 | 0.586 | 0.239 | 59.1% | 0.570 | 0.274 | 52.0% | 0.598 | 0.359 | 40.0% |
+
+### ***Per-Kelas mAP50 — Target V4***
+
+| Model | Longitudinal_Crack | Transverse_Crack | Alligator_Crack | Pothole | patchy_road |
+|---|---:|---:|---:|---:|---:|
+| yolov12n_class_weight | **0.617** | **0.258** | **0.506** | **0.246** | 0.035 |
+| yolo_rd_class_weight | 0.570 | 0.279 | 0.468 | 0.098 | **0.072** |
+| yolov8_pd_class_weight | 0.549 | 0.216 | 0.442 | 0.129 | 0.059 |
+| yolov8n_class_weight | 0.518 | 0.217 | 0.352 | 0.108 | 0.054 |
+| yolov26n_class_weight | 0.507 | 0.156 | 0.296 | 0.201 | 0.038 |
+
+Catatan: `manhole` tidak dievaluasi (0 GT di target). Angka sumber 5-kelas dihitung dari file per-class CSV source; target dari `zs_per_class_metrics.csv`. Dataset: `data/RDD-indo-v4` (Roboflow `rdd-indo-crop` v3, hanya split valid). Lihat `docs/progress/2026-10-08-zero-shot-v4-dan-f1-per-kelas.md` untuk detail metodologis dan bug `class_result` posisional.

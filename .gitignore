@@ -24,7 +24,6 @@ data/*
 runs/
 wandb/
 mlruns/
-outputs/
 artifacts/
 
 # Model weights and exported model artifacts
@@ -50,15 +49,23 @@ Thumbs.db
 .idea/
 
 # LaTeX build artifacts
-latex_skripsi/skripsi-telkom/build/
-latex_skripsi/skripsi-telkom/*.aux
-latex_skripsi/skripsi-telkom/*.log
-latex_skripsi/skripsi-telkom/*.fls
-latex_skripsi/skripsi-telkom/*.toc
-latex_skripsi/skripsi-telkom/*.synctex.gz
-latex_skripsi/skripsi-telkom/*.synctex(busy)
+latex/**/build/
+latex/**/*.aux
+latex/**/*.log
+latex/**/*.fls
+latex/**/*.fdb_latexmk
+latex/**/*.blg
+latex/**/*.out
+latex/**/*.toc
+latex/**/*.lof
+latex/**/*.lot
+latex/**/*.synctex.gz
+latex/**/*.synctex(busy)
 
 # Generated PDFs (rebuild via compile.sh)
-latex_skripsi/skripsi-telkom/hasil/
-latex_skripsi/skripsi-telkom/main.pdf
+latex/**/hasil/
 docs/proposal.pdf
+
+# Agent/runtime state (local only)
+.pi/
+.jupyter-agent-bridge/

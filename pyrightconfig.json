@@ -1,0 +1,16 @@
+{
+  "pythonPath": "/usr/bin/python3.12",
+  "extraPaths": [
+    "/home/varys/.local/lib/python3.12/site-packages",
+    "code/models"
+  ],
+  "executionEnvironments": [
+    {
+      "root": ".",
+      "extraPaths": [
+        "/home/varys/.local/lib/python3.12/site-packages",
+        "code/models"
+      ]
+    }
+  ]
+}
