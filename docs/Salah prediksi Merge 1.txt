@@ -7,6 +7,40 @@ Merge-1_mp4-0571.jpg
 Merge-1_mp4-0554.jpg
 Merge-1_mp4-0570.jpg
 
+Pantulan cahaya
+VID_20260520_092711_mp4-0036_jpg.rf.7a7e5b3526ce4960b882afbb9d2553f6.jpg
+VID_20260520_092711_mp4-0023_jpg.rf.5c5e2a77af3dc09a74953358c19b2f4c.jpg
+VID_20260520_092711_mp4-0004_jpg.rf.d7238bec30ec2cc79e9cc58d04fa4d0b.jpg
+VID_20260520_092711_mp4-0007_jpg.rf.2e583f4356da1dd6d244c49bdbdb90df.jpg
+VID_20260520_092711_mp4-0008_jpg.rf.98ec29919ec3aab88d4eb7c1a38ad959.jpg
+VID_20260520_092711_mp4-0010_jpg.rf.7c003778665332f21afa453ad0c165f8.jpg
+VID_20260520_092711_mp4-0058_jpg.rf.bea523a7a34b396969808b82fe3f4fcf.jpg
+VID_20260520_092711_mp4-0009_jpg.rf.846b13e85ae58f71de958677b575d1b6.jpg
+VID_20260520_092711_mp4-0015_jpg.rf.bd83a1fe8c1c2bb2a8d5b8cd2692a49a.jpg
+VID_20260520_092711_mp4-0035_jpg.rf.9088971cda70b1603b7b3401724b8026.jpg
+VID_20260520_092711_mp4-0041_jpg.rf.fc496120f0a27907702260474d3e6114.jpg
+
+
 Gambar susah yang keprediksi
 Merge-1_mp4-0485.jpg
 Merge-1_mp4-0678.jpg
+
+Benar Prediksi (dengan gt)
+VID_20260520_092711_mp4-0018_jpg.rf.eca099ddfec331f1b7e2dd90cdf8f883.jpg
+Merge-1_mp4-0436_jpg.rf.42bc2b4480c6cf4ab83870300ac06ca6.jpg
+Merge-1_mp4-0441_jpg.rf.f4eed802f07e91d3125e2abb5009fadd.jpg
+Merge-1_mp4-0713_jpg.rf.1f7f41a50ec57a14b7069ff77677d9cb.jpg
+Merge-1_mp4-0727_jpg.rf.e75e41563597aca0ab4ec7ddc5d30523.jpg
+
+Benar - tanpa tampilan GT (hanya hasil predict)
+Merge-1_mp4-0703_jpg.rf.ed4f025f83e959dfd6c787300629a889.jpg
+Merge-1_mp4-0706_jpg.rf.a8507c635d208c82126f924c46205fd4.jpg
+Merge-1_mp4-0708_jpg.rf.adfd6a67b6b779b4a2548674d71cd0d9.jpg
+Merge-1_mp4-0716_jpg.rf.d3cfb99d6a6c7182ba5d02603b9a9b27.jpg
+\Merge-1_mp4-0734_jpg.rf.8ad7ae9ed88206af6e63d5c305f13820.jpg
+Merge-1_mp4-0765_jpg.rf.ad5eab77613776d7bf7d32fab0cf0c76.jpg
+Merge-1_mp4-0767_jpg.rf.e099acde548ecb4d69a4dd72736ef459.jpg
+Merge-1_mp4-0768_jpg.rf.4b505bd448e403095eefc00368974cf8.jpg
+
+Gambar kondisi indo acak kadul
+Merge-1_mp4-0702_jpg.rf.12457247746f8327d69732568f011158.jpg

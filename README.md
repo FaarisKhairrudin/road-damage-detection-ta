@@ -1,18 +1,35 @@
 # Road Damage Detection TA
 
-Kode penelitian Tugas Akhir untuk baseline deteksi kerusakan dan cacat permukaan jalan menggunakan YOLOv8n pada subset Asia N-RDD2024 6 kelas.
+Thesis (Tugas Akhir) research code for a baseline of road damage and surface defect detection using YOLOv8n on the N-RDD2024 Asia subset (6 classes).
 
-## Fokus Eksperimen
+## Context Map (read before exploring)
 
-- Dataset sekunder: N-RDD2024 subset China, Japan, India.
-- Kelas: `Longitudinal_Crack`, `Transverse_Crack`, `Alligator_Crack`, `Pothole`, `manhole`, `patchy_road`.
-- Baseline utama: YOLOv8n pretrained COCO dengan native Ultralytics loss.
-- Evaluasi: mAP50, mAP50-95, precision, recall, F1 per kelas, confusion matrix, PR/F1 curve, dan estimasi FPS.
-- Focal loss disiapkan sebagai ablation opsional, bukan baseline utama.
+This repo is fairly large and layered. To find **which file contains what** without reading everything, start with:
 
-## Struktur Data yang Diharapkan
+- **[`docs/INDEX.md`](docs/INDEX.md)** — the full context map: "looking for X → open Y" routing, the contents of every folder, and a list of pitfalls you must know.
+- **[`AGENTS.md`](AGENTS.md)** — working rules (notebook & LaTeX conventions, and the requirement to write progress logs).
 
-Data tidak disimpan di GitHub. Setelah clone repo, salin dataset dari SSD ke lokasi berikut:
+Shortcuts to the sources of numbers and manuscript context:
+
+| I need… | Open |
+| --- | --- |
+| Final mAP/F1 (tables) | [`docs/RESULTS_TABLE.md`](docs/RESULTS_TABLE.md) |
+| Raw evaluation log | [`docs/RESULTS.md`](docs/RESULTS.md) |
+| Final experiment context for writing | [`docs/rangkuman-eksperimen-ta-v2.md`](docs/rangkuman-eksperimen-ta-v2.md) |
+| Bug/decision logs by date | [`docs/progress/`](docs/progress/) |
+| Token-efficient proposal index | [`latex/PROPOSAL_TA.md`](latex/PROPOSAL_TA.md) |
+
+## Experiment Focus
+
+- Secondary dataset: N-RDD2024, subset of China, Japan, India.
+- Classes: `Longitudinal_Crack`, `Transverse_Crack`, `Alligator_Crack`, `Pothole`, `manhole`, `patchy_road`.
+- Main baseline: YOLOv8n pretrained on COCO with the native Ultralytics loss.
+- Evaluation: mAP50, mAP50-95, precision, recall, per-class F1, confusion matrix, PR/F1 curves, and FPS estimation.
+- Focal loss is prepared as an optional ablation, not the main baseline.
+
+## Expected Data Structure
+
+Data is not stored on GitHub. After cloning the repo, copy the dataset from the SSD to the following location:
 
 ```text
 data/NRDD-2024/RDD_Split_Final_china_japan_india_6_classes/RDD_Split_Final_china_japan_india_6_classes/
@@ -28,9 +45,9 @@ data/NRDD-2024/RDD_Split_Final_china_japan_india_6_classes/RDD_Split_Final_china
     labels/
 ```
 
-Notebook lokal sudah memakai path ini secara otomatis.
+The local notebooks already use this path automatically.
 
-## Setup Lokal atau GPU Server
+## Local or GPU-Server Setup
 
 ```bash
 git clone https://github.com/FaarisKhairrudin/road-damage-detection-ta.git
@@ -38,7 +55,7 @@ cd road-damage-detection-ta
 python -m venv .venv
 ```
 
-Aktifkan environment:
+Activate the environment:
 
 ```bash
 # Windows PowerShell
@@ -48,72 +65,76 @@ Aktifkan environment:
 source .venv/bin/activate
 ```
 
-Install dependency:
+Install dependencies:
 
 ```bash
 pip install -U pip
 pip install -r code/requirements_yolov8_local.txt
 ```
 
-Jika GPU NVIDIA tersedia, pastikan PyTorch CUDA sudah terpasang sesuai versi CUDA server. Jika `torch.cuda.is_available()` masih `False`, install PyTorch CUDA dari instruksi resmi PyTorch terlebih dahulu, lalu install requirements di atas.
+If an NVIDIA GPU is available, make sure PyTorch CUDA is installed to match the server's CUDA version. If `torch.cuda.is_available()` is still `False`, install PyTorch CUDA from the official PyTorch instructions first, then install the requirements above.
 
-## Notebook Utama
+## Main Notebooks
 
-- `code/01_modelling_baseline.ipynb`: versi Kaggle.
-- `code/02_modelling_baseline_local.ipynb`: versi lokal/GPU server.
+> The full notebook list (including the comparative experiments, the 4-class ablation, and zero-shot) is in [`docs/INDEX.md`](docs/INDEX.md) §4.
 
-Untuk menjalankan baseline lokal:
+- `code/01_modelling_baseline.ipynb`: Kaggle version.
+- `code/02_modelling_baseline_local.ipynb`: local/GPU-server version.
 
-1. Buka `code/02_modelling_baseline_local.ipynb`.
-2. Jalankan cell install dependency jika environment belum lengkap.
-3. Restart kernel.
-4. Jalankan cell dari atas.
-5. Untuk smoke test, ubah sementara `EPOCHS = 5` dan `RUN_NAME = "yolov8n_smoke_test"`.
-6. Untuk eksperimen final, gunakan `EPOCHS = 300`, `PATIENCE = 50`, dan `RUN_NAME = "yolov8n_baseline_native_loss"`.
+To run the local baseline:
 
-## Catatan Augmentasi Baseline
+1. Open `code/02_modelling_baseline_local.ipynb`.
+2. Run the dependency-install cell if the environment is incomplete.
+3. Restart the kernel.
+4. Run the cells from the top.
+5. For a smoke test, temporarily set `EPOCHS = 5` and `RUN_NAME = "yolov8n_smoke_test"`.
+6. For the final experiment, use `EPOCHS = 300`, `PATIENCE = 50`, and `RUN_NAME = "yolov8n_baseline_native_loss"`.
 
-Baseline tidak menggunakan rotasi:
+## Baseline Augmentation Notes
+
+The baseline does not use rotation:
 
 ```python
 degrees = 0.0
 ```
 
-Augmentasi yang digunakan:
+Augmentations used:
 
 - Mosaic
-- MixUp ringan
-- horizontal flip
-- translate
-- scale
-- close mosaic pada 10 epoch terakhir
+- Light MixUp
+- Horizontal flip
+- Translate
+- Scale
+- Close mosaic for the last 10 epochs
 
 ## Output
 
-Output training dan evaluasi akan muncul di:
+Training and evaluation outputs appear under:
 
 ```text
 runs/rdd_yolov8n_local/
 ```
 
-Folder `runs/`, dataset, dokumen proposal, dan bobot model diabaikan oleh Git agar repository tetap ringan.
+The `runs/` folder, the dataset, the proposal document, and model weights are ignored by Git to keep the repository light. The contents of `runs/` and the key per-run files are described in [`docs/INDEX.md`](docs/INDEX.md) §6.
 
-## Penyimpanan Hasil Eksperimen
+## Storing Experiment Results
 
-Jangan commit bobot model dan folder output training langsung ke GitHub. GitHub memberi warning untuk file di atas 50 MiB dan menolak file di atas 100 MiB pada repository Git biasa. Bobot YOLOv8n masih bisa kecil, tetapi banyak eksperimen akan cepat membuat repository berat karena file `.pt` adalah binary dan tidak enak untuk versioning.
+Do not commit model weights or training-output folders directly to GitHub. GitHub warns for files above 50 MiB and rejects files above 100 MiB on a normal Git repository. YOLOv8n weights can still be small, but many experiments will quickly make the repository heavy because `.pt` files are binary and do not version well.
 
-Pola yang disarankan:
+Recommended pattern:
 
-- GitHub repository: kode, notebook, requirements, README, dan registry eksperimen.
-- `runs/`: output lokal sementara dari training/evaluasi.
-- `artifacts/`: paket lokal yang siap di-upload, tetap di-ignore oleh Git.
-- GitHub Releases/Hugging Face/Google Drive/Kaggle: tempat bobot `.pt` dan paket evaluasi `.zip`.
-- `experiments/registry.csv`: catatan link bobot, link eval artifact, metrik utama, commit, dan catatan run.
+- GitHub repository: code, notebooks, requirements, README, and the experiment registry.
+- `runs/`: local, temporary training/evaluation output.
+- `artifacts/`: local upload-ready packages, still ignored by Git.
+- GitHub Releases / Hugging Face / Google Drive / Kaggle: where `.pt` weights and evaluation `.zip` packages live.
+- `experiments/registry.csv`: a record of weight links, eval-artifact links, key metrics, commits, and run notes.
 
-Untuk membuat paket artefak dari satu run:
+> Note: `experiments/registry.csv` and the `artifacts/` folder **do not yet exist** in this repo. In the meantime, the metrics registry is held by [`docs/RESULTS_TABLE.md`](docs/RESULTS_TABLE.md).
+
+To build an artifact package from one run:
 
 ```bash
 python scripts/package_experiment.py --run-dir runs/rdd_yolov8n_local/experiments/yolov8n_baseline_native_loss --run-id yolov8n_baseline_native_loss_v1
 ```
 
-Upload file dari `artifacts/yolov8n_baseline_native_loss_v1/`, lalu isi link-nya di `experiments/registry.csv`.
+Upload the files from `artifacts/yolov8n_baseline_native_loss_v1/`, then fill in their links in `experiments/registry.csv`.
