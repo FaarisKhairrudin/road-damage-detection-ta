@@ -68,13 +68,17 @@ Catatan: YOLO-RD (7.09M params / 12.9 GFLOPs) lebih berat dari YOLOv8n (3.01M / 
 
 ## ***Ringkasan Model — Training 4 Kelas (nc=4)***
 
-Eksperimen terpisah: model dilatih langsung hanya pada 4 kelas kerusakan utama (tanpa manhole & patchy_road). Model non-modifikasi (nc=4, imgsz=640).
+Eksperimen terpisah: model dilatih langsung hanya pada 4 kelas kerusakan utama (tanpa manhole & patchy_road). Model non-modifikasi (nc=4, imgsz=640). YOLO-RD 4-kelas tersedia sebagai artefak final (`runs/rdd_4class_local/experiments/yolo_rd_4cls_class_weights/`, best.pt 9 Okt 2026, protokol sama: seed 42, 300 epoch, batch 16).
 
 | Model | Params | GFLOPs | val P | val R | val mAP50 | val mAP50-95 | test P | test R | test mAP50 | test mAP50-95 | FPS |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | yolov8n_4cls_class_weights | 3,006,428 | 8.1 | 0.646 | 0.557 | 0.612 | 0.310 | 0.644 | 0.566 | 0.631 | 0.314 | 329.4 |
 | yolov12n_4cls_class_weights | 2,557,508 | 6.3 | 0.647 | 0.576 | 0.626 | 0.320 | 0.640 | 0.577 | 0.628 | 0.319 | 329.4 |
 | yolov26n_4cls_class_weights | 2,375,616 | 5.2 | 0.674 | 0.528 | 0.587 | 0.303 | 0.654 | 0.549 | 0.604 | 0.313 | 263.1 |
+| yolov8_pd_4cls_class_weights | — | — | 0.650 | 0.560 | 0.613 | 0.307 | 0.661 | 0.580 | 0.634 | 0.319 | 130.4† |
+| yolo_rd_4cls_class_weights | — | — | 0.653 | 0.574 | 0.626 | 0.318 | 0.659 | 0.584 | 0.651 | 0.331 | 94.3† |
+
+†Params/GFLOPs tidak tercatat di artefak run; FPS = project-recorded estimate (bukan edge benchmark), protokol timing belum kanonis — sama seperti run 6-kelas.
 
 ## ***Per-Kelas mAP50 — Val (Training 4 Kelas)***
 
@@ -83,6 +87,8 @@ Eksperimen terpisah: model dilatih langsung hanya pada 4 kelas kerusakan utama (
 | yolov8n_4cls_class_weights | 0.644 | 0.591 | 0.664 | 0.548 | 0.612 |
 | yolov12n_4cls_class_weights | 0.645 | 0.616 | 0.690 | 0.554 | 0.626 |
 | yolov26n_4cls_class_weights | 0.617 | 0.551 | 0.655 | 0.523 | 0.587 |
+| yolov8_pd_4cls_class_weights | 0.651 | 0.600 | 0.662 | 0.540 | 0.613 |
+| yolo_rd_4cls_class_weights | 0.666 | 0.606 | 0.681 | 0.552 | 0.626 |
 
 ## ***Per-Kelas mAP50 — Test (Training 4 Kelas)***
 
@@ -91,6 +97,8 @@ Eksperimen terpisah: model dilatih langsung hanya pada 4 kelas kerusakan utama (
 | yolov8n_4cls_class_weights | 0.679 | 0.595 | 0.705 | 0.546 | 0.631 |
 | yolov12n_4cls_class_weights | 0.680 | 0.593 | 0.703 | 0.536 | 0.628 |
 | yolov26n_4cls_class_weights | 0.640 | 0.537 | 0.676 | 0.562 | 0.604 |
+| yolov8_pd_4cls_class_weights | 0.676 | 0.598 | 0.711 | 0.552 | 0.634 |
+| yolo_rd_4cls_class_weights | 0.699 | 0.608 | 0.715 | 0.582 | 0.651 |
 
 ## ***Ringkasan F1 (Macro & Weighted) — Training 4 Kelas***
 
@@ -99,6 +107,8 @@ Eksperimen terpisah: model dilatih langsung hanya pada 4 kelas kerusakan utama (
 | yolov8n_4cls_class_weights | 0.598 | 0.606 | 0.602 | 0.617 |
 | yolov12n_4cls_class_weights | 0.608 | 0.618 | 0.606 | 0.620 |
 | yolov26n_4cls_class_weights | 0.592 | 0.602 | 0.595 | 0.606 |
+| yolov8_pd_4cls_class_weights | 0.601 | 0.611 | 0.617 | 0.630 |
+| yolo_rd_4cls_class_weights | 0.610 | 0.620 | 0.617 | 0.629 |
 
 ## ***Per-Negara mAP50 — Test (Semua Model)***
 
@@ -106,13 +116,13 @@ Test N-RDD2024 dipecah per negara via prefix nama file (`China_*` 180 citra, `Ja
 
 | Model | China | Japan | India | Indonesia V4* | Gabungan |
 |---|---|---:|---:|---:|
-| yolov8n_class_weight | 0.883 | 0.581 | 0.426 | 0.250 | 0.648 |
-| yolov12n_class_weight | 0.890 | 0.587 | 0.433 | **0.332** | 0.654 |
-| yolov26n_class_weight | 0.869 | 0.546 | 0.443 | 0.239 | 0.625 |
-| yolov8_pd_class_weight | 0.907 | 0.570 | 0.438 | 0.279 | 0.646 |
-| yolo_rd_class_weight | 0.892 | 0.594 | 0.442 | 0.297 | 0.661 |
+| yolov8n_class_weight | 0.883 | 0.581 | 0.426 | 0.253 | 0.648 |
+| yolov12n_class_weight | 0.890 | 0.587 | 0.433 | **0.337** | 0.654 |
+| yolov26n_class_weight | 0.869 | 0.546 | 0.443 | 0.249 | 0.625 |
+| yolov8_pd_class_weight | 0.907 | 0.570 | 0.438 | 0.286 | 0.646 |
+| yolo_rd_class_weight | 0.892 | 0.594 | 0.442 | 0.302 | 0.661 |
 
-\*Indonesia V4: 5 kelas (tanpa manhole), 307 citra; angka China/Japan/India/Gabungan = 6 kelas pada test sumber. Karena itu perbandingan bersifat indikatif, bukan apel-ke-apel penuh.
+\*Indonesia V4: 5 kelas bersama (tanpa manhole), 307 citra, 502 instance (V4 FINAL); angka China/Japan/Gabungan = agregat Ultralytics 6 kelas, India = 5 kelas (manhole n=1, patchy n=0). Perbandingan bersifat indikatif; untuk antar-negara yang apple-to-apple pakai agregat 4 kelas inti (`main.tex` Tabel country-four / draft §4.4).
 
 ### ***Per-Kelas per Negara — China***
 
@@ -146,36 +156,36 @@ Test N-RDD2024 dipecah per negara via prefix nama file (`China_*` 180 citra, `Ja
 
 ## ***Distribusi Train per Negara vs Akurasi***
 
-| Negara | Train citra | Longitudinal | Transverse | Alligator | Pothole | manhole | patchy_road | Total instance | Test mAP50 |
+| Negara | Train citra | Longitudinal | Transverse | Alligator | Pothole | manhole | patchy_road | Total instance | Test mAP50 (v8n ultra) |
 |---|---|---|---|---|---|---|---|---|---|
 | Japan | 4624 | 2250 | 2385 | 3449 | 1270 | 2139 | 260 | 11753 | 0.581 |
 | China | 1423 | 1942 | 815 | 460 | 191 | 123 | 208 | 3739 | 0.883 |
 | India | 730 | 363 | 19 | 476 | 731 | 8 | 3 | 1600 | 0.426 |
 
-Catatan: volume train tidak menjelaskan peringkat (Japan 3x China tapi kalah jauh) — kesulitan domain yang menjelaskan. Tautan representasi terbersih: Transverse India (19 instance train → 0.038 test). Sel India manhole (n=1) dan patchy_road (n=0) tidak bisa diklaim.
+Catatan: volume train tidak menjelaskan peringkat (Japan 3x China tapi kalah jauh) — kesulitan domain yang menjelaskan. Tautan representasi terbersih: Transverse India (19 instance train → 0.038 test). Sel India manhole (n=1) dan patchy_road (n=0) tidak bisa diklaim. Kolom Test mAP50 di atas = agregat Ultralytics bobot v8n (India 0.426 = 5 kelas, terdongkrak 1 GT manhole 0.995); agregat 4-kelas inti India = 0.284 — lihat draft §4.4 / `main.tex` Tabel country-four.
 
 ## ***Hasil Zero-Shot RDD-indo-v4***
 
-Uji tanpa fine-tuning (conf=0.001, iou=0.6, imgsz=640) pada RDD-indo-v4 (307 citra, 514 instans, 5 kelas tanpa manhole). Sumber perbandingan: rata-rata mAP50 5 kelas bersama dari dataset sumber.
+Uji tanpa fine-tuning (conf=0.001, iou=0.6, imgsz=640) pada RDD-indo-v4 (307 citra, 502 instance, 5 kelas tanpa manhole — V4 FINAL). Sumber perbandingan: rata-rata mAP50 5 kelas bersama dari dataset sumber. Sumber angka: `runs/rdd_yolov8n_local/evaluation/zero_shot_indo_v4/domain_gap.csv` (`zs_per_class_metrics.csv`, `zs_f1_summary.csv`).
 
 ### ***Ringkasan (mAP50 + F1)***
 
 | Model | Source mAP50 (6 cls) | Source mAP50 (5 cls) | Target V4 mAP50 | Penurunan | Source macro-F1 | Target V4 macro-F1 | Penurunan macro | Source weighted-F1 | Target V4 weighted-F1 | Penurunan weighted |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| yolov12n_class_weight | 0.654 | 0.618 | **0.332** | 46.3% | 0.584 | **0.378** | 35.3% | 0.613 | **0.464** | 24.2% |
-| yolo_rd_class_weight | 0.661 | 0.624 | 0.297 | 52.3% | 0.596 | 0.332 | 44.4% | 0.625 | 0.431 | 31.0% |
-| yolov8_pd_class_weight | 0.646 | 0.611 | 0.279 | 54.3% | 0.594 | 0.305 | 48.7% | 0.617 | 0.402 | 34.9% |
-| yolov8n_class_weight | 0.648 | 0.612 | 0.250 | 59.2% | 0.581 | 0.306 | 47.3% | 0.612 | 0.392 | 36.0% |
-| yolov26n_class_weight | 0.625 | 0.586 | 0.239 | 59.1% | 0.570 | 0.274 | 52.0% | 0.598 | 0.359 | 40.0% |
+| yolov12n_class_weight | 0.654 | 0.618 | **0.337** | 45.5% | 0.584 | **0.383** | 34.5% | 0.613 | **0.471** | 23.1% |
+| yolo_rd_class_weight | 0.661 | 0.624 | 0.302 | 51.6% | 0.596 | 0.336 | 43.6% | 0.625 | 0.440 | 29.6% |
+| yolov8_pd_class_weight | 0.646 | 0.611 | 0.286 | 53.3% | 0.594 | 0.312 | 47.4% | 0.640 | 0.412 | 35.6% |
+| yolov8n_class_weight | 0.648 | 0.612 | 0.253 | 58.6% | 0.581 | 0.308 | 46.9% | 0.612 | 0.397 | 35.1% |
+| yolov26n_class_weight | 0.625 | 0.586 | 0.249 | 57.5% | 0.571 | 0.281 | 50.8% | 0.598 | 0.370 | 38.1% |
 
 ### ***Per-Kelas mAP50 — Target V4***
 
 | Model | Longitudinal_Crack | Transverse_Crack | Alligator_Crack | Pothole | patchy_road |
 |---|---:|---:|---:|---:|---:|
-| yolov12n_class_weight | **0.617** | **0.258** | **0.506** | **0.246** | 0.035 |
-| yolo_rd_class_weight | 0.570 | 0.279 | 0.468 | 0.098 | **0.072** |
-| yolov8_pd_class_weight | 0.549 | 0.216 | 0.442 | 0.129 | 0.059 |
-| yolov8n_class_weight | 0.518 | 0.217 | 0.352 | 0.108 | 0.054 |
-| yolov26n_class_weight | 0.507 | 0.156 | 0.296 | 0.201 | 0.038 |
+| yolov12n_class_weight | **0.629** | **0.256** | **0.506** | **0.260** | 0.036 |
+| yolo_rd_class_weight | 0.585 | 0.275 | 0.468 | 0.107 | **0.075** |
+| yolov8_pd_class_weight | 0.558 | 0.217 | 0.442 | 0.149 | 0.062 |
+| yolov8n_class_weight | 0.525 | 0.214 | 0.352 | 0.119 | 0.057 |
+| yolov26n_class_weight | 0.534 | 0.157 | 0.296 | 0.218 | 0.039 |
 
-Catatan: `manhole` tidak dievaluasi (0 GT di target). Angka sumber 5-kelas dihitung dari file per-class CSV source; target dari `zs_per_class_metrics.csv`. Dataset: `data/RDD-indo-v4` (Roboflow `rdd-indo-crop` v3, hanya split valid). Lihat `docs/progress/2026-10-08-zero-shot-v4-dan-f1-per-kelas.md` untuk detail metodologis dan bug `class_result` posisional.
+Catatan: `manhole` tidak dievaluasi (0 GT di target). Angka sumber 5-kelas dihitung dari file per-class CSV source; target dari `zs_per_class_metrics.csv` (V4 FINAL, 502 instance). Dataset: `data/RDD-indo-v4` (Roboflow `rdd-indo-crop` v3, hanya split valid). Lihat `docs/progress/2026-10-08-zero-shot-v4-dan-f1-per-kelas.md` untuk detail metodologis dan bug `class_result` posisional.

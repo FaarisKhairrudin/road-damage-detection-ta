@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Per-country GT vs 3 best models — 3 rows (China/Japan/India) x 4 cols (GT/v12n/RD/PD).
 
-Random 1 image per country seeded 42 for repeatability.
+Citra terpilih per negara (ditentukan user, bukan acak), lihat CHOSEN.
 
 Usage:
   python3.12 scripts/paper/paper_figs_country.py
@@ -9,7 +9,6 @@ Usage:
 
 from __future__ import annotations
 
-import random
 import sys
 from pathlib import Path
 
@@ -40,6 +39,27 @@ plt.rcParams.update({"font.family": "serif",
                      "font.size": 8, "axes.titlesize": 8, "figure.dpi": 300})
 
 
+def put_label(ax, x1: float, y1: float, x2: float, text: str, facecolor: str,
+              img_w: int, img_h: int) -> None:
+    """Label di DALAM kotak, tepat di bawah tepi atas.
+
+    Kalau label ditaruh di atas kotak, box yang menempel tepi atas gambar akan
+    meluber ke header kolom di baris pertama. Menaruhnya di dalam membuat label
+    selalu terkurung di selnya sendiri. Untuk kotak yang dekat tepi kanan, label
+    diratakan ke kanan supaya tidak terpotong di batas gambar.
+    """
+    off = 0.012 * img_h
+    near_right = x1 > 0.62 * img_w
+    if near_right:
+        ax.text(x2 - off, y1 + off, text, fontsize=5, color="white",
+                va="top", ha="right",
+                bbox={"facecolor": facecolor, "edgecolor": "none", "pad": 0.4})
+    else:
+        ax.text(x1 + off, y1 + off, text, fontsize=5, color="white",
+                va="top", ha="left",
+                bbox={"facecolor": facecolor, "edgecolor": "none", "pad": 0.4})
+
+
 def draw_gt(ax, im: Image.Image, lbl_path: Path) -> int:
     ax.imshow(im)
     W, H = im.size
@@ -53,14 +73,15 @@ def draw_gt(ax, im: Image.Image, lbl_path: Path) -> int:
                 x1, y1 = (xc - w / 2) * W, (yc - h / 2) * H
                 ax.add_patch(Rectangle((x1, y1), w * W, h * H, fill=False,
                                        edgecolor=COLORS.get(cid, "lime"), lw=1.1))
-                ax.text(x1, max(0, y1 - 3), SHORT.get(cid, ""), fontsize=5, color="white",
-                        bbox={"facecolor": COLORS.get(cid, "lime"), "edgecolor": "none", "pad": 1})
+                put_label(ax, x1, y1, x1 + w * W, SHORT.get(cid, ""),
+                          COLORS.get(cid, "lime"), W, H)
                 n += 1
     return n
 
 
 def draw_pred(ax, im: Image.Image, r) -> int:
     ax.imshow(im)
+    _, H = im.size
     n = 0
     boxes = getattr(r, "boxes", None)
     if boxes is not None and len(boxes) > 0:
@@ -70,9 +91,8 @@ def draw_pred(ax, im: Image.Image, r) -> int:
             x1, y1, x2, y2 = (float(v) for v in b.xyxy[0].tolist())
             ax.add_patch(Rectangle((x1, y1), x2 - x1, y2 - y1, fill=False,
                                    edgecolor=COLORS.get(cid, "yellow"), lw=1.1))
-            ax.text(x1, max(0, y1 - 3), f"{SHORT.get(cid, cid)} {conf:.2f}",
-                    fontsize=5, color="white",
-                    bbox={"facecolor": COLORS.get(cid, "black"), "edgecolor": "none", "pad": 1})
+            put_label(ax, x1, y1, x2, f"{SHORT.get(cid, cid)} {conf:.2f}",
+                      COLORS.get(cid, "black"), im.size[0], H)
             n += 1
     return n
 
@@ -137,6 +157,14 @@ def country_gt_panel() -> Path:
     return out
 
 
+# Citra terpilih per negara (ditentukan user, bukan acak)
+CHOSEN = {
+    "China": "China_MotorBike_000790_jpg.rf.a9f9fa8b410022d4914d3cbf2a4c14fe.jpg",
+    "Japan": "Japan_006352_jpg.rf.a2aa6f7b580f11a98f37d9fd74269652.jpg",
+    "India": "India_005081_jpg.rf.8a94355e1ed0c4f97434dd7e4f2ee741.jpg",
+}
+
+
 def main() -> None:
     if "--gt-only" in sys.argv:
         country_gt_panel()
@@ -149,13 +177,12 @@ def main() -> None:
     models = {name: YOLO(str(w)) for name, w in WEIGHTS.items()}
 
     countries = ["China", "Japan", "India"]
-    rng = random.Random(42)
     rows = []
     for c in countries:
-        imgs = sorted((SRC / "test/images").glob(f"{c}_*"))
-        chosen = rng.choice(imgs)
-        lbl = SRC / "test/labels" / (chosen.stem + ".txt")
-        rows.append((c, chosen, lbl))
+        img_path = SRC / "test/images" / CHOSEN[c]
+        if not img_path.exists():
+            raise FileNotFoundError(img_path)
+        rows.append((c, img_path, SRC / "test/labels" / f"{img_path.stem}.txt"))
 
     # batch predict
     img_paths = [r[1] for r in rows]
@@ -164,29 +191,29 @@ def main() -> None:
              for name, m in models.items()}
 
     cols = ["GT", "YOLOv12n", "YOLO-RD", "YOLOv8-PD"]
+    keys = ["yolov12n", "yolo_rd", "yolov8_pd"]
     nrows, ncols = 3, 4
     cell = 1.6
     fig = plt.figure(figsize=(cell * ncols, cell * nrows))
-    gs = fig.add_gridspec(nrows, ncols, hspace=0.12, wspace=0.06,
-                          left=0.02, right=0.99, top=0.90, bottom=0.02)
+    gs = fig.add_gridspec(nrows, ncols, hspace=0.06, wspace=0.04,
+                          left=0.055, right=0.995, top=0.94, bottom=0.01)
     for i, (cty, ip, lp) in enumerate(rows):
         im = Image.open(ip).convert("RGB")
-        # GT col
-        ax = fig.add_subplot(gs[i, 0])
-        n_gt = draw_gt(ax, im, lp)
-        ax.axis("off")
-        ax.set_title(f"{cty} GT n={n_gt}", fontsize=8)
-        # model cols
-        for j, (mname, mid) in enumerate(
-                zip(cols[1:], ["yolov12n", "yolo_rd", "yolov8_pd"], strict=True), start=1):
+        for j in range(ncols):
             ax = fig.add_subplot(gs[i, j])
-            n_pred = draw_pred(ax, im, preds[mid][i])
+            if j == 0:
+                draw_gt(ax, im, lp)
+            else:
+                draw_pred(ax, im, preds[keys[j - 1]][i])
             ax.axis("off")
-            ax.set_title(f"{mname} n={n_pred}", fontsize=8)
+            if i == 0:
+                ax.set_title(cols[j], fontsize=8, pad=3)
+            if j == 0:
+                ax.text(-0.05, 0.5, cty, fontsize=8, rotation=90,
+                        va="center", ha="right", transform=ax.transAxes)
 
-    fig.suptitle("Source-domain detection: GT vs 3 models (display conf=0.25)", fontsize=9)
     out = OUTDIR / "paper_fig_country_examples.png"
-    fig.savefig(out, dpi=300, bbox_inches="tight")
+    fig.savefig(out, dpi=300, bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
     print(f"wrote {out} ({out.stat().st_size/1024:.0f} KB)")
     for c, p, _ in rows:

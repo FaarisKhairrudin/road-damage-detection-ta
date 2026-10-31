@@ -10,13 +10,21 @@
 \usepackage{float} % [H] placement for the qualitative figure (formatting only)
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
-% Float breathing room (formatting only): keep tables/figures from stacking
-% back-to-back on dense two-column pages.
+% Float distribution (formatting only): let LaTeX interleave floats with text
+% instead of deferring them all to the tail of the document.
 \setlength{\floatsep}{10pt plus 2pt minus 2pt}
 \setlength{\textfloatsep}{12pt plus 2pt minus 2pt}
 \setlength{\intextsep}{10pt plus 2pt minus 2pt}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\dbltopfraction}{0.9}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.75}
+\renewcommand{\dblfloatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{dbltopnumber}{2}
+\setcounter{totalnumber}{5}
 \hypersetup{
-  pdftitle={Source-Domain Accuracy and Zero-Shot Transfer of Nano-Scale YOLO Detectors for Road Damage Detection},
+  pdftitle={Comparative Evaluation of Compact YOLO Detectors for Road Damage Detection Under Domain Shift},
   pdfauthor={Faaris Khairrudin and Gamma Kosala}
 }
 
@@ -25,16 +33,15 @@
 \newif\ifsourceexamples     \sourceexamplesfalse    % six-label illustration
 \newif\ifdistractoranalysis \distractoranalysistrue % four- vs six-class training
 \newif\ifcountryanalysis   \countryanalysistrue  % common-four-class country comparison
-\newif\ifcoretransferanalysis \coretransferanalysistrue % four- vs five-class domain contrast
 \newif\ifmaterialanalysis  \materialanalysistrue % target GT/prediction case studies
-\newif\iffeaturevizanalysis \featurevizanalysistrue % exploratory earlier-export image statistics/embedding
+\newif\iffeaturevizanalysis \featurevizanalysisfalse % exploratory earlier-export image statistics/embedding (OFF for submission: 308-image earlier export, not the evaluated 307-image V4; keep files for supplement/regeneration)
 
 % TODO (submission): confirm author list, affiliation, and email.
 % DONE (2026-10-08): verified primary sources now in references.bib
 % (tian2025yolov12_primary = arXiv:2502.12524; sapkota2025yolo26_primary = arXiv:2509.25164).
 \begin{document}
 
-\title{Source-Domain Accuracy and Zero-Shot Transfer of Nano-Scale YOLO Detectors for Road Damage Detection}
+\title{Comparative Evaluation of Compact YOLO Detectors for Road Damage Detection Under Domain Shift}
 
 \author{\IEEEauthorblockN{Faaris Khairrudin}
 \IEEEauthorblockA{\textit{School of Computing}\\
@@ -52,7 +59,7 @@ gammakosala@telkomuniversity.ac.id}
 \maketitle
 
 \begin{abstract}
-Road-damage detectors must distinguish defects from other road-surface objects while maintaining useful performance outside their training domain. We compared five nano-scale YOLO detectors on the six-class Asian subset of N-RDD2024, comprising four damage classes and two additional surface-object classes. Mean average precision (mAP) at an intersection-over-union (IoU) threshold of 0.5 is the primary metric. We evaluated the six-class models without target-domain fine-tuning on the five annotated classes of an Indonesian road image set. On the 995-image source test set, a local reconstruction of YOLO-RD achieved the highest six-class mAP at IoU 0.5, 0.661; YOLOv12n achieved 0.654. On the 307-image, 502-instance target export, YOLOv12n obtained the highest five-class mAP at IoU 0.5, 0.337, versus 0.618 on the same five classes of the source test set. \ifdistractoranalysis Four-class versus six-class training produced only small, mixed changes in damage-class mAP at IoU 0.5; these results do not establish a benefit from explicitly labeling the two additional classes.\fi{} These single-seed results show that source-domain ranking and zero-shot ranking need not coincide. Target annotation quality control and a standardized throughput protocol remain to be documented before submission.
+Road-damage detectors must distinguish defects from other road-surface objects while maintaining useful performance outside their training domain. We compared five compact YOLO detectors on the six-class Asian subset of N-RDD2024, comprising four damage classes and two additional surface-object classes. Mean average precision (mAP) at an intersection-over-union (IoU) threshold of 0.5 is the primary metric. We tested the six-class models on an Indonesian road image set without fine-tuning, with the main transfer comparison restricted to the same four damage classes in both domains. On the 995-image source test set, our reimplementation of YOLO-RD achieved the highest six-class mAP at IoU 0.5, 0.661, followed by YOLOv12n at 0.654. On the 307-image target set, YOLOv12n obtained the highest four-damage-class mAP at IoU 0.5, 0.413, versus 0.626 on the same classes of the source test set, the smallest relative decrease among the five models (34.1\%). \ifdistractoranalysis Four-class versus six-class training produced small, mixed changes in damage-class mAP at IoU 0.5 and did not establish a benefit from explicitly labeling the two additional classes.\fi{} These single-seed results show that source-domain ranking and zero-shot ranking need not coincide.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -60,92 +67,107 @@ road damage detection, YOLO, object detection, domain shift, zero-shot evaluatio
 \end{IEEEkeywords}
 
 \section{Introduction}
-Road-damage detection can support inspection of cracks and potholes, but image-based detectors encounter variation in pavement appearance and camera conditions. In particular, a detector trained on roads in one set of countries may encounter different surface textures, image viewpoints, and class frequencies on an unseen route. Multi-country road-damage datasets provide a basis for training and evaluating such systems \cite{arya2021deep,Arya2024846}. Manholes and pavement patches can visually resemble potholes, motivating their annotation as separate classes in prior work \cite{matouq2024ai}. N-RDD2024 additionally annotates road-surface objects beyond the four commonly used damage classes \cite{kaya2024nrdd2024}. Whether explicitly learning these additional labels improves detection of the damage classes is an empirical question, not a consequence of their apparent visual similarity.
+Road-damage detectors must separate structural damage from visually similar non-damage surface objects under variation in pavement appearance, viewpoints, and camera conditions. Multi-country road-damage datasets support evaluation beyond the training distribution \cite{arya2021deep,Arya2024846}. Prior work identifies manhole covers and road patches as potential visual distractors in pothole detection \cite{matouq2024ai,bucko2022computer,Shi_2026}, motivating a comparison of training with and without these labels for core damage detection in compact YOLO models.
 
-Recent YOLO-based road-damage methods emphasize either compact computation or richer feature extraction \cite{Li2024,Zeng2024,Wang2025}. Results reported on different datasets and training recipes cannot isolate the relative behavior of these designs. Moreover, a detector selected solely by its source-domain score may perform differently on an unseen target export. We therefore ask how five nano-scale detectors compare on a common six-class source test set and how much performance they retain on an unseen target split without fine-tuning.
+Recent road-damage studies propose custom YOLO variants for lower computation or richer feature extraction and compare them with selected baselines \cite{Li2024,Zeng2024,Wang2025}. Comparative studies have also evaluated successive YOLO architectures under shared training configurations for road-damage detection \cite{tilmisani2025road}. These studies motivate a joint comparison of task-specific variants and newer native models, including YOLOv12n and YOLO26n, under a common experimental protocol. Because the studies use different datasets and protocols, their scores are not directly comparable across papers. Moreover, a detector selected solely by its source-domain score may perform differently on unseen road images. We therefore ask how five compact detectors compare on a common six-class source test set and how much performance they retain on an unseen target dataset without fine-tuning.
 % REVIEW-ANALYSIS [covered]: Source-Domain Detection and Computational Trade-off
 % and Zero-Shot Target Evaluation answer the comparison above; check final tables.
 % REVIEW-ANALYSIS [conditional]: The next question is answered in Four- versus
 % Six-Class Training (Table~\ref{tab:ablation}); keep it paired with that section.
 \ifdistractoranalysis We also ask what changes when manhole and patchy-road labels are removed from training, measured on the same four damage classes.\fi
 
-This study contributes a comparison under a broadly shared training policy and a class-aligned source--target evaluation. \ifdistractoranalysis It additionally tests the label-set ablation on common damage classes.\fi{} We report observed differences descriptively: the experiments used one documented seed, and the available target metadata do not establish a representative sample of Indonesian roads.
+This study compares five compact YOLO detectors under a common experimental protocol, with model-specific differences documented. It evaluates zero-shot transfer to a local Indonesian road dataset using the same four damage classes in both domains\ifdistractoranalysis{} and examines whether explicitly labeling manholes and road patches improves damage detection\fi{}.
 
 \section{Related Work}
 \subsection{Datasets and Cross-Domain Evaluation}
-RDD2022 assembled road-damage images across multiple countries and established a common set of crack and pothole labels \cite{Arya2024846}. N-RDD2024 extends the label vocabulary to additional defects and road-surface objects, including manholes and patched roads \cite{kaya2024nrdd2024}. Earlier cross-country road-damage work motivates testing beyond the training distribution \cite{arya2021deep}; however, a performance difference between two differently composed evaluation splits alone cannot identify the physical cause of the difference.
+RDD2022 assembled multi-national road images around four core crack and pothole categories \cite{Arya2024846}, while earlier cross-country studies motivated testing detectors beyond their training distribution \cite{arya2021deep}. However, prior image-based pothole detectors often suffer from false alarms caused by visually similar non-damage surface features \cite{bucko2022computer}. The SVRDD dataset added manhole covers as a separate class after they were confused with potholes \cite{Shi_2026}. Bu{\v{c}}ko et al. likewise used separate labels for potholes and manhole covers because their visual similarity can cause misclassification, while Matouq et al. advocated joint training across potholes, manholes, and road patches to reduce false detections \cite{bucko2022computer,matouq2024ai}. N-RDD2024 expanded road defect annotations to ten categories that include manholes and patched roads \cite{kaya2024nrdd2024}.
 
 \subsection{Compact Detection Architectures}
-YOLO performs object detection in a single-stage framework \cite{redmon2016you}. Road-damage YOLO variants explore attention, lightweight convolutions, and feature-fusion changes, including SimAM/GhostConv and GhostConv/ECA designs \cite{Li2024,Wu2023}. Among the models compared here, YOLOv8-PD combines a bottleneck-transformer block and large-separable-kernel attention with C2fGhost neck blocks and a lightweight shared-convolution head \cite{Zeng2024}, whereas YOLO-RD integrates star-operation backbone blocks, multi-dimensional auxiliary fusion in the neck, and a wavelet-convolution head \cite{Wang2025}.
+YOLO performs object detection in a single-stage framework \cite{redmon2016you}, and many road-damage studies modify its structure for either mobile efficiency or better sensitivity to small defects. Most custom variants add lightweight convolutions, attention modules, or feature-fusion blocks to reduce computation or suppress background noise \cite{Wu2023,Li2024,Shi_2026}. Comparative evaluations of pothole detectors further highlight the need to consider both detection accuracy and inference speed when selecting models for road monitoring \cite{rianto2025pothole}. To compare these design choices, we reimplement two recent road-damage models. YOLOv8-PD \cite{Zeng2024} focuses on parameter efficiency by combining Ghost-based blocks \cite{han2020ghostnet}, attention modules, and a shared-convolution head. Conversely, YOLO-RD \cite{Wang2025} prioritizes richer feature extraction for small defects and complex backgrounds using star-operation blocks, auxiliary neck fusion, and a wavelet-convolution head \cite{finder2024wtconv}. This comparison examines how the two task-specific designs perform against native Ultralytics models, namely YOLOv8n, YOLOv12n \cite{tian2025yolov12_primary}, and YOLO26n \cite{sapkota2025yolo26_primary}, under a broadly shared training policy.
 
 \section{Materials and Methods}
+Fig.~\ref{fig:methodology-workflow} summarizes the overall experimental workflow.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\columnwidth]{gambar/methodology_workflow.png}
+\caption{Experimental workflow. Mosaic augmentation is applied only to the source training split.}
+\label{fig:methodology-workflow}
+\end{figure}
+
 \subsection{Source and Target Data}
-We used the N-RDD2024 Asian subset (China, Japan, and India) with four damage labels: longitudinal crack (D00), transverse crack (D10), alligator crack (D20), and pothole (D40). Of N-RDD2024's ten categories, we retained manhole (D70) and patchy road (D80) alongside the four core damage classes because of their potential visual similarity to potholes \cite{kaya2024nrdd2024,matouq2024ai}. The train, validation, and test splits contained 6,777, 1,898, and 995 images, respectively, with 17,092, 4,773, and 2,425 label instances in the split inventory. \ifdistractoranalysis The corresponding four-class label inventories contained 14,351, 3,996, and 2,035 instances; images were retained when the two additional labels were removed.\fi{} Patchy road had 471 training instances, compared with 4,555 longitudinal-crack instances, a 9.7-fold count difference; manhole had 2,270 training instances. One duplicate validation annotation was removed by the Ultralytics evaluator; the instance counts above describe the dataset inventory rather than the post-scan evaluation count. \ifsourceexamples Fig.~\ref{fig:source-classes} illustrates the six source labels.
+To test the visual-distractor hypothesis discussed in Section II-A, we extracted the Asian subset (China, Japan, and India) of N-RDD2024 \cite{kaya2024nrdd2024} and filtered its ten original categories into six labels. These comprise four structural damage classes, namely longitudinal crack (D00), transverse crack (D10), alligator crack (D20), and pothole (D40), alongside two pothole-resembling surface classes, namely manhole (D70) and patchy road (D80). The remaining categories were outside the scope of this comparison. The train, validation, and test splits were formed by multilabel stratified sampling at a 70:20:10 ratio, which preserves class proportions across splits, and contained 6,777, 1,898, and 995 images, respectively, with 17,092, 4,773, and 2,425 label instances in the split inventory. \ifdistractoranalysis The corresponding four-class label inventories contained 14,351, 3,996, and 2,035 instances; images were retained when the two additional labels were removed.\fi{} Patchy road had 471 training instances, compared with 4,555 longitudinal-crack instances, a 9.7-fold count difference; manhole had 2,270 training instances. \ifsourceexamples Fig.~\ref{fig:source-classes} illustrates the six source labels.
 
 \begin{figure*}[!t]
 \centering
-\includegraphics[width=0.83\textwidth]{gambar/class_examples.png}
+\includegraphics[width=0.62\textwidth]{gambar/class_examples.png}
 \caption{Annotated examples of the six source-domain categories: D00, D10, D20, D40, D70, and D80. These are illustrations, not evidence of model-specific errors.}
 \label{fig:source-classes}
 \end{figure*}
 \fi
 
-The target images were collected along Jl. Raya Bojongsoang, Bandung Regency, Indonesia, using a road-facing smartphone video recorded at 1080p. Frames were sampled at 1 frame/s, yielding approximately 1,000 candidate frames for curation and annotation in Roboflow. The analyzed export contains 307 images resized to 640 $\times$ 640, 502 annotated instances, and 39 images with empty labels retained as background examples. Longitudinal crack accounts for 231 target instances; patchy road has only 21. Only the export's \texttt{valid} split was available; we used it for zero-shot evaluation, not training. Five target labels were mapped by class name to the source taxonomy: alligator crack, longitudinal crack, patchy road, pothole, and transverse crack. There was no target ground truth for manhole, so that class was excluded from five-class target aggregates. % REVIEW-METHOD [pending]: archive the exact annotation release and document frame selection criteria, label QC, video-frame dependence, and possible source overlap.
+The target set, RDD-Indo, was collected using a road-facing Android smartphone at 1080p resolution in both traffic directions, primarily along Jalan Raya Bojongsoang and on nearby streets in Bandung Regency, Indonesia. Videos were sampled at one frame per second. The selected images were annotated by one annotator in Roboflow and center-cropped to $640 \times 640$ pixels to match the model input size. The set contains 307 images and 502 annotations: 481 instances across the four damage classes and 21 patchy-road instances. No manholes were annotated, and 39 images contain background only. Worn, irregular repairs were retained as patchy-road annotations even when their boundaries were partly indistinct. Here, zero-shot evaluation means applying source-trained detectors to the Indonesian target set without fine-tuning; the evaluated damage categories are already known from source training.
 
 \subsection{Compared Models and Training}
-We evaluated YOLOv8n, YOLOv12n \cite{tian2025yolov12_primary}, YOLO26n \cite{sapkota2025yolo26_primary}, and nano-scale Ultralytics reconstructions of YOLOv8-PD and YOLO-RD \cite{Zeng2024,Wang2025}. The reconstructions implement selected design elements rather than bit-exact reproductions of the authors' models. We trained all five six-class models with 640-pixel inputs and seed 42 for up to 300 epochs, using early stopping with patience 40. Shared augmentations were Mosaic (1.0), MixUp (0.05), horizontal flip (0.5), translation (0.10), and scale (0.50); rotation was disabled. To account for unequal training-instance counts across classes, we applied effective-number-derived per-class weights ($\beta=0.999$) to the binary-cross-entropy classification component of the detection loss \cite{cui2019class}.
 
-Batch size and mixed-precision settings varied across models. YOLO26n followed the shared experimental policy, which may differ from its architecture-specific recommended recipe. These factors limit attribution of performance differences solely to architecture.
+
+
+We evaluated YOLOv8n, YOLOv12n \cite{tian2025yolov12_primary}, YOLO26n \cite{sapkota2025yolo26_primary}, and compact Ultralytics reimplementations of YOLOv8-PD and YOLO-RD \cite{Zeng2024,Wang2025}. The reimplementations include selected design elements rather than exact reproductions of the authors' models. Both use nano depth and width scaling. In YOLO-RD, the auxiliary fusion is implemented with Upsample, Concat, and $1 \times 1$ convolution rather than the original weighted-sum formulation. Native models used pretrained checkpoints, while the custom reimplementations loaded only compatible YOLOv8n weights. All five six-class models were trained with 640-pixel inputs, batch size 16, and seed 42 for up to 300 epochs, with early stopping at patience 40. Training used Ultralytics' automatic optimizer selection with weight decay set to 0.0005. The best checkpoint was selected using validation-set Ultralytics fitness. Shared augmentations were Mosaic (1.0), MixUp (0.05), horizontal flip (0.5), translation (0.10), and scale (0.50); rotation was disabled. To account for unequal training-instance counts across classes, we applied effective-number-derived per-class weights ($\beta=0.999$) to the binary-cross-entropy classification component of the detection loss \cite{cui2019class}.
+
+Automatic mixed precision was enabled for the three native models and disabled for the two custom reimplementations. YOLO26n followed the shared experimental policy, which may differ from its architecture-specific recommended recipe. Source-domain training and throughput measurement used an NVIDIA GeForce RTX 4070 SUPER 12 GB GPU. Throughput was measured at 640-pixel input with Ultralytics 8.4.108, PyTorch 2.5.1, and CUDA 12.1. Training time is wall-clock time until early stopping. The comparison evaluates these model implementations under the tested settings.
 % REVIEW-METHOD [conditional]: This ablation design is evaluated on the same four
-% damage labels in Four- versus Six-Class Training; no YOLO-RD four-class run.
-\ifdistractoranalysis For the label-set ablation, four separate four-class models (YOLOv8n, YOLOv12n, YOLO26n, and YOLOv8-PD) were trained after removing D70/D80 annotations. YOLO-RD had no corresponding four-class run.\fi
-
-\subsection{Metrics and Comparison Rules}
-We report class-averaged average precision (AP) at IoU 0.5 (mAP@0.5), mAP over IoU thresholds 0.5--0.95, and macro-averaged F1. For the target comparison, we additionally report F1 weighted by ground-truth class support. \ifdistractoranalysis For the ablation, we average per-class AP over \emph{only} D00, D10, D20, and D40 for both training regimes; directly contrasting the six-class and four-class aggregate mAP would change the evaluated label set.\fi{} In the target evaluation, the five annotated classes are compared with the corresponding five-class average recomputed from source test per-class results. We define the descriptive relative difference as
-\begin{equation}
-\Delta_{\mathrm{rel}} = 100\left(1-\frac{\mathrm{mAP}^{\mathrm{target}}_{5}}{\mathrm{mAP}^{\mathrm{source}}_{5}}\right)\%,
-\label{eq:relative-drop}
-\end{equation}
-where the subscript denotes the five shared labels, not five-class training. Equation~\eqref{eq:relative-drop} is used only for the descriptive source--target contrast in Table~\ref{tab:transfer}\ifcoretransferanalysis{} and Table~\ref{tab:core-transfer}\fi. Source and target evaluations used 640-pixel inputs, confidence threshold 0.001, and non-maximum suppression (NMS) IoU threshold 0.6 where applicable. No target-domain fine-tuning was performed. Because the target class distribution and image selection differ from the source test set, $\Delta_{\mathrm{rel}}$ is a cross-set performance contrast, not a causal estimate of a specific domain factor.
-
-\section{Results and Discussion}
-\subsection{Source-Domain Detection and Computational Trade-off}
-% REVIEW-METHOD [pending]: FPS is only a recorded throughput proxy; rerun with
-% a canonical timing protocol or remove the FPS column before submission.
-Table~\ref{tab:source} reports the six-class source test results. YOLO-RD obtained the highest mAP@0.5 (0.661) and macro-F1 (0.633). Its mAP@0.5:0.95 of 0.371 was tied, to three decimal places, with YOLOv12n. YOLO26n had the lowest summary-reported computation (5.2 GFLOPs), while YOLOv8-PD had the lowest parameter count (2.47 M) and the highest recorded throughput estimate. YOLO-RD had the highest mAP@0.5 but also the highest GFLOPs (12.8). These rankings are observations from one run per model, not statistically resolved differences or evidence of intrinsic superiority.
+% damage labels in Four- versus Six-Class Training.
+\ifdistractoranalysis For the label-set comparison, the same five architectures were trained on D00, D10, D20, and D40 after removing D70/D80 annotations, while retaining the original image splits.\fi
 
 \begin{table*}[!t]
 \centering
-\caption{Six-class N-RDD2024 source test performance and model complexity (995 images). Complexity values are evaluation-time summaries; FPS is a project-recorded estimate.}
+\caption{Six-class source-test performance, model complexity, and training cost on N-RDD2024 (995 images).}
 \label{tab:source}
 \footnotesize
 \setlength{\tabcolsep}{6pt}
-\begin{tabular}{lrrrrrr}
+\begin{tabular}{lrrrrrrrr}
 \toprule
-Model & mAP@0.5 & mAP@0.5:.95 & Macro-F1 & Params (M) & GFLOPs$^{\dagger}$ & FPS$^{*}$ \\
+Model & mAP@0.5 & mAP@0.5:0.95 & Macro-F1 & Params (M) & GFLOPs$^{\dagger}$ & FPS$^{*}$ & Train time (h) & Epochs (best/total) \\
 \midrule
-YOLOv8n    & 0.648 & 0.364 & 0.617 & 3.01 & 8.1  & 219.7 \\
-YOLOv12n   & 0.654 & 0.371 & 0.619 & 2.56 & 6.3  & 319.3 \\
-YOLO26n    & 0.625 & 0.358 & 0.606 & 2.38 & 5.2  & 293.3 \\
-YOLOv8-PD  & 0.646 & 0.362 & 0.627 & 2.47 & 7.6  & 368.4 \\
-YOLO-RD    & \textbf{0.661} & \textbf{0.371} & \textbf{0.633} & 7.09 & 12.8 & 189.4 \\
+YOLOv8n    & 0.648 & 0.364 & 0.617 & 3.01 & 8.1  & 219.7 & 4.4 & 108/148 \\
+YOLOv12n   & 0.654 & 0.371 & 0.619 & 2.56 & 7.3  & 319.3 & 4.7 & 110/150 \\
+YOLO26n    & 0.625 & 0.358 & 0.606 & 2.38 & 5.3  & 293.3 & 5.3 & 131/171 \\
+YOLOv8-PD  & 0.646 & 0.362 & 0.627 & 2.47 & 7.7  & 368.4 & 6.3 & 150/190 \\
+YOLO-RD    & \textbf{0.661} & \textbf{0.371} & \textbf{0.633} & 7.09 & 12.8 & 189.4 & 11.7 & 238/278 \\
 \bottomrule
 \end{tabular}
 \par\smallskip
-{\scriptsize $^{*}$Project-recorded estimate on a system reporting an NVIDIA RTX 4070 SUPER; timing protocol is unreconciled and this is not an edge-device benchmark. $^{\dagger}$Parameter counts and GFLOPs are from Ultralytics 8.4.108 evaluation-time model summaries at 640-pixel input; GFLOPs are computational estimates, not measured latency.\par}
+{\scriptsize $^{*}$FPS uses mean preprocessing, inference, and postprocessing time over the test set. $^{\dagger}$Complexity values summarize the evaluated models. GFLOPs are computational estimates at 640-pixel input.\par}
 \end{table*}
 
-Across the five six-class runs, pothole AP@0.5 ranged from 0.526 to 0.541, below the corresponding longitudinal- and alligator-crack values. Manhole AP@0.5 ranged from 0.820 to 0.845, whereas patchy-road AP@0.5 ranged from 0.512 to 0.587 with only 69 test instances. These class-level results do not show that manholes were mislabeled as potholes. The parameter and GFLOP counts summarize model complexity; the FPS values in Table~\ref{tab:source} should not be interpreted as deployment latency or a universal real-time guarantee.
+\subsection{Metrics and Comparison Rules}
+We report mean average precision (mAP) at intersection-over-union (IoU) 0.5 and averaged over IoU thresholds from 0.5 to 0.95, together with macro-F1. These are unweighted class averages of average precision (AP) and F1, respectively. Macro-F1 is computed from the per-class precision and recall reported by Ultralytics at the confidence threshold that maximizes the smoothed mean F1 on the evaluated split. \ifdistractoranalysis The training-label comparison uses only D00, D10, D20, and D40 under both training regimes.\fi{} The zero-shot comparison evaluates D00, D10, D20, and D40 in both domains, following the four damage categories used in RDD2022 \cite{Arya2024846}. The six-class model weights and all target images are retained. Results including patchy road are provided in the supplementary analysis. We define the relative decrease as
+\begin{equation}
+\Delta_{\mathrm{rel},K} = 100\left(1-\frac{\mathrm{mAP}^{\mathrm{target}}_{K}}{\mathrm{mAP}^{\mathrm{source}}_{K}}\right)\%,
+\label{eq:relative-drop}
+\end{equation}
+where $K$ is the number of evaluated classes, not the number of training classes. We use $K=4$ in Table~\ref{tab:transfer} and $K=5$ in the supplementary analysis. Source and target AP evaluations used 640-pixel inputs, a minimum confidence of 0.001, and non-maximum suppression (NMS) IoU threshold 0.6 where applicable. Equation~\eqref{eq:relative-drop} summarizes a performance difference between these test sets, not the magnitude of domain shift or the causal effect of pavement texture, lighting, or location.
+
+\ifdistractoranalysis As an additional diagnostic, we count pothole predictions with confidence $\geq 0.25$ that overlap at least one annotated manhole or patchy-road box at IoU $\geq 0.5$. Each prediction is counted once, even if it overlaps multiple distractor boxes; multiple predictions may overlap the same object. This is a prediction-box count, not an object-level false-positive rate.\fi
+
+
+
+
+\section{Results and Discussion}
+\subsection{Source-Domain Detection and Computational Trade-off}
+% REVIEW-METHOD [resolved 2026-10-12]: FPS protocol verified from docs/RESULTS.md logs (RTX 4070 SUPER 12282MiB, Ultralytics 8.4.108, torch 2.5.1+cu121, Python 3.12.3); mAP GPU-independence re-verified on RTX 3050 (mAP50 0.6476 identical).
+Table~\ref{tab:source} reports the six-class source test results. YOLO-RD obtained the highest mAP@0.5 (0.661) and macro-F1 (0.633). Its mAP@0.5:0.95 of 0.371 was tied, to three decimal places, with YOLOv12n. YOLO26n had the lowest GFLOPs (5.3), while YOLOv8-PD used fewer parameters (2.47 M) than the YOLOv8n baseline and had the highest measured throughput. The compactness of our YOLOv8-PD reimplementation is consistent with the efficiency-oriented design of the original model \cite{Zeng2024}. YOLO-RD had the highest GFLOPs (12.8). These rankings are observations from one run per model, not statistically resolved differences or evidence of intrinsic superiority. Training time ranged from 4.4 to 11.7 h, with YOLO-RD completing the most epochs (278). The custom models also reused fewer pretrained weights. Their training costs reflect differences in implementation, precision settings, and stopping epochs, so these results do not isolate the effect of architecture.
+
+Across the five six-class runs, pothole AP@0.5 ranged from 0.526 to 0.541, below the corresponding longitudinal- and alligator-crack values. Manhole AP@0.5 ranged from 0.820 to 0.845, whereas patchy-road AP@0.5 ranged from 0.512 to 0.587 with only 69 test instances.
 
 \ifcountryanalysis
 \subsection{Country-Labeled Source Subsets}
-% REVIEW-ANALYSIS [pending]: Replace rounded country means with exact
-% per-country/per-class exports, or omit this optional subsection.
-The source test split contained 180 China, 705 Japan, and 110 India images. Direct comparison of their original six-class aggregate AP is misleading: India has just one manhole instance and no patchy-road ground truth. Table~\ref{tab:country-four} instead averages AP@0.5 over the same four damage classes present in all three country-labeled subsets. For YOLOv12n, the approximate scores are 0.933, 0.579, and 0.293, respectively. These arithmetic means are reconstructed from project results-table entries rounded to three decimals; exact per-country per-class exports should replace them before submission.
+
+The source test split contained 180 China, 705 Japan, and 110 India images. Their six-class AP averages are not directly comparable because India has just one manhole instance and no patchy-road ground truth. Table~\ref{tab:country-four} instead averages AP@0.5 over the same four damage classes present in all three country-labeled subsets. For YOLOv12n, the scores are 0.933, 0.579, and 0.293, respectively.
 
 \begin{table}[!htbp]
 \centering
-\caption{Approximate source test mAP@0.5 over D00/D10/D20/D40 only, from rounded per-class country results.}
+\caption{Source-test mAP@0.5 over the four damage classes, by country.}
 \label{tab:country-four}
 \footnotesize
 \setlength{\tabcolsep}{5pt}
@@ -160,67 +182,53 @@ YOLOv8-PD & 0.953 & 0.567 & 0.299 \\
 YOLO-RD   & 0.945 & 0.587 & 0.304 \\
 \bottomrule
 \end{tabular}
+\par\smallskip
+{\scriptsize India has 6 transverse-crack test instances and 19 training instances.\par}
 \end{table}
 
-The common-class ordering was China, Japan, then India for each evaluated model. The Japan training subset contained more images than China's, yet this comparison cannot isolate dataset size from scene composition, viewpoints, or annotation differences. Only 19 transverse-crack instances occurred in the India training subset, making conclusions about this class particularly fragile. Fig.~\ref{fig:country-examples} shows one labeled image and three predictions from each source country; these selected images illustrate differences in detection behavior, not subgroup error frequencies.
+Every model scored highest on the Chinese subset, followed by the Japanese and Indian subsets. These are source-test subgroup results: all three countries were represented in training. The Japan training subset contained more images than China's, yet this comparison cannot isolate dataset size from scene composition, viewpoints, or annotation differences. India's small transverse-crack sample also limits class-specific conclusions. In Fig.~\ref{fig:country-examples}, all three models detect prominent features in the Chinese example, while some annotated cracks or potholes are missed in the Japanese and Indian examples.
 
-\begin{figure*}[!t]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.86\textwidth]{gambar/paper_fig_country_examples.png}
-\caption{Selected source-test examples from China, Japan, and India: ground truth (GT) and predictions from three models at display confidence 0.25. One image per country does not represent its full test split.}
+\includegraphics[width=\columnwidth]{gambar/paper_fig_country_examples.png}
+\caption{Source-test ground truth (GT) and predictions from three models for selected images from China, Japan, and India. Display confidence is 0.25.}
 \label{fig:country-examples}
-\end{figure*}
+\end{figure}
 
-Fig.~\ref{fig:domain-examples} compares typical-looking images across the three source subsets and the Indonesian target export. The displayed images were selected near within-subset medians of simple image statistics. They reveal changes in viewpoint, scene content, and pavement appearance, but do not identify which factor accounts for the measured performance differences.
+Fig.~\ref{fig:domain-examples} illustrates differences in camera framing and pavement appearance. The displayed images were selected near within-subset medians of simple image statistics. In the displayed Chinese images, a downward-looking view emphasizes nearby pavement and surface details. The Japanese images show forward-looking street views with buildings and road sections at different distances. The Indian examples contain more sky and distant scenery, with a vehicle edge visible in some lower borders, leaving less image area for nearby pavement. The Indonesian examples show light-colored, coarse-textured pavement with cracks, traffic, and shadows. The images are not paired observations of the same scene. These selected images provide context for the subgroup results, but do not establish why their scores differ or how often particular errors occur.
 
-\begin{figure*}[!t]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.68\textwidth]{gambar/paper_figD4_domains.png}
-\caption{Three selected images per subset: China (180 test images), Japan (705), India (110), and Indonesia (307 target images). The panels illustrate appearance variation; they are not paired observations of the same scene.}
+\includegraphics[width=0.75\columnwidth]{gambar/paper_figD4_domains.png}
+\caption{Selected source and target images illustrating differences in camera framing and pavement appearance, with three examples per subset.}
 \label{fig:domain-examples}
-\end{figure*}
+\end{figure}
 \fi
 
 \ifdistractoranalysis
-% REVIEW-ANALYSIS [provisional]: keep visible in this full-results draft; the
-% four-class runs/results are still being finalized before submission.
 \subsection{Four- versus Six-Class Training}
-Table~\ref{tab:ablation} compares four-class training against six-class training after restricting evaluation of \emph{both} models to the same four damage classes. The four-class runs were higher in mAP@0.5 by 0.0017--0.0108 for three architectures and lower by 0.0008 for YOLO26n. YOLOv8-PD showed the largest observed change (+0.0108). Pothole AP@0.5 increased in each four-class pair, although the change was only about 0.001 for YOLOv12n. Thus, explicit D70/D80 labels did not yield a consistent measured gain for the four principal classes in these runs.
+Table~\ref{tab:ablation} compares four-class training against six-class training after restricting evaluation of \emph{both} models to the same four damage classes. Four-class training gave slightly higher mAP@0.5 for four architectures and a slightly lower score for YOLO26n. YOLO-RD showed the largest observed change (+0.0180). Pothole AP@0.5 increased in each four-class pair, although the change was only about 0.001 for YOLOv12n. Thus, explicit D70/D80 labels did not yield a consistent measured gain for the four principal classes in these runs.
 
-An earlier image-level proxy counted pothole predictions anywhere in images containing D70/D80, even when the prediction did not overlap either object. For YOLOv8n trained on six classes, it counted 53 predictions against 390 distractor ground-truth boxes; a spatial-overlap check found only three. The proxy-based significance tests therefore cannot support a distractor-misclassification claim. Table~\ref{tab:overlap} reports the overlap diagnostic for all four paired architectures. At confidence 0.25 and box IoU at least 0.5, each run yielded only 1--3 pothole predictions overlapping 390 distractor annotations, with none overlapping the 69 patchy-road annotations. The paired differences were zero or one prediction. These counts describe prediction boxes, not uniquely matched objects or a formal false-positive rate. Neither this diagnostic nor the small single-seed AP differences establish a causal benefit from adding D70/D80 labels.
+The overlap columns in Table~\ref{tab:overlap} provide a separate diagnostic based on 390 distractor annotations: 321 manhole and 69 patchy-road boxes. Each architecture produced 1--3 overlapping pothole predictions under the stated thresholds. All overlaps involved manholes, and paired counts differed by zero or one box. The small paired differences provide no clear evidence that adding D70/D80 labels reduces these overlaps.
 
 \begin{table}[!htbp]
 \centering
-\caption{Source test mAP@0.5 over the same four damage classes under each training label set.}
+\caption{Source-test comparison of four- and six-class training: four-damage-class mAP@0.5 and pothole prediction boxes overlapping distractor annotations. Overlaps use confidence 0.25 and IoU $\geq 0.5$.}
 \label{tab:ablation}
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{lrrr}
-\toprule
-Architecture & Six-class train & Four-class train & Difference \\
-\midrule
-YOLOv8n   & 0.6224 & 0.6311 & +0.0088 \\
-YOLOv12n  & 0.6264 & 0.6280 & +0.0017 \\
-YOLO26n   & 0.6044 & 0.6036 & $-0.0008$ \\
-YOLOv8-PD & 0.6233 & 0.6341 & +0.0108 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[!t]
-\centering
-\caption{Pothole prediction boxes overlapping distractor ground truth on the source test set (confidence 0.25; overlap IoU $\geq 0.5$; 321 manhole and 69 patchy-road boxes).}
 \label{tab:overlap}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{lrr}
+\begin{tabular}{lrrrr}
 \toprule
-Architecture & Six-class train & Four-class train \\
+ & \multicolumn{2}{c}{mAP@0.5} & \multicolumn{2}{c}{Pothole overlaps} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Architecture & Six-class & Four-class & Six-class & Four-class \\
 \midrule
-YOLOv8n   & 3 & 3 \\
-YOLOv12n  & 2 & 3 \\
-YOLO26n   & 1 & 2 \\
-YOLOv8-PD & 2 & 2 \\
+YOLOv8n    & 0.6224 & 0.6311 & 3 & 3 \\
+YOLOv12n   & 0.6264 & 0.6280 & 2 & 3 \\
+YOLO26n    & 0.6044 & 0.6036 & 1 & 2 \\
+YOLOv8-PD  & 0.6233 & 0.6341 & 2 & 2 \\
+YOLO-RD    & 0.6331 & 0.6511 & 3 & 2 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -228,67 +236,29 @@ YOLOv8-PD & 2 & 2 \\
 % not a unique-GT matched-object false-positive rate.
 \fi
 
-\subsection{Zero-Shot Target Evaluation}
-% REVIEW-ANALYSIS [covered]: Table~\ref{tab:transfer} uses five shared labels;
-% Fig.~\ref{fig:class-transfer} shows class-specific AP. The optional
-% sensitivity analysis below uses four damage labels on both splits.
-Table~\ref{tab:transfer} compares source-test and Indonesian target mAP@0.5 over the same five labels. Every model scored lower on the target export. YOLOv12n had the highest target score (0.337), versus 0.618 on the source test, a 45.5\% relative contrast. YOLO-RD led the five-class source comparison (0.624) but scored 0.302 on the target, below YOLOv12n. The source and target rankings thus differed under this evaluation protocol.
+\subsection{Zero-Shot Transfer and Domain Shift}
+Table~\ref{tab:transfer} compares the same four damage classes in both domains using the six-class models. All models scored lower on the target set. YOLOv12n had the highest target mAP@0.5 (0.413), compared with 0.626 on the source test, and the smallest relative decrease among the five models (34.1\%). It therefore showed the strongest observed zero-shot transfer on this Indonesian target set. YOLO-RD led the four-damage-class source comparison (0.633) but reached 0.359 on the target, below YOLOv12n. This performance gap is consistent with domain shift between the source and Indonesian road images, but does not identify its causes. For YOLOv12n, target longitudinal-crack AP@0.5 (0.629) remained higher than transverse-crack AP (0.256) and pothole AP (0.260). \ifmaterialanalysis Selected target predictions are illustrated in Fig.~\ref{fig:target-cases}.\fi
 
 \begin{table}[!htbp]
 \centering
-\caption{Zero-shot target evaluation vs. source test over the five shared labels (307 target images, 502 instances; no fine-tuning).}
+\caption{Zero-shot mAP@0.5 over the same four damage classes, using six-class model weights without fine-tuning. All 307 target images are retained, with 481 damage annotations.}
 \label{tab:transfer}
-\footnotesize
-\setlength{\tabcolsep}{3.7pt}
-\begin{tabular}{lrrrr}
-\toprule
-Model & Source mAP & Target mAP & Drop (\%) & Target F1$^{*}$ \\
-\midrule
-YOLOv8n   & 0.612 & 0.253 & 58.6 & 0.308 \\
-YOLOv12n  & 0.618 & \textbf{0.337} & 45.5 & \textbf{0.383} \\
-YOLO26n   & 0.586 & 0.249 & 57.5 & 0.281 \\
-YOLOv8-PD & 0.611 & 0.286 & 53.3 & 0.312 \\
-YOLO-RD   & \textbf{0.624} & 0.302 & 51.6 & 0.336 \\
-\bottomrule
-\end{tabular}
-\par\smallskip
-{\scriptsize $^{*}$Macro-F1 over the five target classes with ground truth.\par}
-\end{table}
-
-Fig.~\ref{fig:class-transfer} shows that the five-class target contrast was uneven across classes. For YOLOv12n, longitudinal-crack AP@0.5 changed from 0.680 to 0.629 (231 target instances), whereas transverse-crack AP changed from 0.582 to 0.256 (132 instances), pothole from 0.535 to 0.260 (70), and patchy road from 0.587 to 0.036 (21). The low patchy-road score has limited target support. YOLOv12n target macro-F1 was 0.383 versus support-weighted F1 of 0.471; the former gives each of the five classes equal weight. Manhole had no target annotations and was excluded, not scored as zero.
-
-\begin{figure*}[!t]
-\centering
-\includegraphics[width=0.82\textwidth]{gambar/paper_fig2_perclass_collapse_v12n.png}
-\caption{YOLOv12n AP@0.5 on the source test and Indonesian target export by shared class. Target ground-truth counts appear under class names. The differing test samples limit causal interpretation of the class-specific differences.}
-\label{fig:class-transfer}
-\end{figure*}
-
-The export differs from the source in data provenance, viewpoints, label support, and sampling. Its lower scores document a cross-set generalization problem under this protocol; they do not identify pavement material, lighting, or geography as a cause. % REVIEW-ANALYSIS [ongoing]: investigate plausible contributors without presenting an untested cause as a finding.
-
-\ifcoretransferanalysis
-\subsection{Sensitivity to the Shared Class Set}
-The five-class mAP gives patchy road the same weight as each damage class despite its 21 target instances. Table~\ref{tab:core-transfer} repeats the comparison over only the four damage labels on \emph{both} splits. YOLOv12n changed from 0.626 to 0.413, a 34.1\% relative contrast, compared with 45.5\% over five labels. The target performance difference remains under either label set, while the summary's magnitude depends on which classes are averaged.
-
-\begin{table}[!htbp]
-\centering
-\caption{Source--target mAP@0.5 over only the four shared damage classes.}
-\label{tab:core-transfer}
 \footnotesize
 \setlength{\tabcolsep}{5pt}
 \begin{tabular}{lrrr}
 \toprule
-Model & Source (4) & Target (4) & Drop (\%) \\
+Model & Source mAP & Target mAP & Drop (\%) \\
 \midrule
 YOLOv8n   & 0.622 & 0.303 & 51.4 \\
-YOLOv12n  & 0.626 & 0.413 & 34.1 \\
+YOLOv12n  & 0.626 & \textbf{0.413} & 34.1 \\
 YOLO26n   & 0.604 & 0.301 & 50.2 \\
 YOLOv8-PD & 0.623 & 0.342 & 45.2 \\
-YOLO-RD   & 0.633 & 0.359 & 43.4 \\
+YOLO-RD   & \textbf{0.633} & 0.359 & 43.4 \\
 \bottomrule
 \end{tabular}
 \end{table}
-\fi
+
+The observed performance decrease is consistent with the cross-domain road-damage detection challenges investigated in prior studies on domain adaptation \cite{lin2023dardd,li2025dife}. YOLOv12 uses area attention to capture broader spatial context \cite{tian2025yolov12_primary}. This could contribute to its transfer performance, but the present experiments do not isolate the effect of attention from other architectural and training differences.
 
 \iffeaturevizanalysis
 \subsection{Exploratory Image and Feature Variation}
@@ -296,39 +266,39 @@ An earlier visualization used the same 995 source-test images but 308 Indonesian
 
 A source-trained YOLOv8n embedding of those images is illustrated by the UMAP projection in Fig.~\ref{fig:exploratory-umap}. The plotted groups differ in position, but projection coordinates are arbitrary. Because the target images and annotations do not match the evaluated export exactly, this visualization neither quantifies the reported performance gap nor demonstrates a cause for detection errors.
 
-\begin{figure}[!t]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=\columnwidth]{gambar/draft_umap_per_domain.png}
+\includegraphics[width=0.85\columnwidth]{gambar/draft_umap_per_domain.png}
 \caption{Exploratory YOLOv8n feature UMAP using an earlier 308-image Indonesian export and the 995 source-test images. The target export evaluated in this paper contains 307 images; projection distances are not a physical domain measure.}
 \label{fig:exploratory-umap}
 \end{figure}
-% REVIEW-ANALYSIS [pending]: regenerate descriptive statistics and embedding
-% on the frozen 307-image, 502-instance export before using them as direct
-% evidence about this evaluation; an older export has 308 images.
+% REVIEW-ANALYSIS [decided 2026-10-12]: exploratory UMAP/stats excluded from submission (earlier 308-image export, not the evaluated 307-image V4). Options: regenerate on frozen V4 for supplement, or omit.
 \fi
 
 \ifmaterialanalysis
-\subsection{Target Error and Correct-Detection Cases}
-A selected group of 42 morning-video frames contains 62 target annotations, versus 440 in the other 265 frames. The groups differ in label support: the morning group has no annotated patchy roads and eight potholes, versus 21 and 62, respectively, in the other frames. No matched-class evaluation of these groups was performed; the examples below are illustrative, not an estimate of a glare effect.
+\subsection{Visual Error Examples}
+Fig.~\ref{fig:target-cases} shows four selected target cases. The displayed patchy-road prediction is an additional qualitative observation, outside the four-class transfer metric. In row 1, visually normal pavement has no damage annotation, yet YOLOv12n predicts patchy road and YOLOv8-PD predicts pothole, while YOLO-RD returns no box at the display threshold. In row 2, YOLOv12n misses the annotated transverse crack, YOLO-RD returns a small misplaced transverse-crack box, and YOLOv8-PD predicts pothole. All three models detect the longitudinal crack in row 3, but YOLOv8-PD returns multiple boxes. Row 4 contains two annotated longitudinal cracks and one transverse crack. The models detect these cracks but also return additional transverse-crack boxes.
 
-Fig.~\ref{fig:target-cases} contrasts two selected target frames with ground truth (GT) and predictions. In the upper morning frame, the annotation file is empty, while YOLOv12n predicts patchy road at confidence 0.78 and YOLOv8-PD predicts pothole at 0.69 on porous-looking pavement. An empty file does not independently verify that every visible feature is defect-free, so this case requires annotation review before a stronger false-positive claim. In the lower frame, all three models identify an annotated longitudinal crack, although the predicted boxes differ. These cases illustrate possible errors and correct detections, not their frequencies or a cause of the aggregate performance difference.
 
-\begin{figure*}[!t]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.86\textwidth]{gambar/paper_figG_error_success_cases.png}
-\caption{Two selected Indonesian target frames with GT and predictions from three models at display confidence 0.25: (top) morning porous-looking pavement with an empty annotation file and nonempty predictions; (bottom) an annotated longitudinal crack detected by all three models. Quantitative evaluation uses confidence 0.001.}
+\includegraphics[width=0.90\columnwidth]{gambar/paper_figG_cases_4x4.png}
+\caption{Ground truth and zero-shot predictions on four Indonesian target images. Columns show GT, YOLOv12n, YOLO-RD, and YOLOv8-PD. Display confidence is 0.25; predictions retain all six model classes.}
 \label{fig:target-cases}
-\end{figure*}
+\end{figure}
+
+Visual inspection suggests that some false positives occur on target-road surfaces with a coarse, pitted texture that differs from some inspected source-road surfaces. Subtle sunlight reflections in a few morning images may also alter surface appearance. These observations suggest possible contributors to the errors, but do not establish their causes or explain the overall performance gap.
+
 \fi
 
 \subsection{Limitations}
-Each six-class model configuration used a single training seed (42); batch size and mixed-precision settings varied by model. \ifdistractoranalysis Some four-class weights were transferred from a laboratory machine; software-environment equivalence with all six-class runs has not been established. The four-versus-six-class comparison did not include YOLO-RD.\fi{} The local YOLOv8-PD/YOLO-RD reconstructions were not exact author-code replications. Parameter counts and GFLOPs are summary-based complexity estimates rather than device measurements; the throughput protocol needs a canonical timed re-evaluation. The target was an export with only a validation split, not a documented independently sampled test set. A 1080p road-facing smartphone recording and 1-frame/s sampling were reported, but date metadata, frame selection, annotation quality, video-frame dependence, and possible source overlap need further documentation. The current evidence therefore supports descriptive results for this particular target export, not universal claims about deployment in Indonesia.
+ The custom models are reimplementations with partial pretrained-weight transfer, limiting architecture-only comparisons. Target images cover a small area around Jalan Raya Bojongsoang and nearby streets, so geographic generalization is limited. Target labels were produced by one annotator, and inter-annotator agreement was not assessed. The visual examples do not measure error frequencies. The measured GPU throughput is hardware-specific and is neither an edge-device benchmark nor a universal real-time guarantee.
 
 \section{Conclusion}
-In the six-class source evaluation, the local YOLO-RD reconstruction attained the highest mAP@0.5 (0.661), while YOLOv12n attained the highest five-class mAP@0.5 on the zero-shot target export (0.337). \ifdistractoranalysis Comparing the same four damage classes under six- versus four-class training yielded small, mixed changes and did not demonstrate that explicit manhole and patchy-road labels improved damage detection.\fi{} The class-aligned source--target differences motivate evaluation on the intended data before model selection. Multi-seed training, matched-object error analysis, documented target annotation and sampling, and standardized timing are needed before stronger claims about label utility or deployment can be made.
+Our YOLO-RD reimplementation achieved the highest six-class source mAP@0.5 (0.661), while YOLOv12n achieved the highest four-damage-class zero-shot target mAP@0.5 (0.413) and the smallest relative decrease (34.1\%). The ranking changed on the local target set even when both domains were evaluated on the same four damage classes. \ifdistractoranalysis The paired training-label comparison did not establish a consistent benefit from adding manhole and patchy-road labels for core damage detection.\fi{}
 
-% Balance the bibliography columns on the final page of this full draft.
-\IEEEtriggeratref{7}
+The models showed different strengths: YOLO-RD led source accuracy, YOLOv12n led transfer to the Indonesian target set, and YOLOv8-PD had the highest measured throughput. Source accuracy alone was therefore insufficient to identify the best model for this target set. Repeated-seed training and evaluation across more road environments are needed to determine whether these rankings hold beyond the tested data and hardware.
+
 \bibliographystyle{IEEEtran}
 \bibliography{IEEEabrv,references}
 

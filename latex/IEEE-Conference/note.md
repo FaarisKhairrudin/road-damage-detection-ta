@@ -1,3 +1,5 @@
+> Historical planning notes: several statements below predate the October 2026 revisions. For the current review and unresolved checks, see `../../docs/progress/2026-10-30-ieee-final-submission-audit.md`. In particular, PD is not the smallest model, and no significance test establishes the distractor effect.
+
 # Draft Paper Notes
 
 This note records items that are intentionally provisional in the current conference-paper draft. The paper is written in scientific English, but several experimental and metadata details still need to be validated before submission.
@@ -44,15 +46,15 @@ The repository contains different hardware descriptions. The final paper should 
 
 FPS is hardware-dependent and should not be presented as a universal deployment speed.
 
-### 3. YOLO-RD profiling discrepancy
+### 3. YOLO-RD profiling discrepancy — RESOLVED 2026-10-15
 
-The current artifacts report different YOLO-RD values. The main result table currently uses:
+The profiling discrepancy is resolved: Params/GFLOPs were recomputed from the final trained checkpoints (fused-model summaries, Ultralytics 8.4.177, 640-pixel input) and archived in `runs/rdd_yolov8n_local/model_complexity.json` (script: `scripts/audit_model_complexity.py`). The paper now uses:
 
 - 7.09M parameters;
-- 12.9 GFLOPs;
-- 189.4 FPS.
+- 12.8 GFLOPs;
+- 189.4 FPS (FPS unchanged, original 8.4.108 protocol).
 
-Some JSON/log artifacts report slightly different parameter and GFLOP counts and a substantially different FPS estimate. Re-run or select one canonical profiling protocol, then update the paper, `docs/RESULTS_TABLE.md`, and this note consistently.
+`docs/RESULTS_TABLE.md` still carries the OLD disputed Params/GFLOPs values and should be reconciled separately; JSON/log artifacts that disagree (e.g. 2.376M/5.2 for YOLO26n in RESULTS.md) reflect older Ultralytics versions and are superseded by the archived recompute.
 
 ### 4. Target zero-shot result artifact
 

@@ -214,6 +214,8 @@ TA-Project/
 | `fp_overlap_table.py` | FP *proxy* vs *overlap* (IoU-based) table per model | `python scripts/fp_overlap_table.py` |
 | `viz_fp_overlap.py` | FP proxy vs true FP visualization (2×2 PNG + CSV) | `python scripts/viz_fp_overlap.py` |
 | `package_experiment.py` | Bundle one run into an upload-ready `.zip` artifact | see the example in `README.md` §Storing Experiment Results |
+| `paper/paper_fig_architectures_detailed.py` | Generate separate layer-level PD/RD diagrams from local YAMLs with channels, dimensions and depth-scaled repeats | `python3 scripts/paper/paper_fig_architectures_detailed.py` |
+| `paper/paper_fig_architectures.py` | Generate grouped vector schematics of the local PD/RD reimplementations; PDF/PNG in `latex/IEEE-Conference/gambar/` | `python3 scripts/paper/paper_fig_architectures.py` (PDF); PNG preview via pdftoppm |
 | `run_nb_zs_v4.py` | Run all cells of the zero-shot v4 notebook (nbclient) | `python scripts/run_nb_zs_v4.py` |
 | `run_zs_v4_finish.py` | Zero-shot v4 finishing: val v8n/v12n, domain_gap plot, pred samples | `python scripts/run_zs_v4_finish.py` |
 
@@ -224,6 +226,7 @@ TA-Project/
 | `PROPOSAL_TA.md` | **Token-efficient proposal index** — read this before opening the `.tex` files |
 | `IEEE-Conference/main.tex` | IEEE paper draft (English) |
 | `IEEE-Conference/draft/draft-analisis-hasil.md` | Results-analysis draft (Indonesian) for the paper |
+| `IEEE-Conference/supplementary-zero-shot.tex` | Supplementary five-class zero-shot analysis including patchy road; PDF in `IEEE-Conference/hasil/supplementary-zero-shot.pdf` |
 | `IEEE-Conference/note.md` | Provisional items to validate before submission |
 | `IEEE-Conference/IEEE-FORMATTING-RULES.md` | IEEE conference formatting rules checklist (from official template) |
 | `IEEE-Conference/references.bib` | Paper BibTeX (13 entries at audit time) |

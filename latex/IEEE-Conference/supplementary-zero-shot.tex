@@ -1,0 +1,18 @@
+\documentclass[10pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage[hidelinks]{hyperref}
+\title{Supplementary Analysis: Zero-Shot Evaluation Including Patchy Road}
+\author{Faaris Khairrudin and Gamma Kosala}
+\date{}
+\begin{document}
+\maketitle
+\section*{Scope and evaluation protocol}
+This supplement accompanies \emph{Comparative Evaluation of Compact YOLO Detectors for Road Damage Detection Under Domain Shift}. The main paper compares source and target performance on four damage classes: longitudinal crack (D00), transverse crack (D10), alligator crack (D20), and pothole (D40). This additional analysis includes patchy road (D80) as a fifth evaluated class in both domains. The six-class trained model weights and all 307 target images are retained, without fine-tuning. No images are removed because they contain patchy road. Manhole (D70) is excluded from this comparison because the target set has no annotated instances.
+
+The five-class score is the unweighted mean of the five class-specific AP values at IoU 0.5. The relative decrease is computed as $100(1-\mathrm{mAP}^{\mathrm{target}}_5/\mathrm{mAP}^{\mathrm{source}}_5)\%$. Source and target AP evaluations use 640-pixel inputs, a minimum confidence of 0.001, and NMS IoU threshold 0.6 where applicable, as in the main paper. Reported percentage decreases use the underlying evaluation values rather than rounded displayed scores.
+\section*{Results and interpretation}
+Including patchy road in the five-class average gives YOLOv12n a source score of 0.618 and a target score of 0.337, a 45.5\% relative decrease. Target patchy-road AP@0.5 was low for every model (0.036 to 0.075), based on only 21 annotations. Visual review of the annotated patches found worn, irregular target repairs, sometimes with partly missing boundaries or light-colored, cement-like surfaces, unlike the clearer boundaries and darker surfaces in inspected source examples. These appearance and annotation differences may make patch transfer harder, but they have not been tested as causes. The lower target scores remain when patchy road is excluded, so the transfer problem is not limited to that class.
+
+These descriptive results are retained for transparency alongside the four-class comparison. The visual observations do not establish causal explanations, and the small number of target patch annotations limits broader conclusions.
+\end{document}

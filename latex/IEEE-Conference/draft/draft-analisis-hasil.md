@@ -64,6 +64,8 @@ Sumber konfigurasi: `code/03_*_modelling_comparative_local.ipynb` (6 kelas), `co
 | **YOLOv12n** (native baru) | **Seimbang / stabil tengah** | R-ELAN + area attention; ringan tapi akurasi dekat RD | 2,57M / 7,5 / 319,3 |
 | **YOLOv26n** (native terbaru, end-to-end NMS-free) | Protokol bersama, bukan resep resmi | ProgLoss via `E2ELoss`; limitasi: DFL 1,5 vs 6,0 resmi, batch 16 vs 128, STAL tidak ada di ultralytics 8.4.108/115 | 2,51M / **5,9** / 293,3 |
 
+Waktu training hingga early stopping: YOLOv8n 4,4 jam (best epoch 108 / total 148), YOLOv12n 4,7 jam (110/150), YOLOv26n 5,3 jam (131/171), YOLOv8-PD 6,3 jam (150/190), dan YOLO-RD 11,7 jam (238/278). Semua run berhenti 39 epoch setelah best epoch, konsisten dengan patience 40.
+
 > Peringatan kompleksitas (dari `rangkuman-v2.md`): angka Params/GFLOPs di `RESULTS_TABLE.md` tidak cocok dengan ringkasan fused di `RESULTS.md` (mis. v26n 2.506M/5.9 vs 2.376M/5.2). Jangan salin Params/GFLOPs ke paper final sebelum rekonsiliasi dengan runtime dan bobot yang sama. FPS selalu cantumkan hardware + protokol.
 
 YOLOv8-PD & YOLO-RD adalah **rekonstruksi dari paper tanpa kode resmi** (bukan replika eksak). YOLOv26n dilaporkan sebagai **hasil di bawah protokol bersama**, bukan bukti inferior intrinsik.
@@ -124,15 +126,17 @@ Urutan tidak identik di tiap sumbu: akurasi RD > v12n > v8n ≈ PD > v26n; kecep
 | yolov12n 6cls | 6 | 0.0062 (2/321) | 0.0000 | 0.0051 (2/390) |
 | yolov26n 6cls | 6 | 0.0031 (1/321) | 0.0000 | 0.0026 (1/390) |
 | yolov8-PD 6cls | 6 | 0.0062 (2/321) | 0.0000 | 0.0051 (2/390) |
+| yolo-rd 6cls | 6 | 0.0093 (3/321) | 0.0000 | 0.0077 (3/390) |
+| yolo-rd 4cls | 4 | 0.0062 (2/321) | 0.0000 | 0.0051 (2/390) |
 | yolov8n 4cls | 4 | 0.0093 (3/321) | 0.0000 | 0.0077 (3/390) |
 | yolov12n 4cls | 4 | 0.0093 (3/321) | 0.0000 | 0.0077 (3/390) |
 | yolov26n 4cls | 4 | 0.0062 (2/321) | 0.0000 | 0.0051 (2/390) |
 | yolov8-PD 4cls | 4 | 0.0062 (2/321) | 0.0000 | 0.0051 (2/390) |
 
-Temuan: TRUE gabungan semua model 0.0026–0.0077 (1–3 prediksi dari 390 GT) — **salah-label pengecoh sebagai Pothole hampir tidak pernah terjadi**. TRUE patchy = 0 di SEMUA model. Pasangan 6cls vs 4cls se-arsitektur identik atau beda ≤1 prediksi (v8: 3=3; v12: 2 vs 3; v26: 1 vs 2; PD: 2=2) → **tidak ada bukti efek distractor pada FP beneran**. Deteksi pengecoh 6cls sendiri baik: manhole 0.81–0.92, patchy 0.55–0.61.
+Temuan: TRUE gabungan semua model 0.0026–0.0077 (1–3 prediksi dari 390 GT) — **salah-label pengecoh sebagai Pothole hampir tidak pernah terjadi**. TRUE patchy = 0 di SEMUA model (10/10 baris). Pasangan 6cls vs 4cls se-arsitektur identik atau beda ≤1 prediksi (v8: 3=3; v12: 2 vs 3; v26: 1 vs 2; PD: 2=2; RD: 3 vs 2) → **tidak ada bukti efek distractor pada FP beneran**. Deteksi pengecoh 6cls sendiri baik: manhole 0.81–0.92 (RD 0.83), patchy 0.55–0.61 (RD 0.59).
 Gambar bukti: `runs/rdd_yolov8n_local/viz_fp_overlap_yolov8n_test.png` (panel A FP beneran / B proxy-saja / C penanganan benar / D kasus kedua) + detail `viz_fp_overlap_detail.csv`.
 
-**(b) mAP pothole 6cls-dilatih vs 4cls-dilatih (test, kelas yang sama):**
+**(b) mAP pothole 6cls-dilatih vs 4cls-dilatih (test, kelas yang sama, presisi penuh):**
 
 | Arsitektur | 6cls pothole | 4cls pothole | Δ (4−6) |
 |---|---|---|---|
@@ -140,31 +144,33 @@ Gambar bukti: `runs/rdd_yolov8n_local/viz_fp_overlap_yolov8n_test.png` (panel A 
 | v12n | 0.535 | 0.536 | +0.001 |
 | v26n | 0.538 | 0.562 | +0.024 |
 | v8-PD | 0.541 | 0.552 | +0.011 |
+| YOLO-RD | 0.527 | 0.582 | +0.055 |
 
 **(c) Agregat 4 kelas inti (mAP50 rata-rata D00/D10/D20/D40) + macro-F1:**
 
 | Arsitektur | 6cls mAP50 4-inti | 4cls mAP50 4-inti | Δ | 6cls macro-F1 4-inti | 4cls macro-F1 | Δ F1 |
 |---|---|---|---|---|---|---|
-| v8n | 0.6224 | 0.6311 | +0.0087 | 0.602 | 0.602 | ~0.000 |
-| v12n | 0.6264 | 0.6280 | +0.0016 | 0.602 | 0.606 | +0.004 |
+| v8n | 0.6224 | 0.6311 | +0.0088 | 0.602 | 0.602 | ~0.000 |
+| v12n | 0.6264 | 0.6280 | +0.0017 | 0.602 | 0.606 | +0.004 |
 | v26n | 0.6044 | 0.6036 | −0.0008 | 0.588 | 0.595 | +0.007 |
 | v8-PD | 0.6233 | 0.6341 | +0.0108 | 0.6057 | 0.6167 | +0.011 |
+| YOLO-RD | 0.6331 | 0.6511 | +0.0180 | 0.6129 | 0.6174 | +0.005 |
 
-**Bacaan dua sisi:** tidak ada bukti untung dari label eksplisit pada FP beneran (TRUE overlap nyaris nol di kedua rezim) + ada tren rugi kecil yang konsisten pada mAP pothole bila pengecoh dipakai (4cls lebih tinggi di 4/4 pasangan, walau v12n hanya +0.001). Keduanya efek kecil, single-seed, belum diuji inferensial → laporkan sebagai **tren yang diamati**, bukan klaim signifikan atau kausal. (YOLO-RD tidak punya run 4-kelas.)
+**Bacaan dua sisi:** tidak ada bukti untung dari label eksplisit pada FP beneran (TRUE overlap nyaris nol di kedua rezim, RD 6cls 3/390 vs 4cls 2/390 — hasil run GPU 2026-10-12, `fp_overlap_6cls_vs_4cls_test.csv` 10 baris) + ada tren rugi kecil yang konsisten pada mAP pothole bila pengecoh dipakai (4cls lebih tinggi di 5/5 pasangan; RD +0.055 terbesar). Keduanya efek kecil, single-seed, belum diuji inferensial → laporkan sebagai **tren yang diamati**, bukan klaim signifikan atau kausal.
 
 ### 4.4 Variasi per negara sumber — agregat menyembunyikan segalanya
 
-| Model | China (180) | Japan (705) | India (110) | Gabungan (995) |
-|---|---|---|---|---|
-| YOLOv8n | 0.883 | 0.581 | 0.426 | 0.648 |
-| YOLOv12n | 0.890 | 0.587 | 0.433 | 0.654 |
-| YOLOv26n | 0.869 | 0.546 | 0.443 | 0.625 |
-| YOLOv8-PD | 0.907 | 0.570 | 0.438 | 0.646 |
-| YOLO-RD | 0.892 | 0.594 | 0.442 | 0.661 |
+| Model | China (180) | Japan (705) | India (110) |
+|---|---|---|---|
+| YOLOv8n | 0.931 | 0.578 | 0.284 |
+| YOLOv12n | 0.933 | 0.579 | 0.293 |
+| YOLOv26n | 0.933 | 0.543 | 0.305 |
+| YOLOv8-PD | 0.953 | 0.567 | 0.299 |
+| YOLO-RD | 0.945 | 0.587 | 0.304 |
 
-> Concern keterbandingan: kolom China/Japan/India/Gabungan di atas memakai agregat **6 kelas** pada test sumber (heatmap `runs/rdd_yolov8n_local/per_country/per_country_heatmap.png`). India hanya punya 1 GT manhole dan 0 GT patchy, sehingga agregat 6-kelas antar-negara tidak apple-to-apple penuh. Untuk klaim paper, ulangi agregat pada 4 kelas inti yang sama (seperti `main.tex` Tabel country-four) atau beri catatan eksplisit. Pola peringkatnya tetap identik di semua model (China ≫ Japan > India) → efek domain, bukan arsitektur.
+> Agregat = rata-rata mAP50 4 kelas inti (D00/D10/D20/D40) dari bobot 6-kelas — apple-to-apple antar-negara. Δ dihitung dari presisi penuh lalu dibulatkan (bukan selisih angka 4dp). Angka Ultralytics mentah (6-kelas untuk China/Japan; 5-kelas India 0.426–0.443 yang terdongkrak 1 GT manhole 0.995) tidak dipakai di sini. India transverse test n=6 (train 19); manhole n=1 excluded; patchy n=0. Pola peringkat tetap identik di semua model (China ≫ Japan > India) → efek domain, bukan arsitektur. Sama dengan `main.tex` Tabel country-four (terverifikasi 15/15 sel dari `RESULTS_TABLE.md`).
 
-**Bacaan:** Japan punya train 3x China tetapi kalah jauh → volume bukan penjelas; kesulitan domain yang menjelaskan. Tautan representasi terbersih: Transverse India (train 19 instance → test 0.002–0.21 tergantung model). Sorotan per-kelas per-negara (dari `RESULTS_TABLE.md`): China pothole/alligator/patchy ≈ 0.95–0.995 (mudah); Japan patchy anjlok ke 0.27–0.36; India transverse kolaps. Ini justifikasi § zero-shot: bila antar-negara sumber saja gap sudah 0.88→0.43, wajar target Indonesia jatuh lebih jauh.
+**Bacaan:** Japan punya train 3x China tetapi kalah jauh → volume bukan penjelas; kesulitan domain yang menjelaskan. Tautan representasi terbersih: Transverse India (train 19 instance → test 0.002–0.21 tergantung model). Sorotan per-kelas per-negara (dari `RESULTS_TABLE.md`): China pothole/alligator/patchy ≈ 0.95–0.995 (mudah); Japan patchy anjlok ke 0.27–0.36; India transverse kolaps. Ini justifikasi § zero-shot: bila antar-negara sumber saja gap sudah 0.93→0.29 (4-kelas inti), wajar target Indonesia jatuh lebih jauh.
 
 ### 4.5 Zero-shot ke Indonesia V4 — gap besar, ranking berbalik (ANGKA V4 FINAL)
 
@@ -203,7 +209,7 @@ Evaluasi: bobot sumber langsung diuji ke remap V4, `conf=0.001, iou=0.6`. Perban
 
 (Sumber: `zs_per_class_metrics.csv` + `yolov12n_class_weight_test_per_class_metrics.csv`.)
 
-**Bacaan + concern keterbandingan:** collapse tidak merata — Longitudinal bertahan, Transverse/Pothole kolaps, Patchy hancur. Ini nyambung ke hipotesis tekstur porous Bojongsoang (lubang-lubang kecil merata menyerupai retak/patch) + kilau pagi. Tetapi **support V4 beda jauh dari support sumber** (patchy 21 vs 69; pothole 70 vs 312) dan komposisi kelas beda, sehingga Δ per-kelas bukan efek domain murni — ada komponen ketidakpastian statistik kelas langka. Nilai 4-kelas inti saja (tanpa patchy): sumber 0.626 → V4 ~0.413 (−34%), lebih kecil dari 5-kelas −45.5% → patchy memperbesar gap agregat.
+**Bacaan + concern keterbandingan:** collapse tidak merata — Longitudinal bertahan, Transverse/Pothole kolaps, Patchy hancur. Ini nyambung ke hipotesis tekstur porous Bojongsoang (lubang-lubang kecil merata menyerupai retak/patch) + kilau pagi. Tetapi **support V4 beda jauh dari support sumber** (patchy 21 vs 69; pothole 70 vs 312) dan komposisi kelas beda, sehingga Δ per-kelas bukan efek domain murni — ada komponen ketidakpastian statistik kelas langka. Nilai 4-kelas inti saja (tanpa patchy): sumber 0.626 → V4 0.413 (−34.1%, eksak dari `zs_per_class_metrics.csv`), lebih kecil dari 5-kelas −45.5% → patchy memperbesar gap agregat.
 
 ### 4.7 Karakteristik gambar per domain — mengapa gap terjadi
 

@@ -6,7 +6,7 @@ Penelitian ini membandingkan lima detektor YOLO skala nano pada data kerusakan j
 
 Pertama model terbaik di data sumber belum tentu terbaik di data Indonesia. YOLO RD menang di sumber dengan skor 0,661 namun kalah di Indonesia dengan skor 0,302. YOLOv12n yang hanya kedua di sumber justru menjadi yang terbaik di Indonesia dengan skor 0,337.
 
-Kedua keruntuhan di Indonesia tidak merata. Retak memanjang hampir tidak terpengaruh sedangkan retak melintang dan lubang jalan runtuh parah. Patchy road hancur total namun jumlah contohnya hanya 22 sehingga angkanya harus dibaca hati hati.
+Kedua keruntuhan di Indonesia tidak merata. Retak memanjang hampir tidak terpengaruh sedangkan retak melintang dan lubang jalan runtuh parah. Patchy road hancur total namun jumlah contohnya hanya 21 sehingga angkanya harus dibaca hati hati.
 
 Ketiga dugaan bahwa objek mirip lubang membingungkan model ternyata tidak terbukti pada pengukuran yang benar. Dari 390 objek pengecoh seluruh model hanya salah melabeli 1 sampai 3 box. Tidak ada satu pun prediksi lubang yang menimpa patchy road.
 
@@ -39,13 +39,13 @@ Retak memanjang mendominasi hampir separuh data sedangkan patchy road hanya 4,2 
 
 ## Hasil Utama di Data Sumber
 
-| Model | Presisi | Recall | mAP50 | mAP50-95 | F1 Makro | F1 Tertimbang | Params (M) | GFLOPs | FPS |
-|---|---|---|---|---|---|---|---|---|---|
-| YOLOv8n | 0,643 | 0,599 | 0,648 | 0,364 | 0,617 | 0,636 | 3,01 | 8,2 | 219,7 |
-| YOLOv12n | 0,638 | 0,608 | 0,654 | 0,371 | 0,619 | 0,637 | 2,57 | 7,5 | 319,3 |
-| YOLOv26n | 0,642 | 0,580 | 0,625 | 0,358 | 0,606 | 0,622 | 2,51 | 5,9 | 293,3 |
-| YOLOv8 PD | 0,675 | 0,591 | 0,646 | 0,362 | 0,627 | 0,640 | 2,46 | 7,7 | 368,4 |
-| YOLO RD | 0,655 | 0,618 | 0,661 | 0,371 | 0,633 | 0,650 | 7,09 | 12,9 | 189,4 |
+| Model | Presisi | Recall | mAP50 | mAP50-95 | F1 Makro | F1 Tertimbang | Params (M) | GFLOPs | FPS | Waktu training |
+|---|---|---|---|---|---|---|---|---|---|---|
+| YOLOv8n | 0,643 | 0,599 | 0,648 | 0,364 | 0,617 | 0,636 | 3,01 | 8,2 | 219,7 | 4,4 jam |
+| YOLOv12n | 0,638 | 0,608 | 0,654 | 0,371 | 0,619 | 0,637 | 2,57 | 7,5 | 319,3 | 4,7 jam |
+| YOLOv26n | 0,642 | 0,580 | 0,625 | 0,358 | 0,606 | 0,622 | 2,51 | 5,9 | 293,3 | 5,3 jam |
+| YOLOv8 PD | 0,675 | 0,591 | 0,646 | 0,362 | 0,627 | 0,640 | 2,46 | 7,7 | 368,4 | 6,3 jam |
+| YOLO RD | 0,655 | 0,618 | 0,661 | 0,371 | 0,633 | 0,650 | 7,09 | 12,9 | 189,4 | 11,7 jam |
 
 Tabel di atas memuat metrik akurasi sekaligus ukuran dan kecepatan tiap model. YOLO RD menjadi yang terbaik di semua metrik akurasi gabungan dengan mAP50 0,661 dan F1 makro 0,633 namun ia juga paling berat dengan 7,09 juta parameter dan 12,9 GFLOPs serta paling lambat 189,4 FPS. Hasil ini sesuai dengan filosofi desainnya yang mengutamakan akurasi meski dengan beban komputasi terbesar. YOLOv12n menyusul di posisi kedua dengan selisih mAP50 hanya 0,007 namun dengan separuh parameter YOLO RD dan hampir dua kali kecepatannya. YOLOv8 PD membuktikan dirinya sebagai model paling ringan dengan 2,46 juta parameter dan paling cepat 368,4 FPS atau sekitar 68 persen lebih cepat dari baseline YOLOv8n. Akurasinya pun hampir sama dengan baseline sehingga cocok untuk perangkat terbatas. YOLOv26n memiliki beban komputasi paling rendah 5,9 GFLOPs namun berada di posisi terbawah pada resep pelatihan bersama ini. Hal tersebut lebih tepat dibaca sebagai keterbatasan resep bukan kelemahan bawaan arsitekturnya.
 
@@ -87,6 +87,8 @@ Dengan pengukuran tumpang tindih yang benar hasilnya sangat tegas seperti terlih
 | YOLOv12n 4 kelas | 4 | 0,0093 | 0,0000 | 0,0077 |
 | YOLOv26n 4 kelas | 4 | 0,0062 | 0,0000 | 0,0051 |
 | YOLOv8 PD 4 kelas | 4 | 0,0062 | 0,0000 | 0,0051 |
+| YOLO RD 6 kelas | 6 | 0,0093 | 0,0000 | 0,0077 |
+| YOLO RD 4 kelas | 4 | 0,0062 | 0,0000 | 0,0051 |
 
 Dari 390 objek pengecoh seluruh model hanya salah melabeli 1 sampai 3 box. Tidak ada satu pun prediksi lubang yang menimpa patchy road di semua model. Perbandingan model enam kelas melawan empat kelas pun identik atau hanya beda satu box. Kesimpulannya tidak ada bukti bahwa pelabelan pengecoh mengurangi kesalahan pelabelan karena kesalahan semacam itu nyaris tidak pernah terjadi sejak awal. Kemampuan model menyerap pengecoh sendiri sudah baik dengan deteksi manhole 0,81 sampai 0,92 dan patchy 0,55 sampai 0,61.
 
@@ -98,27 +100,28 @@ Namun ada temuan kecil di sisi lain seperti terlihat pada tabel berikut.
 | YOLOv12n | 0,535 | 0,536 | tambah 0,001 |
 | YOLOv26n | 0,538 | 0,562 | tambah 0,024 |
 | YOLOv8 PD | 0,541 | 0,552 | tambah 0,011 |
+| YOLO RD | 0,527 | 0,582 | tambah 0,055 |
 
-Model yang dilatih tanpa pengecoh justru sedikit lebih baik dalam mendeteksi lubang jalan pada keempat arsitektur. Efeknya kecil dan belum diuji secara statistik sehingga hanya layak dilaporkan sebagai tren yang diamati bukan keunggulan yang terbukti.
+Model yang dilatih tanpa pengecoh justru sedikit lebih baik dalam mendeteksi lubang jalan pada kelima arsitektur. YOLO RD mencatat selisih terbesar yaitu tambah 0,055 pada lubang jalan dan tambah 0,0180 pada rata rata empat kelas inti (0,6331 menjadi 0,6511). Efeknya kecil dan belum diuji secara statistik sehingga hanya layak dilaporkan sebagai tren yang diamati bukan keunggulan yang terbukti.
 
 ## Perbedaan Antar Negara Sumber
 
 ![Heatmap per negara](../gambar/paper_figX4_heatmap.png)
 
-Gambar di atas adalah heatmap mAP50 per negara untuk kelima model dengan gradasi warna dari terang ke gelap. Kolom berisi China Jepang India dan satu kolom Overall sebagai gabungan. Angka di dalam setiap sel memakai koma Indonesia. Terlihat China selalu paling gelap lalu Jepang lalu India paling terang di semua baris model. Kolom Overall berada di antara China dan Jepang sesuai bobot jumlah citra tiap negara. Karena polanya identik di semua arsitektur maka penyebabnya adalah karakter datanya bukan modelnya. Satu gambar ini menggantikan tabel per negara yang terpisah.
+Gambar di atas adalah heatmap mAP50 per negara untuk kelima model dengan gradasi warna dari terang ke gelap. Heatmap memakai agregat mentah Ultralytics (enam kelas untuk China Jepang dan gabungan, lima kelas untuk India) sehingga India terdongkrak satu manhole 0,995. Tabel di bawah memakai agregat yang sudah dikoreksi yaitu rata rata empat kelas inti yang sama di semua negara. Pola peringkat tetap identik di semua arsitektur pada kedua skema yaitu China tertinggi lalu Jepang lalu India terendah sehingga penyebabnya adalah karakter datanya bukan modelnya.
 
 
-| Model | China 180 Citra | Jepang 705 Citra | India 110 Citra | Overall 995 Citra |
-|---|---|---|---|---|
-| YOLOv8n | 0,883 | 0,581 | 0,426 | 0,648 |
-| YOLOv12n | 0,890 | 0,587 | 0,433 | 0,654 |
-| YOLOv26n | 0,869 | 0,546 | 0,443 | 0,625 |
-| YOLOv8 PD | 0,907 | 0,570 | 0,438 | 0,646 |
-| YOLO RD | 0,892 | 0,594 | 0,442 | 0,661 |
+| Model | China 180 Citra | Jepang 705 Citra | India 110 Citra |
+|---|---|---|---|
+| YOLOv8n | 0,931 | 0,578 | 0,284 |
+| YOLOv12n | 0,933 | 0,579 | 0,293 |
+| YOLOv26n | 0,933 | 0,543 | 0,305 |
+| YOLOv8 PD | 0,953 | 0,567 | 0,299 |
+| YOLO RD | 0,945 | 0,587 | 0,304 |
 
 Hasil per negara menunjukkan pola yang sama di semua model. China selalu tertinggi lalu Jepang lalu India terendah. Karena polanya identik di semua arsitektur maka penyebabnya adalah karakter datanya bukan modelnya. Yang menarik Jepang memiliki data latih tiga kali lipat dari China namun hasilnya jauh lebih rendah. Artinya volume data bukan penjelasnya. Penjelasnya adalah tingkat kesulitan visual tiap domain.
 
-Citra China berupa close up aspal yang tajam dan terang. Citra Jepang berupa wide shot dari dalam mobil yang gelap dan ramai dengan langit dan rumah masuk bingkai. Citra India buram dan berdebu dengan dashboard dan kap mobil sering terlihat. Temuan terbersih datang dari retak melintang India yang hanya punya 19 contoh latih lalu runtuh total saat diuji dengan skor 0,002 sampai 0,21. Satu catatan penting untuk India hanya ada satu manhole dan nol patchy road sehingga angka gabungan enam kelas antar negara tidak sepenuhnya sebanding. Untuk klaim paper yang adil agregat perlu dihitung ulang pada empat kelas inti yang sama.
+Citra China berupa close up aspal yang tajam dan terang. Citra Jepang berupa wide shot dari dalam mobil yang gelap dan ramai dengan langit dan rumah masuk bingkai. Citra India buram dan berdebu dengan dashboard dan kap mobil sering terlihat. Temuan terbersih datang dari retak melintang India yang hanya punya 19 contoh latih lalu runtuh total saat diuji dengan skor 0,002 sampai 0,21. India hanya punya satu manhole (skor 0,995 ikut mendongkrak agregat mentah) dan nol patchy road, sehingga tabel di atas memakai rata rata empat kelas inti yang ada di semua negara. Selisih dihitung dari presisi penuh lalu dibulatkan.
 
 ## Domain Gap ke Indonesia
 
@@ -154,13 +157,13 @@ Gambar di atas memecah angka gabungan menjadi per kelas pada model terbaik yaitu
 | Lubang jalan | 0,535 | 0,260 | turun 0,275 | 70 | Runtuh parah |
 | Patchy road | 0,587 | 0,036 | turun 0,551 | 21 | Hancur total namun data sedikit |
 
-Retak memanjang hampir tidak turun sedangkan retak melintang dan lubang jalan runtuh parah. Pola ini sesuai dengan dugaan tekstur jalan Bojongsoang. Aspalnya berpori dengan lubang lubang kecil yang merata sehingga retak tipis dan lubang sulit dibedakan dari tekstur normal. Retak memanjang selamat kemungkinan karena bentuknya panjang dan tegas sehingga masih dikenali. Jika patchy road dikeluarkan dari hitungan maka gap menyusut dari 45,5 persen menjadi sekitar 35 persen. Artinya satu kelas kecil ikut membesar besarkan angka gap agregat. Perlu diingat juga jumlah contoh Indonesia beda jauh dari sumber sehingga selisih per kelas bukan efek domain murni melainkan tercampur ketidakpastian statistik kelas langka.
+Retak memanjang hampir tidak turun sedangkan retak melintang dan lubang jalan runtuh parah. Pola ini sesuai dengan dugaan tekstur jalan Bojongsoang. Aspalnya berpori dengan lubang lubang kecil yang merata sehingga retak tipis dan lubang sulit dibedakan dari tekstur normal. Retak memanjang selamat kemungkinan karena bentuknya panjang dan tegas sehingga masih dikenali. Jika patchy road dikeluarkan dari hitungan maka gap menyusut dari 45,5 persen menjadi 34,1 persen. Artinya satu kelas kecil ikut membesar besarkan angka gap agregat. Perlu diingat juga jumlah contoh Indonesia beda jauh dari sumber sehingga selisih per kelas bukan efek domain murni melainkan tercampur ketidakpastian statistik kelas langka.
 
 ## Perbandingan Langsung Hasil Deteksi per Negara
 
 ![Contoh GT vs model per negara](../gambar/paper_fig_country_examples.png)
 
-Gambar di atas membandingkan anotasi benar dengan prediksi tiga model terbaik pada satu citra acak tiap negara. Baris China menunjukkan aspal yang rapi dengan beberapa retak memanjang dan semua model berhasil mendeteksi dengan baik meski ada sedikit perbedaan label. Baris Jepang menunjukkan jalan perumahan yang gelap dengan retak tipis. Beberapa model gagal atau hanya mendeteksi sebagian. Baris India menunjukkan jalan berdebu dari kejauhan yang sangat buram. Semua model gagal total mendeteksi retak tipis yang ada. Pola ini konsisten dengan urutan skor mAP per negara yaitu China tertinggi lalu Jepang dan India terendah.
+Gambar di atas membandingkan anotasi benar dengan prediksi tiga model terbaik pada satu citra terpilih tiap negara. Baris China memuat satu retak memanjang tiga retak buaya dan satu patchy. Ketiga model menangkap hampir semua objek dengan keyakinan tinggi 0,81 sampai 0,96 dan hanya beda pada kerapian box. Baris Jepang memuat dua retak memanjang dua retak melintang dan satu retak buaya. Model hanya menangkap sebagian retak melintang dengan keyakinan rendah 0,26 sampai 0,43 sedangkan retak memanjang dan retak buaya luput. Baris India memuat tiga lubang dan satu retak buaya. Ketiga model menangkap lubang dan retak buaya dengan keyakinan sedang 0,26 sampai 0,55. Pola ini konsisten dengan urutan skor mAP per negara yaitu China tertinggi lalu Jepang dan India terendah.
 
 ![Sampel berlabel per negara](../gambar/paper_fig_country_gt.png)
 
@@ -230,6 +233,6 @@ Hasil terbaik di sumber dipegang YOLO RD sedangkan hasil terbaik di Indonesia di
 
 ## Daftar Gambar dan Tabel
 
-Gambar 1 adalah trade-off akurasi kecepatan dan ukuran dari paper figX3 bubble. Gambar 2 adalah bukti proxy melawan overlap dari fig fp overlap. Gambar 3 adalah heatmap per negara dengan kolom Overall dari paper figX4 heatmap. Gambar 4 adalah diagram batang gap domain V4 dari paper fig1 domain gap v4. Gambar 5 adalah keruntuhan per kelas YOLOv12n dari paper fig2 perclass collapse v12n. Gambar 6 adalah perbandingan anotasi benar melawan tiga model per negara dari paper fig country examples. Gambar 7 adalah sampel berlabel per negara dari paper fig country gt. Gambar 8a adalah tiga domain sumber dari paper figD3 domains. Gambar 8b adalah empat domain dengan target dari paper figD4 domains. Gambar 9 adalah statistik citra dari fig stats. Gambar 10 adalah UMAP dari fig umap. Gambar 11a adalah kilau dan pori G1 dari paper figG1 glare. Gambar 11b adalah prediksi benar G2 dari paper figG2 correct. Gambar 11c adalah prediksi saja G3 dari paper figG3 predonly. Gambar 11d adalah kualitatif dummy empat citra dari paper fig3 qualitative v4 dummy.
+Gambar 1 adalah trade-off akurasi kecepatan dan ukuran dari paper figX3 bubble. Gambar 2 adalah bukti proxy melawan overlap dari fig fp overlap. Gambar 3 adalah heatmap per negara skema mentah dari paper figX4 heatmap. Tabel 7 adalah agregat empat kelas inti yang sudah dikoreksi. Gambar 4 adalah diagram batang gap domain V4 dari paper fig1 domain gap v4. Gambar 5 adalah keruntuhan per kelas YOLOv12n dari paper fig2 perclass collapse v12n. Gambar 6 adalah perbandingan anotasi benar melawan tiga model per negara dari paper fig country examples. Gambar 7 adalah sampel berlabel per negara dari paper fig country gt. Gambar 8a adalah tiga domain sumber dari paper figD3 domains. Gambar 8b adalah empat domain dengan target dari paper figD4 domains. Gambar 9 adalah statistik citra dari fig stats. Gambar 10 adalah UMAP dari fig umap. Gambar 11a adalah kilau dan pori G1 dari paper figG1 glare. Gambar 11b adalah prediksi benar G2 dari paper figG2 correct. Gambar 11c adalah prediksi saja G3 dari paper figG3 predonly. Gambar 11d adalah kualitatif dummy empat citra dari paper fig3 qualitative v4 dummy.
 
-Tabel 1 adalah distribusi enam kelas sumber. Tabel 2 adalah komposisi lima kelas Indonesia. Tabel 3 adalah perbandingan lima model di sumber dan memuat kolom ukuran serta kecepatan. Tabel 4 adalah per kelas sumber. Tabel 5 adalah TRUE overlap delapan model. Tabel 6 adalah selisih lubang enam melawan empat kelas. Tabel 7 adalah per negara dan sudah diringkas oleh Gambar 3. Tabel 8 adalah gap domain V4. Tabel 9 adalah keruntuhan per kelas. Tabel 10 adalah statistik citra. Tabel 11 adalah komposisi pagi melawan sisa.
+Tabel 1 adalah distribusi enam kelas sumber. Tabel 2 adalah komposisi lima kelas Indonesia. Tabel 3 adalah perbandingan lima model di sumber dan memuat kolom ukuran serta kecepatan. Tabel 4 adalah per kelas sumber. Tabel 5 adalah TRUE overlap sepuluh baris (lima arsitektur kali enam dan empat kelas). Tabel 6 adalah selisih lubang enam melawan empat kelas termasuk YOLO RD. Tabel 7 adalah per negara empat kelas inti dan sudah diringkas oleh Gambar 3. Tabel 8 adalah gap domain V4. Tabel 9 adalah keruntuhan per kelas. Tabel 10 adalah statistik citra. Tabel 11 adalah komposisi pagi melawan sisa.

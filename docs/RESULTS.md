@@ -1,10 +1,9 @@
-
 Evaluasi yolov8n_class_weight — val
 Ultralytics 8.4.108  Python-3.12.3 torch-2.5.1+cu121 CUDA:0 (NVIDIA GeForce RTX 4070 SUPER, 12282MiB)
 Model summary (fused): 73 layers, 3,006,818 parameters, 0 gradients, 8.1 GFLOPs
 val: Fast image access  (ping: 0.00.0 ms, read: 1088.2282.4 MB/s, size: 79.8 KB)
-val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\val\labels.cache... 1898 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 1898/1898  0.0s
-val: D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\val\images\Japan_006916_jpg.rf.6409c53af3c26b4c760f816734ecafc8.jpg: 1 duplicate labels removed
+val: Scanning D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\val\\labels.cache... 1898 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 1898/1898  0.0s
+val: D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\val\\images\\Japan_006916_jpg.rf.6409c53af3c26b4c760f816734ecafc8.jpg: 1 duplicate labels removed
                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 119/119 8.0it/s 14.9s0.1s
                    all       1898       4772      0.684      0.598      0.657      0.365
     Longitudinal_Crack        788       1257      0.687      0.571      0.637      0.353
@@ -14,13 +13,13 @@ val: D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Fina
                manhole        469        644      0.767      0.764      0.801      0.427
            patchy_road        104        132      0.645      0.644      0.665      0.529
 Speed: 0.3ms preprocess, 2.0ms inference, 0.0ms loss, 0.5ms postprocess per image
-Saving D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov8n_class_weight_val\predictions.json...
-Results saved to D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov8n_class_weight_val
+Saving D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov8n_class_weight_val\\predictions.json...
+Results saved to D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov8n_class_weight_val
 
 Evaluasi yolov8n_class_weight — test
 Ultralytics 8.4.108  Python-3.12.3 torch-2.5.1+cu121 CUDA:0 (NVIDIA GeForce RTX 4070 SUPER, 12282MiB)
-WARNING val: Slow image access detected (ping: 0.10.0 ms, read: 16.71.3 MB/s, size: 79.9 KB). Use local storage instead of remote/mounted storage for better performance. See https://docs.ultralytics.com/guides/model-training-tips/
-val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\test\labels.cache... 995 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 995/995  0.0s
+WARNING val: Slow image access detected (ping: 0.10.0 ms, read: 16.71.3 MB/s, size: 79.9 KB). Use local storage instead of remote/mounted storage for better performance. See [https://docs.ultralytics.com/guides/model-training-tips/](https://docs.ultralytics.com/guides/model-training-tips/)
+val: Scanning D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\test\\labels.cache... 995 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 995/995  0.0s
                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 63/63 4.3it/s 14.6s0.2s
                    all        995       2425      0.643      0.599      0.648      0.364
     Longitudinal_Crack        395        635      0.686      0.594      0.664      0.375
@@ -30,8 +29,8 @@ val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_S
                manhole        234        321      0.775      0.816      0.825      0.473
            patchy_road         52         69      0.451      0.551      0.571      0.461
 Speed: 0.3ms preprocess, 3.7ms inference, 0.0ms loss, 0.6ms postprocess per image
-Saving D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov8n_class_weight_test\predictions.json...
-Results saved to D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov8n_class_weight_test
+Saving D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov8n_class_weight_test\\predictions.json...
+Results saved to D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov8n_class_weight_test
   val  mAP50: 0.6571
   test mAP50: 0.6476
 
@@ -39,8 +38,8 @@ Evaluasi yolov12n_class_weight — val
 Ultralytics 8.4.108  Python-3.12.3 torch-2.5.1+cu121 CUDA:0 (NVIDIA GeForce RTX 4070 SUPER, 12282MiB)
 YOLOv12n summary (fused): 159 layers, 2,557,898 parameters, 0 gradients, 6.3 GFLOPs
 val: Fast image access  (ping: 0.00.0 ms, read: 1154.5357.5 MB/s, size: 74.7 KB)
-val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\val\labels.cache... 1898 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 1898/1898  0.0s
-val: D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\val\images\Japan_006916_jpg.rf.6409c53af3c26b4c760f816734ecafc8.jpg: 1 duplicate labels removed
+val: Scanning D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\val\\labels.cache... 1898 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 1898/1898  0.0s
+val: D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\val\\images\\Japan_006916_jpg.rf.6409c53af3c26b4c760f816734ecafc8.jpg: 1 duplicate labels removed
                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 119/119 8.2it/s 14.5s0.1s
                    all       1898       4772      0.669        0.6      0.656      0.368
     Longitudinal_Crack        788       1257      0.698      0.578      0.656      0.363
@@ -50,13 +49,13 @@ val: D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Fina
                manhole        469        644      0.771      0.766      0.791       0.42
            patchy_road        104        132      0.629      0.614      0.654      0.534
 Speed: 0.3ms preprocess, 2.0ms inference, 0.0ms loss, 0.5ms postprocess per image
-Saving D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov12n_class_weight_val\predictions.json...
-Results saved to D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov12n_class_weight_val
+Saving D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov12n_class_weight_val\\predictions.json...
+Results saved to D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov12n_class_weight_val
 
 Evaluasi yolov12n_class_weight — test
 Ultralytics 8.4.108  Python-3.12.3 torch-2.5.1+cu121 CUDA:0 (NVIDIA GeForce RTX 4070 SUPER, 12282MiB)
 val: Fast image access  (ping: 0.00.0 ms, read: 1009.1299.1 MB/s, size: 81.6 KB)
-val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\test\labels.cache... 995 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 995/995  0.0s
+val: Scanning D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\test\\labels.cache... 995 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 995/995  0.0s
                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 63/63 7.8it/s 8.1s0.1s
                    all        995       2425      0.638      0.608      0.654      0.371
     Longitudinal_Crack        395        635      0.681      0.587       0.68      0.399
@@ -66,18 +65,17 @@ val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_S
                manhole        234        321      0.764      0.826      0.833      0.467
            patchy_road         52         69       0.47      0.565      0.587      0.478
 Speed: 0.3ms preprocess, 2.4ms inference, 0.0ms loss, 0.5ms postprocess per image
-Saving D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov12n_class_weight_test\predictions.json...
-Results saved to D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov12n_class_weight_test
+Saving D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov12n_class_weight_test\\predictions.json...
+Results saved to D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov12n_class_weight_test
   val  mAP50: 0.6560
   test mAP50: 0.6542
 
-  
 Evaluasi yolov26n_class_weight — val
 Ultralytics 8.4.108  Python-3.12.3 torch-2.5.1+cu121 CUDA:0 (NVIDIA GeForce RTX 4070 SUPER, 12282MiB)
 YOLO26n summary (fused): 122 layers, 2,376,006 parameters, 0 gradients, 5.2 GFLOPs
-WARNING val: Slow image access detected (ping: 0.00.0 ms, read: 13.80.3 MB/s, size: 76.8 KB). Use local storage instead of remote/mounted storage for better performance. See https://docs.ultralytics.com/guides/model-training-tips/
-val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\val\labels.cache... 1898 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 1898/1898  0.0s
-val: D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\val\images\Japan_006916_jpg.rf.6409c53af3c26b4c760f816734ecafc8.jpg: 1 duplicate labels removed
+WARNING val: Slow image access detected (ping: 0.00.0 ms, read: 13.80.3 MB/s, size: 76.8 KB). Use local storage instead of remote/mounted storage for better performance. See [https://docs.ultralytics.com/guides/model-training-tips/](https://docs.ultralytics.com/guides/model-training-tips/)
+val: Scanning D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\val\\labels.cache... 1898 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 1898/1898  0.0s
+val: D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\val\\images\\Japan_006916_jpg.rf.6409c53af3c26b4c760f816734ecafc8.jpg: 1 duplicate labels removed
                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 119/119 4.6it/s 25.7s0.2s
                    all       1898       4772      0.681      0.572      0.633       0.36
     Longitudinal_Crack        788       1257      0.708      0.558      0.625      0.358
@@ -87,13 +85,13 @@ val: D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Fina
                manhole        469        644      0.736      0.716      0.772      0.417
            patchy_road        104        132      0.688      0.591      0.654      0.532
 Speed: 0.3ms preprocess, 3.2ms inference, 0.0ms loss, 0.1ms postprocess per image
-Saving D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov26n_class_weight_val\predictions.json...
-Results saved to D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov26n_class_weight_val
+Saving D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov26n_class_weight_val\\predictions.json...
+Results saved to D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov26n_class_weight_val
 
 Evaluasi yolov26n_class_weight — test
 Ultralytics 8.4.108  Python-3.12.3 torch-2.5.1+cu121 CUDA:0 (NVIDIA GeForce RTX 4070 SUPER, 12282MiB)
-WARNING val: Slow image access detected (ping: 0.10.0 ms, read: 16.36.1 MB/s, size: 82.2 KB). Use local storage instead of remote/mounted storage for better performance. See https://docs.ultralytics.com/guides/model-training-tips/
-val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\test\labels.cache... 995 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 995/995  0.0s
+WARNING val: Slow image access detected (ping: 0.10.0 ms, read: 16.36.1 MB/s, size: 82.2 KB). Use local storage instead of remote/mounted storage for better performance. See [https://docs.ultralytics.com/guides/model-training-tips/](https://docs.ultralytics.com/guides/model-training-tips/)
+val: Scanning D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\test\\labels.cache... 995 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 995/995  0.0s
                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 63/63 4.4it/s 14.3s0.2s
                    all        995       2425      0.642       0.58      0.625      0.358
     Longitudinal_Crack        395        635      0.678      0.557      0.639       0.37
@@ -103,8 +101,8 @@ val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_S
                manhole        234        321       0.76      0.804       0.82      0.463
            patchy_road         52         69      0.469      0.536      0.512      0.425
 Speed: 0.3ms preprocess, 3.0ms inference, 0.0ms loss, 0.1ms postprocess per image
-Saving D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov26n_class_weight_test\predictions.json...
-Results saved to D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov26n_class_weight_test
+Saving D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov26n_class_weight_test\\predictions.json...
+Results saved to D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov26n_class_weight_test
   val  mAP50: 0.6331
   test mAP50: 0.6251
 
@@ -112,8 +110,8 @@ Evaluasi yolov8_pd_class_weight — val
 Ultralytics 8.4.108  Python-3.12.3 torch-2.5.1+cu121 CUDA:0 (NVIDIA GeForce RTX 4070 SUPER, 12282MiB)
 YOLOv8-pd summary: 156 layers, 2,468,085 parameters, 0 gradients, 7.6 GFLOPs
 val: Fast image access  (ping: 0.00.0 ms, read: 1163.3340.5 MB/s, size: 80.7 KB)
-val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\val\labels.cache... 1898 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 1898/1898  0.0s
-val: D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\val\images\Japan_006916_jpg.rf.6409c53af3c26b4c760f816734ecafc8.jpg: 1 duplicate labels removed
+val: Scanning D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\val\\labels.cache... 1898 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 1898/1898  0.0s
+val: D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\val\\images\\Japan_006916_jpg.rf.6409c53af3c26b4c760f816734ecafc8.jpg: 1 duplicate labels removed
                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 119/119 7.9it/s 15.0s0.1s
                    all       1898       4772      0.677      0.604      0.651      0.366
     Longitudinal_Crack        788       1257      0.685      0.592      0.656       0.37
@@ -123,14 +121,14 @@ val: D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Fina
                manhole        469        644      0.765      0.758      0.785      0.423
            patchy_road        104        132      0.686      0.628      0.655      0.532
 Speed: 0.3ms preprocess, 1.9ms inference, 0.0ms loss, 0.5ms postprocess per image
-Saving D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov8_pd_class_weight_val\predictions.json...
-Results saved to D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov8_pd_class_weight_val
+Saving D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov8_pd_class_weight_val\\predictions.json...
+Results saved to D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov8_pd_class_weight_val
 
 Evaluasi yolov8_pd_class_weight — test
 Ultralytics 8.4.108  Python-3.12.3 torch-2.5.1+cu121 CUDA:0 (NVIDIA GeForce RTX 4070 SUPER, 12282MiB)
 YOLOv8-pd summary: 156 layers, 2,468,085 parameters, 0 gradients, 7.6 GFLOPs
 val: Fast image access  (ping: 0.00.0 ms, read: 744.7342.0 MB/s, size: 55.5 KB)
-val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\test\labels.cache... 995 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 995/995  0.0s
+val: Scanning D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\test\\labels.cache... 995 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 995/995  0.0s
                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 63/63 7.8it/s 8.0s0.1s
                    all        995       2425      0.675      0.591      0.646      0.362
     Longitudinal_Crack        395        635      0.723      0.591      0.678      0.385
@@ -140,8 +138,8 @@ val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_S
                manhole        234        321      0.768       0.81      0.819      0.467
            patchy_road         52         69      0.546      0.551      0.562      0.444
 Speed: 0.3ms preprocess, 1.9ms inference, 0.0ms loss, 0.5ms postprocess per image
-Saving D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov8_pd_class_weight_test\predictions.json...
-Results saved to D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolov8_pd_class_weight_test
+Saving D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov8_pd_class_weight_test\\predictions.json...
+Results saved to D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolov8_pd_class_weight_test
   val  mAP50: 0.6510
   test mAP50: 0.6457
 
@@ -149,8 +147,8 @@ Evaluasi yolo_rd_class_weight — val
 Ultralytics 8.4.108  Python-3.12.3 torch-2.5.1+cu121 CUDA:0 (NVIDIA GeForce RTX 4070 SUPER, 12282MiB)
 YOLO-rd summary: 163 layers, 7,086,104 parameters, 0 gradients, 12.8 GFLOPs
 val: Fast image access  (ping: 0.00.0 ms, read: 1026.9136.9 MB/s, size: 76.2 KB)
-val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\val\labels.cache... 1898 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 1898/1898  0.0s
-val: D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\val\images\Japan_006916_jpg.rf.6409c53af3c26b4c760f816734ecafc8.jpg: 1 duplicate labels removed
+val: Scanning D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\val\\labels.cache... 1898 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 1898/1898  0.0s
+val: D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\val\\images\\Japan_006916_jpg.rf.6409c53af3c26b4c760f816734ecafc8.jpg: 1 duplicate labels removed
                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 119/119 7.2it/s 16.6s0.1s
                    all       1898       4772       0.52      0.506      0.493      0.225
     Longitudinal_Crack        788       1257      0.463      0.525       0.46      0.189
@@ -160,14 +158,14 @@ val: D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Fina
                manhole        469        644       0.68      0.787      0.769       0.41
            patchy_road        104        132      0.455      0.405      0.383       0.22
 Speed: 0.3ms preprocess, 2.6ms inference, 0.0ms loss, 0.5ms postprocess per image
-Saving D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolo_rd_class_weight_val\predictions.json...
-Results saved to D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolo_rd_class_weight_val
+Saving D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolo_rd_class_weight_val\\predictions.json...
+Results saved to D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolo_rd_class_weight_val
 
 Evaluasi yolo_rd_class_weight — test
 Ultralytics 8.4.108  Python-3.12.3 torch-2.5.1+cu121 CUDA:0 (NVIDIA GeForce RTX 4070 SUPER, 12282MiB)
 YOLO-rd summary: 163 layers, 7,086,104 parameters, 0 gradients, 12.8 GFLOPs
 val: Fast image access  (ping: 0.00.0 ms, read: 903.2460.3 MB/s, size: 69.6 KB)
-val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_Split_Final_china_japan_india_6_classes\RDD_Split_Final_china_japan_india_6_classes\test\labels.cache... 995 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 995/995  0.0s
+val: Scanning D:\\Faaris\\Project-TA\\road-damage-detection-ta\\data\\NRDD-2024\\RDD_Split_Final_china_japan_india_6_classes\\RDD_Split_Final_china_japan_india_6_classes\\test\\labels.cache... 995 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 995/995  0.0s
                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 63/63 7.0it/s 9.0s0.1s
                    all        995       2425      0.504      0.524        0.5      0.234
     Longitudinal_Crack        395        635      0.498      0.556      0.478      0.205
@@ -177,8 +175,8 @@ val: Scanning D:\Faaris\Project-TA\road-damage-detection-ta\data\NRDD-2024\RDD_S
                manhole        234        321      0.693      0.822      0.823      0.461
            patchy_road         52         69      0.329      0.377      0.318      0.197
 Speed: 0.3ms preprocess, 2.8ms inference, 0.0ms loss, 0.5ms postprocess per image
-Saving D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolo_rd_class_weight_test\predictions.json...
-Results saved to D:\Faaris\Project-TA\road-damage-detection-ta\runs\rdd_yolov8n_local\evaluation\yolo_rd_class_weight_test
+Saving D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolo_rd_class_weight_test\\predictions.json...
+Results saved to D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\evaluation\\yolo_rd_class_weight_test
   val  mAP50: 0.4930
   test mAP50: 0.4999
 
@@ -343,38 +341,47 @@ Model: yolo_rd_class_weight
 F1 summary:
 
 {
-  "model": "yolo_rd_class_weight",
-  "run_name": "yolo_rd_class_weight",
-  "weights": "D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\experiments\\yolo_rd_class_weight\\weights\\best.pt",
-  "data_yaml": "D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd_yolov8n_local\\rdd6_local.yaml",
+  "model": "yolo\_rd\_class\_weight",
+  "run\_name": "yolo\_rd\_class\_weight",
+  "weights": "D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd\_yolov8n\_local\\experiments\\yolo\_rd\_class\_weight\\weights\\best.pt",
+  "data\_yaml": "D:\\Faaris\\Project-TA\\road-damage-detection-ta\\runs\\rdd\_yolov8n\_local\\rdd6\_local.yaml",
   "imgsz": 640,
   "epochs": 300,
-  "focal_gamma": 1.5,
-  "val_results": {
+  "focal\_gamma": 1.5,
+  "val\_results": {
     "metrics/precision(B)": 0.5195902634497575,
     "metrics/recall(B)": 0.5059135482219714,
     "metrics/mAP50(B)": 0.4930380542501877,
     "metrics/mAP50-95(B)": 0.2253233813672026,
     "fitness": 0.2253233813672026
   },
-  "test_results": {
+  "test\_results": {
     "metrics/precision(B)": 0.5035703801298894,
     "metrics/recall(B)": 0.5242824734492835,
     "metrics/mAP50(B)": 0.4999433933271756,
     "metrics/mAP50-95(B)": 0.23402316122437833,
     "fitness": 0.23402316122437833
   },
-  "f1_summary": {
-    "val_macro_f1": 0.5098194030300544,
-    "val_weighted_f1": 0.5011801753903324,
-    "test_macro_f1": 0.512039648319056,
-    "test_weighted_f1": 0.5227718992698864
+  "f1\_summary": {
+    "val\_macro\_f1": 0.5098194030300544,
+    "val\_weighted\_f1": 0.5011801753903324,
+    "test\_macro\_f1": 0.512039648319056,
+    "test\_weighted\_f1": 0.5227718992698864
   },
-  "test_speed_ms_per_image": {
+  "test\_speed\_ms\_per\_image": {
     "preprocess": 0.28377135714806206,
     "inference": 2.792372060331268,
     "loss": 0.0003043225212911865,
     "postprocess": 0.4855316583928301
   },
-  "test_fps_estimate": 280.76676807895694
-}
+  "test\_fps\_estimate": 280.76676807895694
+}  
+
+
+##   
+  
+TRAINING TIME
+
+
+
+&nbsp;
