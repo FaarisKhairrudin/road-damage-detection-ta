@@ -1,0 +1,65 @@
+{
+  "inputs": {
+    "manifest_sha256": "810739f907c2cf90c290add18edc8bd360f5dc32818fb4397ba0d69c317fc5aa",
+    "weights_sha256": "b18aeacc85bceb45fd5a24e5866bf7fff70e99cca7a38b880ad10e2778c4af6b",
+    "embedding_layer": 21,
+    "imgsz": 640,
+    "batch": 16,
+    "half": false,
+    "rect": true,
+    "device": "0",
+    "seed": 42,
+    "counts": {
+      "China": 180,
+      "Japan": 705,
+      "India": 110,
+      "Indonesia": 307
+    },
+    "target_annotations": 502,
+    "target_empty_images": 39,
+    "versions": {
+      "torch": "2.6.0+cu124",
+      "torchvision": "0.21.0+cu124",
+      "ultralytics": "8.4.115",
+      "numpy": "2.3.5",
+      "pandas": "3.0.3",
+      "scikit-learn": "1.9.0",
+      "umap-learn": "0.5.12",
+      "opencv-python": "5.0.0.93",
+      "matplotlib": "3.11.0"
+    }
+  },
+  "embedding_shape": [
+    1302,
+    256
+  ],
+  "silhouette_normalized_feature_space": 0.1993599236011505,
+  "umap": {
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "metric": "euclidean",
+    "random_state": 42
+  },
+  "tsne": {
+    "perplexity": 30,
+    "init": "pca",
+    "learning_rate": "auto",
+    "random_state": 42
+  },
+  "scope": "Exploratory descriptive analysis, not a causal explanation of accuracy or a physical distance between domains.",
+  "outputs": {
+    "domain_medians.csv": "48b9b6e0fe5348434215d1611f371b3444251f508544d1033cb00bc044973f69",
+    "domains.npy": "b799a6e39d51ce14bfc5400eedf8cd6410eb9d23c65661caeb134eecf5fbfab0",
+    "embeddings.npy": "ee0449a48b46aaef1dc06aca977787f93e5c73fd4e63479a89cd08fa14247bd6",
+    "image_stats.csv": "20e1b1d947f167e6ad8cacd28810b16255a7a751ff26fb8106301b3eae932bf4",
+    "inputs.json": "fd76e7dde805ce6bba9479423e0135e6d4fca6918b4052510b46c159a2bd47b8",
+    "manifest.csv": "810739f907c2cf90c290add18edc8bd360f5dc32818fb4397ba0d69c317fc5aa",
+    "samples.png": "8af3a64ebf740f79ab3bdc08ecf7029143726daeaecb9ff1c004c8a6e4aff55c",
+    "samples_manifest.csv": "7cccc92ae0ad663f21e3e34fa9b1fc9e5aaeffda27761e7bb3edd0a04352e554",
+    "stats.png": "6eefa11e841ed9d4b766bbdd71ed7661f54d297d51943f5ca22151a249bd0440",
+    "tsne.npy": "524da2c52889c375ac350ff0eb79e909d63bbc9b5ce16e9f1fb42af0c63898e9",
+    "tsne.png": "9196a47fb5e3f0f9881f633be0586854e6d99589e52940b0d3672b22669a7ee4",
+    "umap.npy": "68b99a705e5e13cc00e92d23c8facbef7ce497835237061b4bb1a0bf27300315",
+    "umap.png": "51e3c452c43fd070327cc5f1860e91a0dec8cb24dd1cc1b5e706bf0b8180ded3"
+  }
+}

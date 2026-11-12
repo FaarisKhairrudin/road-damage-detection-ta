@@ -1,47 +1,36 @@
 # Current work state
 
 ## Goal
-Synchronize final documentation/tables, then commit task-owned work and push main.
-GPU-dependent domain processing is deferred by the user's latest instruction.
+Complete the previously deferred domain analysis on Indonesia V4, integrate the
+verified results into documentation, and push task-owned changes to main.
 
 ## Completed
-- Final CSV generator rebuilt source6/common4/ablation/country/supplementary5
-  tables and eight documentation figures without retraining detectors.
-- Narrative updated with 11 figures and correct metric scopes/limitations.
-- Root/data/model/ISRITI readmes updated; old technical Markdown redirects.
-- Misleading hardcoded Word generator deprecated; no DOCX regenerated.
-- Original affected files archived byte-exact under docs/archive/content-before-update.
-- New V4 runner/completion validation prepared; old V2 bundle untouched.
-- Switched to main at the same source tree, retaining unrelated working edits.
+- User resumed the V4 run after NVIDIA was enabled. Python 3.12 / torch CUDA
+  detected the RTX 3050; no model training was performed.
+- Extracted 1,302 × 256 embeddings for 995 source + 307 Indonesia V4 images;
+  generated UMAP, t-SNE, image statistics and sample montage in a new bundle.
+- Updated the final artifact map, index, 15-figure narrative and move/status report.
+- Preserved the historical V2 bundle and all submitted manuscript/PDF artifacts.
 
 ## Checks actually run
-- Metric rounding, current report provenance, syntax and active links: passed.
-- Completion-gate fixtures reject incomplete/corrupt bundles: passed.
-- Custom model executable AST unchanged; only module docstring changed.
-- CPU feature extraction was attempted and stopped at user request; no final
-  embeddings/projections/statistics were produced. No detector training ran.
+- Verified complete status, all bundle output hashes, 1,302 image/label hashes,
+  source checkpoint hash, manifest/domain ordering and finite projection shapes.
+- Inspected all four V4 figures visually. No notebook or manuscript was executed.
+- Independent detection/F1 results remain from the archived final CSVs; the
+  domain projections describe features and are not evidence of causal effects.
 
-## Publication completed
-- Main implementation commit 9074582 was pushed to origin/main.
-- 172 protected files (including 16 notebooks) remain unchanged.
-- 111 active local links and 35 report-input hashes verified.
-- Task-owned staged-file and whitespace checks passed; unrelated edits excluded.
-- This continuity update records the published outcome.
+## In progress
+- Refresh report provenance after updating the artifact map; validate links.
+- Stage task-owned documentation/figures and push main as previously authorized.
 
-## Deferred / unresolved
-- UMAP/t-SNE V4 and feature/statistics execution until user resumes after restart.
-- Notebook edits remain outside scope; notebook07 already had a pre-existing edit.
-- PD four-class training results.csv remains unavailable; no substitute fabricated.
-- No LaTeX/PDF rebuild or DOCX export requested/performed.
+## Remaining
+- Locate the missing PD four-class training results.csv if its source is available.
+- Notebook edits remain out of scope; notebook07 had a pre-existing local edit.
 
 ## Key paths
-- docs/INDEX.md; docs/FINAL_ARTIFACTS.json; docs/draft-analisis-rapih.md.
-- docs/RESULTS_TABLE.md; docs/REORGANIZATION.md; docs/archive/MANIFEST.json.
-- Final report: runs/rdd_yolov8n_local/evaluation/final_report/.
-- Deferred inputs: runs/rdd_yolov8n_local/evaluation/domain_viz_v4/ (INCOMPLETE).
-- Temporary checks: /tmp/ta-content-update/.
+- docs/INDEX.md; docs/draft-analisis-rapih.md; docs/figures/domain_v4/.
+- runs/rdd_yolov8n_local/evaluation/domain_viz_v4/provenance.json.
+- docs/FINAL_ARTIFACTS.json; docs/REORGANIZATION.md; docs/archive/MANIFEST.json.
 
 ## Next concrete action
-No further non-GPU work remains for this request. When the user resumes GPU
-work after restart, recheck CUDA and run the V4 script with explicit device; only
-a fully validated bundle may update domain figures/narrative. Do not auto-resume.
+Verify final report/input hashes and links, then commit and push task-owned files.

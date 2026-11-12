@@ -133,11 +133,30 @@ Pada YOLOv12n, longitudinal crack mempertahankan AP lebih tinggi dibanding trans
 
 Nilai YOLOv12n 0,337 pada lima kelas tetap valid sebagai hasil tambahan. Perbedaan dari 0,413 pada empat kelas muncul karena penambahan patchy road ke rata-rata. F1 berbobot memakai support GT sedangkan F1 makro memberi bobot sama pada setiap kelas; keduanya harus dibandingkan dalam cakupan kelas yang sama. Ambang P/R/F1 mengikuti ambang mean-F1 optimal split pada Ultralytics, bukan confidence tampilan contoh.
 
-## Analisis domain V4 — ditunda
+## Karakter citra dan fitur: regenerasi pada V4
 
-Regenerasi embeddings, UMAP, t-SNE, statistik dan sampel pada 995 gambar sumber + 307 gambar V4 belum selesai. Pengguna meminta proses yang memerlukan GPU ditunda sampai setelah restart. Ekstraksi CPU dihentikan; keluaran parsial tidak dipakai sebagai hasil final atau dasar kesimpulan.
+Analisis eksploratif ini kini memakai 1.302 gambar: China 180, Jepang 705, India 110, dan Indonesia V4 307. Seluruh sampel sumber dan target dicatat beserta hash gambar/label dalam manifest. Statistik dihitung pada resolusi citra asli; perbedaan resolusi, kamera, framing dan komposisi adegan ikut memengaruhi ukuran ini.
 
-Bundle domain lama berisi 995 sumber + 308 target Indonesia V2 dan tetap berada di arsip. Grafik V2 tidak ditampilkan sebagai hasil V4 di dokumen ini. Notebook lama dipertahankan. Setelah eksekusi V4 diizinkan kembali dan berhasil, dokumen ini dapat dibangun ulang untuk memasukkan statistik serta proyeksi yang sesuai.
+![Empat sampel per domain dari manifest V4 dengan seed 42](figures/domain_v4/samples.png)
+
+![Distribusi statistik citra pada V4 dan uji sumber](figures/domain_v4/stats.png)
+
+| Domain | Kecerahan: mean V | Kejenuhan: mean S | Kontras: std gray | Ketajaman: var Laplacian | Gambar |
+|---|---|---|---|---|---|
+| China | 154,8 | 7,3 | 26,8 | 2296,8 | 180 |
+| Japan | 119,4 | 44,6 | 70,3 | 1430,9 | 705 |
+| India | 144,0 | 35,3 | 64,4 | 181,4 | 110 |
+| Indonesia | 160,3 | 15,1 | 36,8 | 514,0 | 307 |
+
+Tabel berisi median antar-gambar atas masing-masing statistik. Varian Laplacian adalah proxy ketajaman yang peka terhadap tekstur dan resolusi, bukan ukuran kualitas kamera yang terisolasi. Statistik ini deskriptif dan tidak menjelaskan selisih AP secara kausal.
+
+![UMAP embedding YOLOv8n pada source test dan Indonesia V4](figures/domain_v4/umap.png)
+
+![t-SNE dari embedding dan manifest V4 yang sama](figures/domain_v4/tsne.png)
+
+Fitur berdimensi 256 diambil dari layer 21 checkpoint YOLOv8n final, dengan input 640 piksel lalu normalisasi L2. UMAP memakai n_neighbors=15, min_dist=0,1, seed=42; t-SNE memakai perplexity=30, init PCA, seed=42. Silhouette deskriptif pada ruang fitur ternormalisasi adalah 0,199. Koordinat dan jarak dua dimensi tidak merupakan ukuran fisik domain shift atau bukti penyebab kegagalan deteksi. Klaster/tumpang tindih harus dibaca sebagai struktur eksploratif dari fitur model ini.
+
+Regenerasi memakai torch 2.6.0+cu124, Ultralytics 8.4.115 dan device 0. Lingkungan ini dicatat sebagai environment analisis baru, terpisah dari environment training/benchmark arsip. Bundle V2 lama tetap diarsipkan dan tidak ditimpa.
 
 ## Contoh kesalahan dan deteksi pada target
 
@@ -147,12 +166,12 @@ Kolom memperlihatkan GT, YOLOv12n, YOLO-RD dan YOLOv8-PD pada confidence tampila
 
 ## Kesimpulan dan batas bukti
 
-Pada eksperimen yang tercatat, YOLO-RD memimpin akurasi sumber, YOLOv12n memimpin transfer V4, dan YOLOv8-PD memiliki throughput arsip tertinggi. Training empat versus enam kelas tidak menetapkan manfaat yang konsisten dari label distractor. Evaluasi Indonesia mencakup area terbatas dengan satu anotator, dan eksperimen memakai satu seed. Generalisasi geografis, variasi seed serta hipotesis pencahayaan/tekstur memerlukan evaluasi lanjutan. Regenerasi domain V4 masih ditunda; ketika dilanjutkan, hasilnya tidak otomatis mengubah angka deteksi arsip atau isi paper yang sudah disubmit.
+Pada eksperimen yang tercatat, YOLO-RD memimpin akurasi sumber, YOLOv12n memimpin transfer V4, dan YOLOv8-PD memiliki throughput arsip tertinggi. Training empat versus enam kelas tidak menetapkan manfaat yang konsisten dari label distractor. Evaluasi Indonesia mencakup area terbatas dengan satu anotator, dan eksperimen memakai satu seed. Generalisasi geografis, variasi seed serta hipotesis pencahayaan/tekstur memerlukan evaluasi lanjutan. Analisis domain V4 yang diperbarui bersifat eksploratif dan tidak mengubah angka deteksi arsip atau isi paper yang sudah disubmit.
 
 ## Reproduksi dan sumber
 
 1. `python3.12 scripts/build_final_results.py` meregenerasi tabel/grafik dari CSV final.
-2. **Ditunda:** ketika eksekusi V4 diizinkan kembali, `python3.12 scripts/domain_analysis_v4.py --device 0 --resume` memakai folder V4 yang sudah dipersiapkan dan memeriksa kecocokan input cache. Pastikan CUDA tersedia terlebih dahulu.
+2. `python3.12 scripts/domain_analysis_v4.py --device 0 --resume` menggunakan folder V4 terpisah dan memeriksa kecocokan input cache. Pastikan CUDA tersedia; gunakan direktori output baru untuk eksperimen terpisah.
 3. `python3.12 scripts/build_analysis_narrative.py` membangun ulang narasi dari tabel final saat ini; bagian V4 baru ditambahkan setelah bundle domain berstatus lengkap dan hash output terverifikasi.
 
 Detail input, hash, versi dan parameter ada dalam `runs/rdd_yolov8n_local/evaluation/final_report/provenance.json` dan, setelah run V4 berhasil, `domain_viz_v4/provenance.json`. Bukti mentah tetap pada [RESULTS.md](RESULTS.md); catatan lokasi/status tersedia pada [INDEX.md](INDEX.md).

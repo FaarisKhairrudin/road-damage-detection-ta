@@ -135,12 +135,12 @@
     "archive": "runs/_archive/indonesia_v2/domain_viz",
     "legacy_compatibility_path": "runs/rdd_yolov8n_local/evaluation/domain_viz",
     "notebook": "code/07_domain_visualization.ipynb",
-    "status": "Existing V2 outputs only. No V4 UMAP/embeddings have been regenerated in this organization pass."
+    "status": "Historical V2 outputs only; completed V4 analysis is recorded separately under domain_analysis_v4."
   },
   "analysis_documents": {
     "illustrated_narrative": "docs/draft-analisis-rapih.md",
     "technical_draft": "latex/IEEE-Conference/draft/draft-analisis-hasil.md",
-    "status": "Narrative updated from canonical CSVs; V4 domain analysis is explicitly deferred. Technical draft redirects to the canonical narrative. No submitted manuscript text changed."
+    "status": "Narrative synchronized to final CSVs and verified V4 domain bundle; submitted manuscript text remains unchanged."
   },
   "generated_report": {
     "directory": "runs/rdd_yolov8n_local/evaluation/final_report",
@@ -152,9 +152,15 @@
   "domain_analysis_v4": {
     "directory": "runs/rdd_yolov8n_local/evaluation/domain_viz_v4",
     "producer": "scripts/domain_analysis_v4.py",
-    "status": "deferred_by_user",
-    "complete": false,
-    "intended_images": 1302,
-    "note": "CPU extraction stopped at user request pending restart/GPU availability. Partial inputs are not scientific results. No completed V4 UMAP/embeddings/projections are published."
+    "status": "complete",
+    "complete": true,
+    "images": 1302,
+    "embedding_shape": [
+      1302,
+      256
+    ],
+    "provenance": "runs/rdd_yolov8n_local/evaluation/domain_viz_v4/provenance.json",
+    "figures": "docs/figures/domain_v4",
+    "note": "Verified on RTX 3050; 995 source and 307 frozen V4 images. Exploration only, no retraining; V2 archive retained."
   }
 }

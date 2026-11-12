@@ -4,7 +4,7 @@
 - This is the private research workspace. The curated public portfolio is a separate sibling repository.
 - Earlier structural-only scope is superseded by explicit approval to synchronize research docs/tables/report scripts. Notebooks and submitted/manuscript LaTeX/PDFs remain protected.
 - Keep superseded artifacts as archives and provide an original-path → destination report.
-- User explicitly deferred GPU/domain processing until after restart. CPU extraction was stopped; no complete V4 bundle exists. Do not relabel V2 or partial outputs as V4 results.
+- GPU/domain processing was initially deferred; after the user resumed, V4 completed with 1302×256 embeddings and verified output hashes. V2 remains a separate archive; do not relabel it as V4.
 - User-supplied continuity guidance supersedes adding per-session dated progress logs: use STATE for present work and MEMORY for durable lessons. Preserve existing docs/progress history.
 - Ask for approval before new implementation scope; approval covers the agreed work without asking per file.
 
@@ -16,7 +16,7 @@
 - The final four-class CSVs for v8n/v12n/v26n are in runs/rdd_4class_local_pc_lab; PD/RD CSVs are in runs/rdd_4class_local. Their final weights/args are in rdd_4class_local. Do not discard the lab folder as a duplicate.
 
 ## Verified preservation/dependency pitfalls
-- Existing domain_viz uses Indo V2: 995 source + 308 target images. A V4 rerun would have 995+307=1302 images. Regenerate embeddings and input manifests as well as plots; plotting old embeddings again is insufficient.
+- Legacy domain_viz uses Indo V2 (995 source + 308 target). The distinct domain_viz_v4 bundle uses 995+307=1302 images and has freshly computed embeddings, projections and manifests. Projections are descriptive, not causal evidence.
 - Old target exports have different labels; v4-bak is Roboflow V3 (514 annotations), not an identical copy of final V4.
 - Existing remapped views contain absolute image symlinks. Historical dataset locations need aliases if the physical folders move.
 - Keep remapped view directories physical: old notebooks call shutil.rmtree(REM), which rejects directory symlinks.
@@ -38,10 +38,10 @@ Historical summaries and progress notes explain prior decisions; verify them aga
 - PD four-class final weights/args/metrics exist, but its run results.csv is absent. FINAL_ARTIFACTS.json records a null training_curve and the missing path; do not substitute another run or fabricate a curve.
 
 ## Illustrated analysis location
-- User requested moving the 15-image narrative to docs/draft-analisis-rapih.md. The narrative is now synchronized to final CSVs with 11 figures and a deferred V4 section; the technical Markdown redirects to it. Original pre-update versions are archived. scripts/paper/make_docx_rapih.py resolves images relative to the Markdown.
+- User requested moving the 15-image narrative to docs/draft-analisis-rapih.md. The narrative is synchronized to final CSVs and the verified V4 domain bundle with 15 figures; the technical Markdown redirects to it. Original pre-update versions are archived. scripts/paper/make_docx_rapih.py resolves images relative to the Markdown.
 
 ## Content report and execution status
 - scripts/build_final_results.py regenerates authoritative CSV aggregates, RESULTS_TABLE and docs/figures/final_results without model inference; scripts/build_analysis_narrative.py regenerates the narrative.
 - Supplementary five-class v12n relative drop is 45.4% when derived from full precision; do not retain 45.5% from rounded inputs. Primary four-class drop remains 34.1%.
-- Current-session Python was /usr/bin/python3.12 (3.12.16), torch2.6.0+cu124; GPU hardware RTX3050 is present but active nouveau driver exposed no CUDA device. Recheck after restart; this is an observation, not a permanent hardware limitation.
+- The user resumed after restarting NVIDIA; Python 3.12.16 / torch 2.6.0+cu124 detected the RTX 3050 and produced the V4 domain bundle on GPU.
 - User authorized committing task-owned changes and pushing main; unrelated notebook/manuscript edits must remain local.

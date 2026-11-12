@@ -1,6 +1,6 @@
 # Penataan repo dan daftar revisi berikutnya
 
-Penataan struktur disetujui pengguna pada 13 November 2026. Isi riset dipertahankan; pembaruan isi dan perhitungan ulang ditunda sesuai batas tugas terakhir.
+Pada tahap penataan awal, isi riset dipertahankan dan pembaruan analisis ditunda. Status terbaru setelah pengguna melanjutkan tercantum pada bagian berikut.
 
 ## Status terkini setelah pembaruan isi yang disetujui
 
@@ -13,14 +13,14 @@ Pengguna kemudian mengizinkan pembaruan isi dan meminta commit/push ke main. Res
 | README utama, data, model, ISRITI | Metadata/protokol/status diperbarui. Header model diubah hanya sebagai dokumentasi; executable AST tetap. |
 | Script laporan | Generator tabel/narasi dapat dijalankan ulang. Generator grafik lama mengarah ke generator final; ekspor Word hardcoded lama dinonaktifkan dan versi aslinya diarsipkan. |
 | Draf teknis Markdown | Menunjuk narasi dan tabel aktif; teks lama disimpan pada arsip sebelum pembaruan. |
-| Domain V4: UMAP/t-SNE/embeddings/statistik | **Ditunda pengguna sampai setelah restart/GPU tersedia.** Percobaan ekstraksi CPU dihentikan, folder hanya berisi input/manifest parsial dan tanda INCOMPLETE. Tidak dipakai sebagai hasil final. |
+| Domain V4: UMAP/t-SNE/embeddings/statistik | **Selesai** setelah pengguna melanjutkan dengan GPU. Bundle 995 sumber + 307 V4 diverifikasi dan hasilnya dimasukkan ke narasi. |
 | Notebook | Tidak diubah/dieksekusi oleh pekerjaan ini. Perubahan notebook yang sudah ada sebelumnya tetap dipertahankan. |
 | Naskah LaTeX/PDF submission | Tidak diubah dan tidak dikompilasi. |
 | Kurva training PD empat kelas | `results.csv` tetap tidak ditemukan; tidak dibuat atau diganti dengan run lain. |
 
 Salinan utuh sebelum perubahan isi tersimpan di [archive/content-before-update/](archive/content-before-update/). Rincian hash ada pada `authorized_content_updates` di manifest. Dataset, bobot, log mentah, CSV final asli dan arsip V2 dipertahankan. Tidak ada detector yang dilatih ulang atau DOCX yang dibuat ulang.
 
-Script V4 disiapkan, tetapi penyelesaiannya belum divalidasi lewat run penuh. Narasi baru hanya akan menerima bundle dengan status complete, tanpa marker INCOMPLETE, dan hash output yang cocok. Setelah pengguna melanjutkan, gunakan output V4 baru yang telah disiapkan dan bangun ulang narasi setelah run berhasil.
+Script V4 telah dijalankan hingga selesai setelah pengguna melanjutkan. Narasi hanya menerima bundle dengan status complete, tanpa marker INCOMPLETE, dan hash output yang cocok. Bundle V2 terdahulu tetap berada di arsip.
 
 ## Penataan struktur awal — riwayat
 
@@ -195,3 +195,10 @@ Penataan awal di atas dipertahankan sebagai bukti tahap sebelumnya. Setelah peng
 | `latex/IEEE-Conference/draft/draft-analisis-rapih.md` | [docs/draft-analisis-rapih.md](draft-analisis-rapih.md) | Hanya 15 jalur gambar relatif yang disesuaikan; narasi, angka, tabel dan gambar asli tetap. |
 
 Input `scripts/paper/make_docx_rapih.py` diarahkan ke lokasi baru dan resolusi gambarnya mengikuti direktori Markdown. Output DOCX tidak dibuat ulang. Draft teknis `draft-analisis-hasil.md` tetap di lokasi semula. Peta artefak dan indeks turut diperbarui. Rekam hash dan pemeriksaan ada pada `authorized_followups` di manifest; hasil verifikasi penataan awal adalah rekam tahap sebelumnya, bukan klaim bahwa jalur Markdown ini belum dipindahkan.
+
+
+## Tindak lanjut: analisis domain V4 selesai
+
+Setelah NVIDIA aktif, pengguna mengizinkan melanjutkan. Ekstraksi memakai Python 3.12, RTX 3050 dan checkpoint YOLOv8n final, tanpa training ulang. Dihasilkan 1.302 embedding berdimensi 256, UMAP, t-SNE, statistik dan sampel. Hitungan tiap domain, urutan manifest, hash keluaran dan angka proyeksi terverifikasi; empat gambar diperiksa visual.
+
+Keluaran fisik: `runs/rdd_yolov8n_local/evaluation/domain_viz_v4/`; gambar dan provenance yang dapat dibaca di dokumentasi: `docs/figures/domain_v4/`. Median statistik V4 Indonesia berbeda dari sebagian hasil V2 lama; gunakan narasi terkini, bukan tabel lama. Hasil ini deskriptif dan tidak menetapkan sebab-akibat. Notebook dan PDF submission tidak diubah.

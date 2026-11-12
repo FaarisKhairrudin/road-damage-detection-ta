@@ -1,6 +1,6 @@
 # Peta kerja TA — mulai di sini
 
-Dokumen hasil dan narasi telah diselaraskan dengan artefak final. Agregasi CSV dan grafik diperbarui tanpa training ulang. Regenerasi fitur/UMAP V4 **ditunda atas permintaan pengguna**; folder parsial tidak dipakai sebagai hasil final. Notebook dan naskah/PDF terunggah tetap dipertahankan.
+Dokumen hasil dan narasi telah diselaraskan dengan artefak final. Agregasi CSV dan grafik diperbarui tanpa training ulang. Fitur/UMAP, t-SNE dan statistik domain V4 telah diregenerasi dan diverifikasi. Notebook dan naskah/PDF terunggah tetap dipertahankan.
 
 - [Aturan agen](../AGENTS.md), [status pekerjaan](../.agents/STATE.md), [pengetahuan proyek](../.agents/MEMORY.md).
 - [Peta artefak final](FINAL_ARTIFACTS.json): lokasi dataset, bobot, konfigurasi, CSV dan naskah.
@@ -50,12 +50,12 @@ Semua notebook tetap di lokasi dan pada isi awal tugas ini, termasuk perubahan p
 | Analisis negara | [06_per_country_analysis.ipynb](../code/06_per_country_analysis.ipynb); agregat notebook lama tidak selalu empat kelas bersama |
 | Visualisasi domain historis | [07_domain_visualization.ipynb](../code/07_domain_visualization.ipynb), masih menunjuk V2 |
 | Bundle V2 | [arsip domain_viz](../runs/_archive/indonesia_v2/domain_viz/), 995 sumber + 308 Indonesia V2; tidak ditimpa |
-| Script V4 yang disiapkan | [domain_analysis_v4.py](../scripts/domain_analysis_v4.py), target 995+307=1302 gambar; eksekusi ditunda |
-| Folder V4 parsial | `runs/rdd_yolov8n_local/evaluation/domain_viz_v4/`, ditandai `INCOMPLETE.md` dan `run_status.json`; tidak memiliki hasil akhir/provenance lengkap |
+| Script domain V4 | [domain_analysis_v4.py](../scripts/domain_analysis_v4.py); selesai untuk 995 source + 307 target V4 |
+| Hasil domain V4 | [Grafik dan provenance](figures/domain_v4/); data fitur/manifest pada `runs/rdd_yolov8n_local/evaluation/domain_viz_v4/` |
 | Rekonstruksi PD/RD | [code/models/README.md](../code/models/README.md); model executable tidak diubah |
 | Dependensi riset | [requirements_yolov8_local.txt](../code/requirements_yolov8_local.txt) |
 
-Setelah GPU tersedia dan pengguna melanjutkan eksekusi, jalankan `python3.12 scripts/domain_analysis_v4.py --device 0 --resume`. Script memeriksa kecocokan input/cache dan tidak menulis ke alias V2. Setelah berhasil, figure dan provenance V4 dipublikasikan ke `docs/figures/domain_v4/`; barulah bangun ulang narasi. Menggambar ulang embeddings V2 tidak menghasilkan analisis V4.
+Eksekusi V4 selesai pada GPU RTX 3050 dengan 1.302 embedding (256 dimensi). Bundle tersimpan di direktori V4 terpisah; status, hash keluaran dan jumlah domain telah diverifikasi. Grafik UMAP/t-SNE adalah analisis eksploratif, bukan bukti penyebab selisih performa. Untuk run terpisah, pilih `--output` baru; `--resume` hanya untuk bundle yang input dan pengaturannya cocok.
 
 ## Naskah
 
