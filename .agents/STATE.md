@@ -19,9 +19,10 @@ verified results into documentation, and push task-owned changes to main.
 - Independent detection/F1 results remain from the archived final CSVs; the
   domain projections describe features and are not evidence of causal effects.
 
-## In progress
-- Refresh report provenance after updating the artifact map; validate links.
-- Stage task-owned documentation/figures and push main as previously authorized.
+## Publication completed
+- GPU analysis and documentation commit 8787408 was pushed to origin/main.
+- Report input hashes, 15 narrative figures and current local links passed.
+- This continuity update records the completed publication.
 
 ## Remaining
 - Locate the missing PD four-class training results.csv if its source is available.
@@ -33,4 +34,5 @@ verified results into documentation, and push task-owned changes to main.
 - docs/FINAL_ARTIFACTS.json; docs/REORGANIZATION.md; docs/archive/MANIFEST.json.
 
 ## Next concrete action
-Verify final report/input hashes and links, then commit and push task-owned files.
+The V4 run is complete and published. Preserve the existing unrelated notebook
+edit. Future analysis changes remain separate, authorized work.
