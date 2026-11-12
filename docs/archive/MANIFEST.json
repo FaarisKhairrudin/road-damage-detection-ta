@@ -1043,6 +1043,12 @@
       "report_input_hashes_verified": 35,
       "domain_completion_gate_fixtures": "passed (no model execution)"
     },
-    "publication": "User authorized commit and push main; task-owned files prepared for staging."
+    "publication": {
+      "status": "implementation_pushed",
+      "branch": "main",
+      "implementation_commit": "90745826fb270dc702c3bd16c3a9885a8b16d39d",
+      "remote": "https://github.com/FaarisKhairrudin/road-damage-detection-ta",
+      "note": "A continuity-only follow-up records this successful push. GPU/domain work remains deferred by user."
+    }
   }
 }

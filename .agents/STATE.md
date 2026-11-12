@@ -21,9 +21,12 @@ GPU-dependent domain processing is deferred by the user's latest instruction.
 - CPU feature extraction was attempted and stopped at user request; no final
   embeddings/projections/statistics were produced. No detector training ran.
 
-## In progress
-- Final protected hashes, active links and staged-file review.
-- Commit and push main (authorized, not yet completed).
+## Publication completed
+- Main implementation commit 9074582 was pushed to origin/main.
+- 172 protected files (including 16 notebooks) remain unchanged.
+- 111 active local links and 35 report-input hashes verified.
+- Task-owned staged-file and whitespace checks passed; unrelated edits excluded.
+- This continuity update records the published outcome.
 
 ## Deferred / unresolved
 - UMAP/t-SNE V4 and feature/statistics execution until user resumes after restart.
@@ -39,5 +42,6 @@ GPU-dependent domain processing is deferred by the user's latest instruction.
 - Temporary checks: /tmp/ta-content-update/.
 
 ## Next concrete action
-Verify preservation/links, stage only task-owned paths, commit and push main;
-report the published commit and explicit GPU deferral.
+No further non-GPU work remains for this request. When the user resumes GPU
+work after restart, recheck CUDA and run the V4 script with explicit device; only
+a fully validated bundle may update domain figures/narrative. Do not auto-resume.
