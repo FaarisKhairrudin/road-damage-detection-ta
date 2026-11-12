@@ -1,43 +1,55 @@
-## Rules
+# Agent instructions
 
-- Always ask permission before implementing anything
-- write every experiment bug discussion, and solution applied at docs/progress/date-problem
+Use existing project documentation and configuration for setup and commands.
+Add project-specific working agreements here only when they are established.
+Act as a data science research collaborator.
 
-## Navigation — find the file before exploring
+## Working agreements
 
-This repo has many layered files. Before opening files at random:
+- Obtain approval for implementation scope. Once approved, complete that scope without asking per file; ask before expanding it or permanently deleting research artifacts.
+- Start substantive work with `.agents/STATE.md` when present, then `docs/INDEX.md`; consult relevant memory before related decisions.
+- Use `docs/FINAL_ARTIFACTS.json` for current dataset/run/manuscript paths. Actual run configuration comes from `args.yaml`, not leftover notebook constants or filename timestamps.
+- Preserve datasets, weights, scientific results and submitted PDF snapshots. Archive superseded versions with an original-path → destination record; verify preservation and dependencies after moving them.
+- Honor the current task scope and protected paths recorded in STATE. Do not rewrite scientific content, relocate executable sources or rerun analyses outside that scope.
+- Do not treat compatibility aliases or historical summaries as current experiment selections. Do not relabel old-data figures as final-data figures.
+- Follow the relevant manuscript's existing compile script. Keep intermediates in `build/` and final PDFs in `hasil/`; `build/` may also contain protected snapshots and QA evidence.
+- Update `docs/INDEX.md` and the artifact map when active paths or final selections change.
+- This research workspace and the public portfolio are separate repositories. Publishing or synchronizing either requires explicit task authorization.
 
-1. Read **`docs/INDEX.md`** — the full context map: "looking for X → open Y" routing (§3), the contents of every folder (§4–§6), and the list of pitfalls you must know (§7).
-2. For result numbers, start with **`docs/RESULTS_TABLE.md`** (tidy tables) and **`docs/RESULTS.md`** (raw log). Do not infer numbers from constants left behind in notebook cells — the authoritative run configuration is in `runs/*/experiments/*/args.yaml`.
-3. Final experiment context for writing: **`docs/rangkuman-eksperimen-ta-v2.md`** (not v1).
-4. Decision/bug history: **`docs/progress/`** (chronological).
-5. Token-efficient TA proposal index: **`latex/PROPOSAL_TA.md`**.
-6. Deep-research reference output: **`outputs/yolo-road-damage-references.md`** (+ `.provenance.md`).
+## Notebook conventions (when notebook editing is authorized)
 
-After adding/moving a notebook, script, or main results folder, **update `docs/INDEX.md`** (see §9 there).
+- One cell is one logical unit with one output or none.
+- Center the project title with `<div align="center">`.
+- Main sections: `## ***Section Name***` followed by `---`.
+- Subsections: `### ***Subsection Name***`, without a horizontal rule.
+- No emoji or decorative filler. Keep explanations scoped to the current group.
+- Write conclusions only after running and inspecting the output.
 
-## LaTeX conventions
+<!-- agentic-starter:continuity:v1 -->
+## Project continuity
 
-- **Build & result folder isolation**: Do not clutter the root directory with intermediate files.
-  - Compilation intermediates must go into `build/`.
-  - Final PDF output must be stored in `hasil/`.
-- **How to compile**:
-  ```bash
-  cd latex/skripsi-telkom && bash compile.sh
-  ```
-  \*(Or manually: \`latexmk -pdf -outdir=build -interaction=nonstopmode main.tex &amp;&amp; cp build/main.pdf hasil/\`)\*
+### Files
+- `.agents/STATE.md` stores the current work state: goal, completed work, remaining work, blockers, relevant file paths, checks actually run and their results, and the next concrete action.
+- `.agents/MEMORY.md` stores durable project knowledge: decisions and their reasons, explicit user corrections, verified gotchas, and reusable fixes.
+- Keep progress and learned facts in these files rather than expanding AGENTS.md. Link to existing documentation instead of duplicating it.
 
-## Notebook conventions
+### Reading
+- At the start of substantive project work or when resuming work, read STATE.md if it exists.
+- Consult relevant sections of MEMORY.md before making related decisions. Search by topic when it grows; avoid loading unrelated notes.
+- Check remembered facts against current code and configuration before relying on them. Follow current explicit user instructions.
 
-- **1 cell = 1 logical unit** (1 output or none). Never merge multiple independent outputs into one cell.
-- **Markdown style**:
-  - Centered title with `[[ORCA_RICH_MD:18706e15e9a8a180d366292ffc2ba9b3:inline-html:%3Cdiv%20align%3D%22center%22%3E]]` for the project/notebook title.
-  - Main sections: `## ***Section Name***` followed by `---`.
-  - Subsections: `### ***Subsection Name***` (no horizontal rule).
-  - No emoji, no decorative filler.
-  - Short explanations scoped to the current group.
-  - Write conclusions after running and inspecting the output, not before.
+### Updating
+- Save important decisions and verified reusable lessons when established.
+- Refresh STATE.md after meaningful milestones and before handing work off. Record unfinished work clearly so another agent can continue.
+- Update existing sections in place. Merge duplicates and remove obsolete guidance. Mark a decision as superseded when its history still matters.
+- Skip edits when nothing meaningful changed.
+- Create additional memory files only when there is useful content to save.
+- Avoid per-session files, timestamp-named logs, and conversation transcripts. Preserve existing `docs/progress/` history; the current continuity agreement replaces creating new dated progress logs.
 
-## Role
-
-- you are a data science research expert.
+### Keeping notes useful
+- Keep STATE.md focused on the present; aim for at most 60 lines.
+- Keep MEMORY.md concise and organized by topic. If it becomes difficult to scan, move detailed material into topic files and retain a short index.
+- Distinguish confirmed facts, user decisions, and unresolved hypotheses.
+- Record validation accurately: passed, failed, or not run.
+- Before finishing substantive work, check whether these notes need updating.
+<!-- /agentic-starter:continuity -->

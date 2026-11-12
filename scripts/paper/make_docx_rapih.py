@@ -19,8 +19,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt, RGBColor
 
 REPO = Path(__file__).resolve().parents[2]
-DRAFT = REPO / "latex/IEEE-Conference/draft/draft-analisis-rapih.md"
-GAMBAR = REPO / "latex/IEEE-Conference/gambar"
+DRAFT = REPO / "docs/draft-analisis-rapih.md"
 OUT_DOCX = REPO / "latex/IEEE-Conference/draft/laporan-analisis-rapih.docx"
 
 BLACK = RGBColor(0, 0, 0)
@@ -111,7 +110,7 @@ def main() -> None:
             if m:
                 caption, fname = m.group(1), m.group(2)
                 pending_caption = caption
-                img = GAMBAR / fname
+                img = DRAFT.parent / fname
                 if img.exists():
                     doc.add_picture(str(img), width=Pt(430))
                     doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER

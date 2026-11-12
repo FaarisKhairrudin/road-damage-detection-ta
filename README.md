@@ -1,140 +1,91 @@
-# Road Damage Detection TA
+# Road Damage Detection — TA Research Workspace
 
-Thesis (Tugas Akhir) research code for a baseline of road damage and surface defect detection using YOLOv8n on the N-RDD2024 Asia subset (6 classes).
+Workspace penelitian Tugas Akhir untuk membandingkan lima detektor YOLO pada kerusakan jalan, mengevaluasi generalisasi tanpa fine-tuning ke Indonesia, dan menyiapkan buku TA serta paper. Repository portfolio publik berada terpisah di [road-damage-detection](https://github.com/FaarisKhairrudin/road-damage-detection).
 
-## Context Map (read before exploring)
+## Mulai dari sini
 
-This repo is fairly large and layered. To find **which file contains what** without reading everything, start with:
+| Kebutuhan | Buka |
+|---|---|
+| Peta kerja dan status artefak | [docs/INDEX.md](docs/INDEX.md) |
+| Lokasi dataset, sepuluh run final, bobot, args dan CSV | [docs/FINAL_ARTIFACTS.json](docs/FINAL_ARTIFACTS.json) |
+| Hasil dalam tabel | [docs/RESULTS_TABLE.md](docs/RESULTS_TABLE.md) |
+| Pembahasan naratif dan gambar | [docs/draft-analisis-rapih.md](docs/draft-analisis-rapih.md) |
+| Log evaluasi asli | [docs/RESULTS.md](docs/RESULTS.md) |
+| Riwayat pemindahan dan arsip | [docs/REORGANIZATION.md](docs/REORGANIZATION.md) |
+| Aturan kerja agen | [AGENTS.md](AGENTS.md), [.agents/STATE.md](.agents/STATE.md), [.agents/MEMORY.md](.agents/MEMORY.md) |
 
-- **[`docs/INDEX.md`](docs/INDEX.md)** — the full context map: "looking for X → open Y" routing, the contents of every folder, and a list of pitfalls you must know.
-- **[`AGENTS.md`](AGENTS.md)** — working rules (notebook & LaTeX conventions, and the requirement to write progress logs).
+Rangkuman bernomor versi dan dataset lama sudah diarsipkan. Alias pada nama lama hanya mempertahankan akses historis; pilih data dan hasil aktif dari peta artefak di atas. Jangan menjalankan ulang eksperimen melalui alias arsip karena alias tersebut tetap dapat ditulis.
 
-Shortcuts to the sources of numbers and manuscript context:
+## Ruang lingkup eksperimen final
 
-| I need… | Open |
-| --- | --- |
-| Final mAP/F1 (tables) | [`docs/RESULTS_TABLE.md`](docs/RESULTS_TABLE.md) |
-| Raw evaluation log | [`docs/RESULTS.md`](docs/RESULTS.md) |
-| Final experiment context for writing | [`docs/rangkuman-eksperimen-ta-v2.md`](docs/rangkuman-eksperimen-ta-v2.md) |
-| Bug/decision logs by date | [`docs/progress/`](docs/progress/) |
-| Token-efficient proposal index | [`latex/PROPOSAL_TA.md`](latex/PROPOSAL_TA.md) |
+- Model pembanding: **YOLOv8n, YOLOv12n, YOLO26n, YOLOv8-PD, dan YOLO-RD**. Dua model terakhir merupakan reimplementasi lokal dari desain paper; perbedaan implementasi dijelaskan di [code/models/README.md](code/models/README.md).
+- Source: subset Asia N-RDD2024 dari China, Japan dan India, dengan enam kelas: `Longitudinal_Crack`, `Transverse_Crack`, `Alligator_Crack`, `Pothole`, `manhole`, dan `patchy_road`.
+- Penanganan imbalance pada run final: **effective-number class weighting, beta 0.999, pada komponen classification BCE**. Variabel/nama Focal Loss pada eksperimen lama tidak menunjukkan bahwa Focal Loss aktif pada run final.
+- Target final: **RDD-Indo-Crop Roboflow versi 4**, `data/RDD-indo-v4/valid/`: **307 gambar, 502 anotasi, dan 39 gambar tanpa anotasi**. Sebanyak 481 anotasi adalah empat kelas kerusakan; sisanya 21 patchy road. Tidak ada manhole ground truth.
+- Evaluasi source overall memakai enam kelas. Perbandingan transfer dan antarnegara utama memakai **empat kelas kerusakan yang sama**. Agregat lima kelas V4 merupakan analisis tambahan, sehingga tidak boleh disamakan dengan skor empat kelas.
+- Perbandingan empat versus enam kelas adalah dua rezim training terpisah dengan split gambar sumber yang sama. Hasil berasal dari satu seed/run per model dan rezim, bukan pengujian multi-seed.
 
-## Experiment Focus
+Konfigurasi aktual ada pada `args.yaml` tiap run. Kelima run enam kelas mencatat seed 42, input 640, batch 16, maksimal 300 epoch, patience 40 dan optimizer auto. AMP aktif pada model native dan nonaktif pada dua model custom enam kelas; konfigurasi empat kelas perlu dibaca terpisah. Nilai yang tertinggal dalam cell konfigurasi notebook tidak selalu sama dengan argumen run yang sudah selesai.
 
-- Secondary dataset: N-RDD2024, subset of China, Japan, India.
-- Classes: `Longitudinal_Crack`, `Transverse_Crack`, `Alligator_Crack`, `Pothole`, `manhole`, `patchy_road`.
-- Main baseline: YOLOv8n pretrained on COCO with the native Ultralytics loss.
-- Evaluation: mAP50, mAP50-95, precision, recall, per-class F1, confusion matrix, PR/F1 curves, and FPS estimation.
-- Focal loss is prepared as an optional ablation, not the main baseline.
+## Data dan hasil lokal
 
-## Expected Data Structure
-
-Data is not stored on GitHub. After cloning the repo, copy the dataset from the SSD to the following location:
+Dataset lengkap, bobot dan keluaran run tidak masuk Git. Setelah clone, siapkan sumber lokal sesuai [data/README.md](data/README.md). Path utama dipertahankan agar notebook dan script lama tetap menemukan berkasnya.
 
 ```text
-data/NRDD-2024/RDD_Split_Final_china_japan_india_6_classes/RDD_Split_Final_china_japan_india_6_classes/
-  data.yaml
-  train/
-    images/
-    labels/
-  val/
-    images/
-    labels/
-  test/
-    images/
-    labels/
+code/                  notebook penelitian dan rekonstruksi model
+scripts/               viewer, evaluasi tambahan dan pembangkit aset
+data/                  source, target V4, bahan mentah dan _archive/
+runs/                  hasil final dan _archive/ hasil historis
+latex/                 buku TA, sumber paper dan submission ISRITI
+docs/                  navigasi, tabel, narasi, bukti dan daftar arsip
+.agents/               status pekerjaan serta pengetahuan proyek
 ```
 
-The local notebooks already use this path automatically.
+CSV final empat kelas untuk v8n/v12n/v26n berada pada `runs/rdd_4class_local_pc_lab/`; CSV PD/RD berada pada `runs/rdd_4class_local/`. Bobot dan args empat kelas tersedia di `runs/rdd_4class_local/experiments/`. Folder lab masih merupakan sumber hasil final, bukan duplikat yang boleh dihapus. Detail setiap model ada pada [FINAL_ARTIFACTS.json](docs/FINAL_ARTIFACTS.json).
 
-## Local or GPU-Server Setup
+`docs/RESULTS.md` dipertahankan sebagai log mentah. Pembaruan tabel atau pembahasan tidak menulis ulang log tersebut.
 
-```bash
-git clone https://github.com/FaarisKhairrudin/road-damage-detection-ta.git
-cd road-damage-detection-ta
-python -m venv .venv
-```
+## Setup dan notebook
 
-Activate the environment:
+Gunakan environment yang sesuai dengan artefak run. Log source mencatat Python 3.12.3, Ultralytics 8.4.108, torch 2.5.1+cu121 dan RTX 4070 SUPER 12 GB. Requirements proyek masih berupa rentang versi, bukan lockfile reproduksi seluruh run.
 
 ```bash
-# Windows PowerShell
-.venv\Scripts\Activate.ps1
-
-# Linux/macOS
+python3.12 -m venv .venv
 source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+# Pasang pasangan torch/torchvision yang sesuai CPU/CUDA terlebih dahulu.
+python -m pip install -r code/requirements_yolov8_local.txt
 ```
 
-Install dependencies:
+[requirements_yolov8_local.txt](code/requirements_yolov8_local.txt) sengaja tidak memasang torch/torchvision. [Catatan model](code/models/README.md) membedakan environment run, pemeriksaan historis, dan ketergantungan parser internal.
+
+Notebook tetap di lokasi semula dan belum dirapikan isinya:
+
+| Kelompok | Peran |
+|---|---|
+| `code/03_1` sampai `03_3_modelling_comparative_local.ipynb` | Training komparatif bertahap; daftar model aktif berbeda per tahap |
+| `code/04_1` sampai `04_4_modelling_4class.ipynb` | Training ablasi empat kelas |
+| `code/05_zero_shot_indo_v4.ipynb` | Evaluasi target V4; header dan agregasi notebook masih perlu diselaraskan dengan empat kelas utama |
+| `code/06_per_country_analysis.ipynb` | Evaluasi negara; agregat kelas yang tersedia perlu dibedakan dari perbandingan empat kelas utama |
+| `code/07_domain_visualization.ipynb` | Notebook historis yang masih mengarah ke Indonesia V2; jangan menganggap outputnya sebagai V4 |
+| Notebook baseline dan zero-shot V1/V2 | Riwayat eksperimen, bukan resep final default |
+
+Sebelum training atau rerun, cocokkan argumen, dataset, mapping label dan direktori output dengan artefak final. Hindari menjalankan seluruh notebook lama langsung ke lokasi hasil final/arsip.
+
+## Viewer dan naskah
 
 ```bash
-pip install -U pip
-pip install -r code/requirements_yolov8_local.txt
+streamlit run scripts/visualize_streamlit.py
+streamlit run scripts/zero_shot_viewer_v4.py
 ```
 
-If an NVIDIA GPU is available, make sure PyTorch CUDA is installed to match the server's CUDA version. If `torch.cuda.is_available()` is still `False`, install PyTorch CUDA from the official PyTorch instructions first, then install the requirements above.
+| Naskah | Perintah yang sudah tersedia |
+|---|---|
+| Buku TA aktif | `cd latex/buku-ta-template && bash compile.sh` |
+| Pratinjau Bab I–III | `cd latex/buku-ta-template && bash compile.sh bab123` |
+| Sumber paper | `cd latex/IEEE-Conference && bash compile.sh` |
+| Review ISRITI revisi layout | `cd latex/ISRITI-submission && bash compile-review-revised.sh` |
 
-## Main Notebooks
+PDF review ISRITI enam halaman yang telah disubmit adalah snapshot yang dilindungi. Skrip kompilasi dapat menimpa PDF keluaran; baca [README submission](latex/ISRITI-submission/README.md) sebelum membangun ulang. Draft arsitektur tujuh halaman sudah dibatalkan dan diarsipkan, bukan versi submission aktif.
 
-> The full notebook list (including the comparative experiments, the 4-class ablation, and zero-shot) is in [`docs/INDEX.md`](docs/INDEX.md) §4.
-
-- `code/01_modelling_baseline.ipynb`: Kaggle version.
-- `code/02_modelling_baseline_local.ipynb`: local/GPU-server version.
-
-To run the local baseline:
-
-1. Open `code/02_modelling_baseline_local.ipynb`.
-2. Run the dependency-install cell if the environment is incomplete.
-3. Restart the kernel.
-4. Run the cells from the top.
-5. For a smoke test, temporarily set `EPOCHS = 5` and `RUN_NAME = "yolov8n_smoke_test"`.
-6. For the final experiment, use `EPOCHS = 300`, `PATIENCE = 50`, and `RUN_NAME = "yolov8n_baseline_native_loss"`.
-
-## Baseline Augmentation Notes
-
-The baseline does not use rotation:
-
-```python
-degrees = 0.0
-```
-
-Augmentations used:
-
-- Mosaic
-- Light MixUp
-- Horizontal flip
-- Translate
-- Scale
-- Close mosaic for the last 10 epochs
-
-## Output
-
-Training and evaluation outputs appear under:
-
-```text
-runs/rdd_yolov8n_local/
-```
-
-The `runs/` folder, the dataset, the proposal document, and model weights are ignored by Git to keep the repository light. The contents of `runs/` and the key per-run files are described in [`docs/INDEX.md`](docs/INDEX.md) §6.
-
-## Storing Experiment Results
-
-Do not commit model weights or training-output folders directly to GitHub. GitHub warns for files above 50 MiB and rejects files above 100 MiB on a normal Git repository. YOLOv8n weights can still be small, but many experiments will quickly make the repository heavy because `.pt` files are binary and do not version well.
-
-Recommended pattern:
-
-- GitHub repository: code, notebooks, requirements, README, and the experiment registry.
-- `runs/`: local, temporary training/evaluation output.
-- `artifacts/`: local upload-ready packages, still ignored by Git.
-- GitHub Releases / Hugging Face / Google Drive / Kaggle: where `.pt` weights and evaluation `.zip` packages live.
-- `experiments/registry.csv`: a record of weight links, eval-artifact links, key metrics, commits, and run notes.
-
-> Note: `experiments/registry.csv` and the `artifacts/` folder **do not yet exist** in this repo. In the meantime, the metrics registry is held by [`docs/RESULTS_TABLE.md`](docs/RESULTS_TABLE.md).
-
-To build an artifact package from one run:
-
-```bash
-python scripts/package_experiment.py --run-dir runs/rdd_yolov8n_local/experiments/yolov8n_baseline_native_loss --run-id yolov8n_baseline_native_loss_v1
-```
-
-Upload the files from `artifacts/yolov8n_baseline_native_loss_v1/`, then fill in their links in `experiments/registry.csv`.
+Versi README sebelum pembaruan disimpan utuh di [arsip konten](docs/archive/content-before-update/README.md). Riwayat lama di `docs/progress/` tetap ada; kontinuitas kerja berikutnya menggunakan `.agents/STATE.md` dan `.agents/MEMORY.md`.

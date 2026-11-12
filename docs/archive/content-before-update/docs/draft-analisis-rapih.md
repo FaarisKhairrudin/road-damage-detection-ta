@@ -49,7 +49,7 @@ Retak memanjang mendominasi hampir separuh data sedangkan patchy road hanya 4,2 
 
 Tabel di atas memuat metrik akurasi sekaligus ukuran dan kecepatan tiap model. YOLO RD menjadi yang terbaik di semua metrik akurasi gabungan dengan mAP50 0,661 dan F1 makro 0,633 namun ia juga paling berat dengan 7,09 juta parameter dan 12,9 GFLOPs serta paling lambat 189,4 FPS. Hasil ini sesuai dengan filosofi desainnya yang mengutamakan akurasi meski dengan beban komputasi terbesar. YOLOv12n menyusul di posisi kedua dengan selisih mAP50 hanya 0,007 namun dengan separuh parameter YOLO RD dan hampir dua kali kecepatannya. YOLOv8 PD membuktikan dirinya sebagai model paling ringan dengan 2,46 juta parameter dan paling cepat 368,4 FPS atau sekitar 68 persen lebih cepat dari baseline YOLOv8n. Akurasinya pun hampir sama dengan baseline sehingga cocok untuk perangkat terbatas. YOLOv26n memiliki beban komputasi paling rendah 5,9 GFLOPs namun berada di posisi terbawah pada resep pelatihan bersama ini. Hal tersebut lebih tepat dibaca sebagai keterbatasan resep bukan kelemahan bawaan arsitekturnya.
 
-![Trade-off akurasi kecepatan ukuran](../gambar/paper_figX3_bubble.png)
+![Trade-off akurasi kecepatan ukuran](../latex/IEEE-Conference/gambar/paper_figX3_bubble.png)
 
 Gambar di atas merangkum empat variabel sekaligus dalam satu bidang. Sumbu mendatar adalah kecepatan FPS dan sumbu tegak adalah mAP50. Ukuran gelembung adalah jumlah parameter dan warnanya adalah beban komputasi GFLOPs. YOLO RD berada di kiri atas dengan skor tertinggi namun paling berat dan paling lambat. YOLOv8 PD berada di kanan dengan kecepatan tertinggi 368 FPS dan gelembung terkecil sehingga paling ringan. YOLOv12n berada di tengah dengan keseimbangan terbaik antara akurasi dan kecepatan. Satu gambar ini menggantikan kebutuhan tabel terpisah untuk akurasi kecepatan dan ukuran model.
 
@@ -69,7 +69,7 @@ Untuk pemilihan model tidak ada satu model yang menang di semua sisi. Butuh akur
 
 Bagian ini perlu penjelasan khusus karena pengukuran lamanya keliru. Pengukuran lama menghitung semua prediksi lubang pada gambar yang memuat pengecoh lalu menyebutnya sebagai false positive. Cara ini salah karena prediksi lubang tersebut bisa saja berada di lokasi lain yang memang benar berlubang dan tidak menyentuh objek pengecoh sama sekali.
 
-![Bukti proxy vs overlap](../gambar/fig_fp_overlap.png)
+![Bukti proxy vs overlap](../latex/IEEE-Conference/gambar/fig_fp_overlap.png)
 
 Gambar di atas membuktikan pengukuran lama keliru. Panel A menunjukkan false positive beneran yaitu prediksi lubang tepat di atas manhole. Panel B menunjukkan prediksi lubang yang ikut terhitung proxy padahal tidak menyentuh pengecoh sama sekali. Panel C menunjukkan penanganan benar yaitu manhole diprediksi sebagai manhole. Panel D menunjukkan kasus beneran tambahan.
 
@@ -106,7 +106,7 @@ Model yang dilatih tanpa pengecoh justru sedikit lebih baik dalam mendeteksi lub
 
 ## Perbedaan Antar Negara Sumber
 
-![Heatmap per negara](../gambar/paper_figX4_heatmap.png)
+![Heatmap per negara](../latex/IEEE-Conference/gambar/paper_figX4_heatmap.png)
 
 Gambar di atas adalah heatmap mAP50 per negara untuk kelima model dengan gradasi warna dari terang ke gelap. Heatmap memakai agregat mentah Ultralytics (enam kelas untuk China Jepang dan gabungan, lima kelas untuk India) sehingga India terdongkrak satu manhole 0,995. Tabel di bawah memakai agregat yang sudah dikoreksi yaitu rata rata empat kelas inti yang sama di semua negara. Pola peringkat tetap identik di semua arsitektur pada kedua skema yaitu China tertinggi lalu Jepang lalu India terendah sehingga penyebabnya adalah karakter datanya bukan modelnya.
 
@@ -125,7 +125,7 @@ Citra China berupa close up aspal yang tajam dan terang. Citra Jepang berupa wid
 
 ## Domain Gap ke Indonesia
 
-![Domain gap V4](../gambar/paper_fig1_domain_gap_v4.png)
+![Domain gap V4](../latex/IEEE-Conference/gambar/paper_fig1_domain_gap_v4.png)
 
 Gambar di atas adalah temuan sentral penelitian ini. Seluruh model kehilangan 45,5 sampai 58,6 persen kemampuannya saat diuji di Indonesia. Ini bukan sekadar masalah kalibrasi kecil melainkan perubahan total peta persaingan.
 
@@ -145,7 +145,7 @@ Angka antar versi ekspor tidak boleh dibandingkan. Versi lama mencatat skor jauh
 
 ## Keruntuhan per Kelas di Indonesia
 
-![Collapse per kelas](../gambar/paper_fig2_perclass_collapse_v12n.png)
+![Collapse per kelas](../latex/IEEE-Conference/gambar/paper_fig2_perclass_collapse_v12n.png)
 
 Gambar di atas memecah angka gabungan menjadi per kelas pada model terbaik yaitu YOLOv12n. Keruntuhannya tidak merata dan polanya sangat informatif. Angka n pada tiap kelas menunjukkan jumlah contoh di Indonesia.
 
@@ -161,25 +161,25 @@ Retak memanjang hampir tidak turun sedangkan retak melintang dan lubang jalan ru
 
 ## Perbandingan Langsung Hasil Deteksi per Negara
 
-![Contoh GT vs model per negara](../gambar/paper_fig_country_examples.png)
+![Contoh GT vs model per negara](../latex/IEEE-Conference/gambar/paper_fig_country_examples.png)
 
 Gambar di atas membandingkan anotasi benar dengan prediksi tiga model terbaik pada satu citra terpilih tiap negara. Baris China memuat satu retak memanjang tiga retak buaya dan satu patchy. Ketiga model menangkap hampir semua objek dengan keyakinan tinggi 0,81 sampai 0,96 dan hanya beda pada kerapian box. Baris Jepang memuat dua retak memanjang dua retak melintang dan satu retak buaya. Model hanya menangkap sebagian retak melintang dengan keyakinan rendah 0,26 sampai 0,43 sedangkan retak memanjang dan retak buaya luput. Baris India memuat tiga lubang dan satu retak buaya. Ketiga model menangkap lubang dan retak buaya dengan keyakinan sedang 0,26 sampai 0,55. Pola ini konsisten dengan urutan skor mAP per negara yaitu China tertinggi lalu Jepang dan India terendah.
 
-![Sampel berlabel per negara](../gambar/paper_fig_country_gt.png)
+![Sampel berlabel per negara](../latex/IEEE-Conference/gambar/paper_fig_country_gt.png)
 
 Gambar di atas melengkapi perbandingan sebelumnya dengan tiga citra berlabel tiap negara dalam gaya yang sama dengan panel karakter citra. Kotak anotasi digambar tipis supaya objek tetap terlihat jelas dan label kelas ditulis kecil di sudut kotak. Baris China menampilkan close up aspal tajam dengan retak memanjang dan buaya yang tegas. Baris Jepang menampilkan jalan perumahan gelap dengan retak memanjang buaya dan satu manhole. Baris India menampilkan jalan berdebu dari kejauhan dengan retak yang tipis dan samar. Perbedaan ketajaman dan sudut pandang inilah yang menjelaskan kenapa skor China paling tinggi lalu Jepang dan India paling rendah.
 
 ## Karakter Citra Tiap Domain
 
-![Contoh citra D3](../gambar/paper_figD3_domains.png)
+![Contoh citra D3](../latex/IEEE-Conference/gambar/paper_figD3_domains.png)
 
 Gambar di atas berisi tiga domain sumber dengan tiga citra paling tipikal tiap domain. Baris China berupa close up aspal tajam dengan marka jelas. Baris Jepang berupa wide shot gelap dari dalam mobil dengan rumah dan pertokoan masuk bingkai. Baris India berupa jalan berdebu buram dengan langit lebar dan kendaraan kecil di kejauhan. Perbedaan sudut pandang dan ketajaman langsung terlihat tanpa penjelasan panjang.
 
-![Contoh citra D4](../gambar/paper_figD4_domains.png)
+![Contoh citra D4](../latex/IEEE-Conference/gambar/paper_figD4_domains.png)
 
 Gambar di atas menambah baris Indonesia V4 sebagai target. Beton terang berpori dengan ruko dan motor langsung kontras dengan ketiganya dan tidak mirip satupun sumber. Ini jangkar visual gap domain yang lebih kuat dari angka. Citra dipilih sebagai yang paling dekat dengan median statistik tiap domain sehingga mewakili tampilan tipikal bukan kasus ekstrem.
 
-![Statistik citra](../gambar/fig_stats.png)
+![Statistik citra](../latex/IEEE-Conference/gambar/fig_stats.png)
 
 Gambar di atas menunjukkan empat panel statistik yaitu kecerahan kejenuhan kontras dan ketajaman untuk tiap domain.
 
@@ -194,7 +194,7 @@ Secara visual keempat domain memang berbeda jauh. China berisi close up aspal ya
 
 Tabel median di atas memperkuat kesan visual. Indonesia paling terang dengan nilai 160,3 yang konsisten dengan dugaan kilau matahari pagi. Jepang paling gelap dengan 119,4. Jepang paling jenuh warna dan paling kontras sedangkan China nyaris abu abu dengan kontras rendah. China paling tajam sedangkan India paling buram. Perlu dicatat data visualisasi memakai 308 citra ekspor lama sedangkan evaluasi memakai 307 citra V4 sehingga keduanya tidak identik.
 
-![UMAP](../gambar/fig_umap.png)
+![UMAP](../latex/IEEE-Conference/gambar/fig_umap.png)
 
 Gambar di atas menunjukkan titik biru China terpisah jauh sendirian. Titik hitam Indonesia membentuk klaster sendiri. Titik hijau India menempel pada massa oranye Jepang.
 
@@ -211,19 +211,19 @@ Ada 42 citra pagi hari pukul 0927 yang terlihat mengkilau memantulkan matahari. 
 
 Citra pagi tidak mengandung patchy road sama sekali dan hanya punya 8 lubang dibanding 62 di sisa data. Karena perbedaannya sebesar ini maka analisis pagi tidak boleh dibaca sebagai bukti bahwa kilau menurunkan performa. Perbedaan skor bisa saja berasal dari campuran kelasnya bukan dari kilau itu sendiri. Statusnya adalah studi kasus ilustratif. Belum ada evaluasi subset pagi melawan sisa pada V4 karena angka lama memakai komposisi versi sebelumnya yang berbeda.
 
-![Kilau dan pori G1](../gambar/paper_figG1_glare.png)
+![Kilau dan pori G1](../latex/IEEE-Conference/gambar/paper_figG1_glare.png)
 
 Gambar di atas berisi tiga citra kilau pilihan yaitu 0036 0015 dan 0041 dari baris pertama sampai baris ketiga. Kolom pertama adalah anotasi benar dan tiga kolom berikutnya adalah prediksi tiga model terbaik. Baris pertama citra 0036 tidak punya anotasi namun YOLOv12n menembak Patchy 0,78 dan YOLOv8 PD menembak Pothole 0,69 tepat di atas tekstur pori. Ini bukti paling bersih bahwa pori beton dibaca sebagai kerusakan. Baris kedua citra 0015 punya satu retak melintang. YOLOv12n gagal total sedangkan YOLO RD hanya menembak box kecil di sudut yang salah dan PD menembak lubang di area retak. Baris ketiga citra 0041 punya satu retak melintang dan ketiga model gagal total. Polanya jelas. Pada beton terang berpori model memilih menembak box besar yang salah daripada melewatkan. Gambar ini layak menjadi figur utama studi kilau.
 
-![Prediksi benar G2](../gambar/paper_figG2_correct.png)
+![Prediksi benar G2](../latex/IEEE-Conference/gambar/paper_figG2_correct.png)
 
 Gambar di atas berisi tiga citra prediksi benar yaitu 0436 0441 dan 0727 dari baris pertama sampai baris ketiga. Baris pertama citra 0436 berupa retak memanjang tegas dan ketiga model benar dengan YOLO RD paling percaya diri 0,56. YOLOv8 PD malah memecah jadi tiga box kecil yang bertumpuk. Baris kedua citra 0441 juga retak memanjang namun YOLOv12n salah melabeli sebagai retak buaya sedangkan RD dan PD benar sebagai memanjang. Baris ketiga citra 0727 punya tiga anotasi dan ketiga model menembak empat box dengan pola yang sama. Gambar ini membuktikan model bisa benar kalau retaknya tegas. Bedanya ada di kerapian box.
 
-![Prediksi saja G3](../gambar/paper_figG3_predonly.png)
+![Prediksi saja G3](../latex/IEEE-Conference/gambar/paper_figG3_predonly.png)
 
 Gambar di atas berisi tiga citra tanpa pembanding anotasi yaitu 0716 0734 dan 0768 dari baris pertama sampai baris ketiga. Baris pertama citra 0716 relatif bersih dan ketiga model sepakat menembak retak memanjang yang sama dengan keyakinan 0,60 sampai 0,74. Baris kedua citra 0734 menunjukkan perbedaan perilaku dengan YOLOv12n menembak Patchy berdampingan Transverse sedangkan dua model lain menembak Transverse plus memanjang. Baris ketiga citra 0768 menunjukkan YOLO RD menembak Manhole 0,45 di tepi jalan padahal tidak ada manhole di Indonesia. Ini temuan menarik karena membuktikan bias sumber masih terbawa. Gambar ini layak disimpan sebagai bukti perilaku model di lapangan.
 
-![Kualitatif dummy](../gambar/paper_fig3_qualitative_v4_dummy.png)
+![Kualitatif dummy](../latex/IEEE-Conference/gambar/paper_fig3_qualitative_v4_dummy.png)
 
 Gambar di atas berisi empat citra salah prediksi yang memberi gambaran pola kegagalannya dari baris pertama sampai baris keempat. Kolom pertama adalah anotasi benar dan tiga kolom berikutnya adalah prediksi tiga model terbaik. Pada baris pertama citra 0453 model terbaik gagal total mendeteksi retak melintang sedangkan model ringan malah menembak box lubang raksasa. Pada baris kedua citra 0497 hanya YOLOv12n yang benar satu box. Pada baris ketiga citra 0566 yang memuat retak buaya model terbaik gagal total sedangkan model lain menembak box lubang bertumpuk di area yang sama. Pada baris keempat citra 0572 polanya berulang dengan box lubang raksasa yang salah sasaran. Polanya konsisten yaitu gagal mendeteksi retak tipis ditambah tembakan lubang besar yang ngawur. Ini gambar dummy sementara menunggu kurasi kilau yang final.
 

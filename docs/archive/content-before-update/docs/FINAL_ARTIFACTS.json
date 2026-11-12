@@ -1,0 +1,145 @@
+{
+  "description": "Current artifact locations selected by documented final experiment role, not filename timestamps. No research metrics are recomputed here.",
+  "target": {
+    "dataset": "data/RDD-indo-v4",
+    "metadata": "data/RDD-indo-v4/data.yaml",
+    "roboflow_version": 4,
+    "evaluation_split": "valid",
+    "images": 307,
+    "annotations": 502,
+    "empty_labels": 39,
+    "canonical_class_mapping": {
+      "0": 2,
+      "1": 0,
+      "2": 5,
+      "3": 3,
+      "4": 1
+    }
+  },
+  "source_datasets": {
+    "six_class": "data/NRDD-2024/RDD_Split_Final_china_japan_india_6_classes/RDD_Split_Final_china_japan_india_6_classes",
+    "four_class": "data/NRDD-2024/RDD_4class"
+  },
+  "experiments": [
+    {
+      "model": "yolov8n",
+      "regime": "source_six",
+      "weights": "runs/rdd_yolov8n_local/experiments/yolov8n_class_weight/weights/best.pt",
+      "args": "runs/rdd_yolov8n_local/experiments/yolov8n_class_weight/args.yaml",
+      "training_curve": "runs/rdd_yolov8n_local/experiments/yolov8n_class_weight/results.csv",
+      "test_per_class": "runs/rdd_yolov8n_local/yolov8n_class_weight_test_per_class_metrics.csv",
+      "summary": "runs/rdd_yolov8n_local/yolov8n_class_weight_summary.json"
+    },
+    {
+      "model": "yolov12n",
+      "regime": "source_six",
+      "weights": "runs/rdd_yolov8n_local/experiments/yolov12n_class_weight/weights/best.pt",
+      "args": "runs/rdd_yolov8n_local/experiments/yolov12n_class_weight/args.yaml",
+      "training_curve": "runs/rdd_yolov8n_local/experiments/yolov12n_class_weight/results.csv",
+      "test_per_class": "runs/rdd_yolov8n_local/yolov12n_class_weight_test_per_class_metrics.csv",
+      "summary": "runs/rdd_yolov8n_local/yolov12n_class_weight_summary.json"
+    },
+    {
+      "model": "yolov26n",
+      "regime": "source_six",
+      "weights": "runs/rdd_yolov8n_local/experiments/yolov26n_class_weight/weights/best.pt",
+      "args": "runs/rdd_yolov8n_local/experiments/yolov26n_class_weight/args.yaml",
+      "training_curve": "runs/rdd_yolov8n_local/experiments/yolov26n_class_weight/results.csv",
+      "test_per_class": "runs/rdd_yolov8n_local/yolov26n_class_weight_test_per_class_metrics.csv",
+      "summary": "runs/rdd_yolov8n_local/yolov26n_class_weight_summary.json"
+    },
+    {
+      "model": "yolov8_pd",
+      "regime": "source_six",
+      "weights": "runs/rdd_yolov8n_local/experiments/yolov8_pd_class_weight/weights/best.pt",
+      "args": "runs/rdd_yolov8n_local/experiments/yolov8_pd_class_weight/args.yaml",
+      "training_curve": "runs/rdd_yolov8n_local/experiments/yolov8_pd_class_weight/results.csv",
+      "test_per_class": "runs/rdd_yolov8n_local/yolov8_pd_class_weight_test_per_class_metrics.csv",
+      "summary": "runs/rdd_yolov8n_local/yolov8_pd_class_weight_summary.json"
+    },
+    {
+      "model": "yolo_rd",
+      "regime": "source_six",
+      "weights": "runs/rdd_yolov8n_local/experiments/yolo_rd_class_weight/weights/best.pt",
+      "args": "runs/rdd_yolov8n_local/experiments/yolo_rd_class_weight/args.yaml",
+      "training_curve": "runs/rdd_yolov8n_local/experiments/yolo_rd_class_weight/results.csv",
+      "test_per_class": "runs/rdd_yolov8n_local/yolo_rd_class_weight_test_per_class_metrics.csv",
+      "summary": "runs/rdd_yolov8n_local/yolo_rd_class_weight_summary.json"
+    },
+    {
+      "model": "yolov8n",
+      "regime": "source_four",
+      "weights": "runs/rdd_4class_local/experiments/yolov8n_4cls_class_weights/weights/best.pt",
+      "args": "runs/rdd_4class_local/experiments/yolov8n_4cls_class_weights/args.yaml",
+      "training_curve": "runs/rdd_4class_local/experiments/yolov8n_4cls_class_weights/results.csv",
+      "test_per_class": "runs/rdd_4class_local_pc_lab/yolov8n_4cls_class_weights_test_per_class_metrics.csv",
+      "summary": "runs/rdd_4class_local_pc_lab/yolov8n_4cls_class_weights_summary.json"
+    },
+    {
+      "model": "yolov12n",
+      "regime": "source_four",
+      "weights": "runs/rdd_4class_local/experiments/yolov12n_4cls_class_weights/weights/best.pt",
+      "args": "runs/rdd_4class_local/experiments/yolov12n_4cls_class_weights/args.yaml",
+      "training_curve": "runs/rdd_4class_local/experiments/yolov12n_4cls_class_weights/results.csv",
+      "test_per_class": "runs/rdd_4class_local_pc_lab/yolov12n_4cls_class_weights_test_per_class_metrics.csv",
+      "summary": "runs/rdd_4class_local_pc_lab/yolov12n_4cls_class_weights_summary.json"
+    },
+    {
+      "model": "yolov26n",
+      "regime": "source_four",
+      "weights": "runs/rdd_4class_local/experiments/yolov26n_4cls_class_weights/weights/best.pt",
+      "args": "runs/rdd_4class_local/experiments/yolov26n_4cls_class_weights/args.yaml",
+      "training_curve": "runs/rdd_4class_local/experiments/yolov26n_4cls_class_weights/results.csv",
+      "test_per_class": "runs/rdd_4class_local_pc_lab/yolov26n_4cls_class_weights_test_per_class_metrics.csv",
+      "summary": "runs/rdd_4class_local_pc_lab/yolov26n_4cls_class_weights_summary.json"
+    },
+    {
+      "model": "yolov8_pd",
+      "regime": "source_four",
+      "weights": "runs/rdd_4class_local/experiments/yolov8_pd_4cls_class_weights/weights/best.pt",
+      "args": "runs/rdd_4class_local/experiments/yolov8_pd_4cls_class_weights/args.yaml",
+      "training_curve": null,
+      "test_per_class": "runs/rdd_4class_local/yolov8_pd_4cls_class_weights_test_per_class_metrics.csv",
+      "summary": "runs/rdd_4class_local/yolov8_pd_4cls_class_weights_summary.json"
+    },
+    {
+      "model": "yolo_rd",
+      "regime": "source_four",
+      "weights": "runs/rdd_4class_local/experiments/yolo_rd_4cls_class_weights/weights/best.pt",
+      "args": "runs/rdd_4class_local/experiments/yolo_rd_4cls_class_weights/args.yaml",
+      "training_curve": "runs/rdd_4class_local/experiments/yolo_rd_4cls_class_weights/results.csv",
+      "test_per_class": "runs/rdd_4class_local/yolo_rd_4cls_class_weights_test_per_class_metrics.csv",
+      "summary": "runs/rdd_4class_local/yolo_rd_4cls_class_weights_summary.json"
+    }
+  ],
+  "unavailable_artifacts": [
+    "runs/rdd_4class_local/experiments/yolov8_pd_4cls_class_weights/results.csv"
+  ],
+  "indonesia_evaluation": {
+    "directory": "runs/rdd_yolov8n_local/evaluation/zero_shot_indo_v4",
+    "per_class": "runs/rdd_yolov8n_local/evaluation/zero_shot_indo_v4/zs_per_class_metrics.csv",
+    "five_class_summary": "runs/rdd_yolov8n_local/evaluation/zero_shot_indo_v4/domain_gap.csv",
+    "comparison_rule": "Primary comparison: average source and target AP over canonical IDs 0,1,2,3 with all six model outputs retained. Existing five-class summary is supplementary."
+  },
+  "source_complexity": "runs/rdd_yolov8n_local/model_complexity.json",
+  "source_country_context": "runs/rdd_yolov8n_local/per_country",
+  "manuscripts": {
+    "book": "latex/buku-ta-template/main.tex",
+    "source_paper": "latex/IEEE-Conference/main.tex",
+    "submission_source": "latex/ISRITI-submission/main.tex",
+    "submitted_pdf": "latex/ISRITI-submission/hasil/ISRITI_Review_Anonymous_Layout_Revised.pdf",
+    "submitted_pdf_sha256": "8e00e6dea660c80b9ef28d942d6b9a27358950e42c7cfce6e0ce8b7873f7a690",
+    "reverted_discussion_archive": "latex/ISRITI-submission/build/archived-architecture-discussion-2026-11-13"
+  },
+  "legacy_domain_visualization": {
+    "archive": "runs/_archive/indonesia_v2/domain_viz",
+    "legacy_compatibility_path": "runs/rdd_yolov8n_local/evaluation/domain_viz",
+    "notebook": "code/07_domain_visualization.ipynb",
+    "status": "Existing V2 outputs only. No V4 UMAP/embeddings have been regenerated in this organization pass."
+  },
+  "analysis_documents": {
+    "illustrated_narrative": "docs/draft-analisis-rapih.md",
+    "technical_draft": "latex/IEEE-Conference/draft/draft-analisis-hasil.md",
+    "status": "Relocation of the illustrated narrative only; existing scientific content and figure assets are preserved, with content review deferred."
+  }
+}

@@ -1,0 +1,1048 @@
+{
+  "purpose": "Byte-preserving structural organization. No notebook/script/scientific-result/manuscript content changes or reruns.",
+  "preserved_navigation": [
+    {
+      "source": "AGENTS.md",
+      "destination": "docs/archive/navigation/AGENTS.pre-organization.md",
+      "sha256": "aaeb146a1abfa2055fd8398f0fe558d50cd08213f1dbb92f30c87e2bae8d12bd",
+      "operation": "preserved_copy_before_navigation_update"
+    },
+    {
+      "source": "docs/INDEX.md",
+      "destination": "docs/archive/navigation/INDEX.pre-organization.md",
+      "sha256": "123684ebe0794af145b6a48e21bae378cc0297a1597072a397c4267d4184131b",
+      "operation": "preserved_copy_before_navigation_update"
+    }
+  ],
+  "moves": [
+    {
+      "source": "data/RDD-Indonesia.v1i.yolov8",
+      "destination": "data/_archive/RDD-Indonesia.v1i.yolov8",
+      "reason": "Superseded Indonesian export; preserve original metadata and labels.",
+      "compatibility_alias": true,
+      "regular_files": 643,
+      "symlinks": 0,
+      "bytes": 20215869,
+      "tree_sha256": "7e5a83029e6344af2218ce02caa2ae379f96a166b675095407c145c958b469d9",
+      "content_preserved": true
+    },
+    {
+      "source": "data/RDD-indo-v2",
+      "destination": "data/_archive/RDD-indo-v2",
+      "reason": "Superseded Indonesian export; preserve original metadata and labels.",
+      "compatibility_alias": true,
+      "regular_files": 631,
+      "symlinks": 0,
+      "bytes": 19812829,
+      "tree_sha256": "5b160373e2bba3285c4454592d92b5a8afdbcb673796cecd5604066a321ed958",
+      "content_preserved": true
+    },
+    {
+      "source": "data/RDD-indo-v3",
+      "destination": "data/_archive/RDD-indo-v3",
+      "reason": "Superseded Indonesian export; preserve original metadata and labels.",
+      "compatibility_alias": true,
+      "regular_files": 619,
+      "symlinks": 0,
+      "bytes": 19419490,
+      "tree_sha256": "9a214fd532902f0c8dbf19425d8b742bfd69cd4e60890934aca3d476fbe7eb52",
+      "content_preserved": true
+    },
+    {
+      "source": "data/RDD-indo-v4-bak",
+      "destination": "data/_archive/RDD-indo-v4-bak",
+      "reason": "Superseded Indonesian export; preserve original metadata and labels.",
+      "compatibility_alias": true,
+      "regular_files": 617,
+      "symlinks": 0,
+      "bytes": 19346871,
+      "tree_sha256": "4f26727bfec3c0e06daa6847cb8569f2cd65705cf8fc547b30b27b555c1607ea",
+      "content_preserved": true
+    },
+    {
+      "source": "docs/rangkuman-eksperimen-ta.md",
+      "destination": "docs/archive/summaries/rangkuman-eksperimen-ta.md",
+      "reason": "Historical experiment summary; contains superseded context.",
+      "compatibility_alias": true,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 12556,
+      "tree_sha256": "a29f9a8af9faa6f03b67016c584d1896ef16a3583b7ec76affebc6c2d7eb4813",
+      "content_preserved": true
+    },
+    {
+      "source": "docs/rangkuman-eksperimen-ta-v2.md",
+      "destination": "docs/archive/summaries/rangkuman-eksperimen-ta-v2.md",
+      "reason": "Historical experiment summary; contains superseded context.",
+      "compatibility_alias": true,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 17033,
+      "tree_sha256": "88fee17e442285692cb4dbe5c2a18052b423d32ac6eb534d851099db41418929",
+      "content_preserved": true
+    },
+    {
+      "source": "docs/Salah prediksi Merge 1.txt",
+      "destination": "docs/archive/working-notes/Salah prediksi Merge 1.txt",
+      "reason": "Historical image-selection working note.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 2031,
+      "tree_sha256": "7c81770835a1438861c0a90176f6f0bf2843298ef3799cabbf09f5dedc54179b",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local_bak",
+      "destination": "runs/_archive/backup/rdd_yolov8n_local_bak",
+      "reason": "Older backup/smoke baseline; not the final comparison.",
+      "compatibility_alias": false,
+      "regular_files": 152,
+      "symlinks": 0,
+      "bytes": 339073517,
+      "tree_sha256": "dd5f48eed34ca1c332cf8221af4c1415dbfa936229cd1f3c728d1c1daecb262d",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/detect",
+      "destination": "runs/_archive/ad_hoc/detect",
+      "reason": "Accumulated ad-hoc validation outputs, preserved rather than deleted.",
+      "compatibility_alias": false,
+      "regular_files": 360,
+      "symlinks": 0,
+      "bytes": 169623617,
+      "tree_sha256": "268476b199808c7852ee77606a634af008a938ba8f5d9400b52b57b60b2f4717",
+      "content_preserved": true
+    },
+    {
+      "source": "code/runs/detect",
+      "destination": "runs/_archive/ad_hoc/code_detect",
+      "reason": "Ad-hoc validation outputs nested under code; no notebook source moved.",
+      "compatibility_alias": false,
+      "regular_files": 324,
+      "symlinks": 0,
+      "bytes": 150856900,
+      "tree_sha256": "5340c0afdee9bcc40e9b04e65cc1154677d8d7a3baeaf93d245a04aff538810e",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/proposal_text_mining_render",
+      "destination": "runs/_archive/unrelated/proposal_text_mining_render",
+      "reason": "Output from a separate text-mining proposal.",
+      "compatibility_alias": false,
+      "regular_files": 74,
+      "symlinks": 0,
+      "bytes": 18536592,
+      "tree_sha256": "5a06f5f5f3eddd30a490a7ba95b1e05675c0b3ee416c9063025f9fc2144e12f8",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/proposal_text_mining_flowchart.png",
+      "destination": "runs/_archive/unrelated/proposal_text_mining_flowchart.png",
+      "reason": "Figure from a separate text-mining proposal.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 41595,
+      "tree_sha256": "9f9cf2f16a15034a73292308c8437a89da99b0839a51df4c392a551142fadab1",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/domain_viz",
+      "destination": "runs/_archive/indonesia_v2/domain_viz",
+      "reason": "Old Indonesian evaluation; domain_viz uses V2 (995 source + 308 target images).",
+      "compatibility_alias": true,
+      "regular_files": 8,
+      "symlinks": 0,
+      "bytes": 3060870,
+      "tree_sha256": "85cd9431b8b96edff31328c689b86bf9eb2889fcf166331671a99f10c30e1cdc",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/zero_shot_indonesia",
+      "destination": "runs/_archive/indonesia_history/zero_shot_indonesia",
+      "reason": "Superseded target export evaluation.",
+      "compatibility_alias": true,
+      "regular_files": 23,
+      "symlinks": 0,
+      "bytes": 10730517,
+      "tree_sha256": "41cad161795412dc5ebd73d032fe91061e988d7dff54393b72d50a0dae72c5f5",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/zero_shot_indo_v2",
+      "destination": "runs/_archive/indonesia_history/zero_shot_indo_v2",
+      "reason": "Superseded target export evaluation.",
+      "compatibility_alias": true,
+      "regular_files": 5,
+      "symlinks": 0,
+      "bytes": 5458320,
+      "tree_sha256": "4e54cfdc56d3f98b45e53e2ed5be717f5b049176340caf03c475fe6a411c2241",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/zero_shot_indo_v3",
+      "destination": "runs/_archive/indonesia_history/zero_shot_indo_v3",
+      "reason": "Superseded target export evaluation.",
+      "compatibility_alias": true,
+      "regular_files": 4,
+      "symlinks": 0,
+      "bytes": 3522040,
+      "tree_sha256": "91d85c62eb21ddb75ff6e0893a686bc520a336df0fb46fad005a04b9318369b9",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/experiments/yolo_rd_focal_smoke",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/experiments/yolo_rd_focal_smoke",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 22,
+      "symlinks": 0,
+      "bytes": 95618489,
+      "tree_sha256": "3488cd8ba6dee8b344a4d30f36bc314a7b47e4c07bdbbdf748119f5f3a65589e",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/experiments/yolov12n_focal",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/experiments/yolov12n_focal",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 5,
+      "symlinks": 0,
+      "bytes": 2267662,
+      "tree_sha256": "24e971147ae1bf8a9212ad25f42472e2e5e05657fd934ab41d219a28e6042ab9",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/experiments/yolov12n_focal_smoke",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/experiments/yolov12n_focal_smoke",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 22,
+      "symlinks": 0,
+      "bytes": 41806413,
+      "tree_sha256": "64ece5ae9023407b1207a4d56dadaa6a5256848baf623a4fe75110b5cb7e312f",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/experiments/yolov26n_focal",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/experiments/yolov26n_focal",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 2,
+      "symlinks": 0,
+      "bytes": 196289,
+      "tree_sha256": "a0f4d6fbafa4c20d5096461a81ee7a21bab50bca714a930891a0cd7d6177536c",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/experiments/yolov26n_focal_smoke",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/experiments/yolov26n_focal_smoke",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 22,
+      "symlinks": 0,
+      "bytes": 40761340,
+      "tree_sha256": "f16163f44ed87e15e317e76744fed3d4938dc7246380f8ff943000b81a63b157",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/experiments/yolov8_pd_focal_smoke",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/experiments/yolov8_pd_focal_smoke",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 22,
+      "symlinks": 0,
+      "bytes": 40083879,
+      "tree_sha256": "558c49598f3d6b4476c86de4c5eeb330b6d94a86eb23b6b362a1216fec78a99a",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/experiments/yolov8n_focal_smoke",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/experiments/yolov8n_focal_smoke",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 21,
+      "symlinks": 0,
+      "bytes": 46667615,
+      "tree_sha256": "f42ab3d76ae9b697d9b2d62ba42564d624afac8eb5f0802aa868f8f0ce5416f3",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/test_baseline",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/evaluation/test_baseline",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 18188138,
+      "tree_sha256": "73ca30bf5cbace04afd597b1cf0c62193905d3fc8d1fd4c54fd7639ccd81b47b",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/val_baseline",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/evaluation/val_baseline",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 28039336,
+      "tree_sha256": "79993f42e34b1c3bc7e9cf2ecd30ded79a9a3f5d73ce31220e0e21594d44e5b3",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/yolo_rd_focal_test",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/evaluation/yolo_rd_focal_test",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 62916145,
+      "tree_sha256": "6ebd0d052346d2a75867e4452f83982029b388c60807c29d490be36e276ac993",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/yolo_rd_focal_val",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/evaluation/yolo_rd_focal_val",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 114786927,
+      "tree_sha256": "246e71bb1bcc0e9763bd015c9c6280789cec647f604a778ae581cd712f51ccb7",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/yolov12n_focal_test",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/evaluation/yolov12n_focal_test",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 67710837,
+      "tree_sha256": "9cf6fcd21d57312235528cd50150462f0a7c93e2b89d6bde2939b3393deab1cd",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/yolov12n_focal_val",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/evaluation/yolov12n_focal_val",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 123730842,
+      "tree_sha256": "d3197d18b9732130158f505e427ffdccec518857486a6dda2d6ce5c2136ce39b",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/yolov26n_focal_test",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/evaluation/yolov26n_focal_test",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 49625294,
+      "tree_sha256": "372eb1963acd24857c47979569a7257466bcd6856f517547677c7fff9b3203e4",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/yolov26n_focal_val",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/evaluation/yolov26n_focal_val",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 89979022,
+      "tree_sha256": "24444c4aeebeaf6a5bf05d6c449949db2784964197a466e7eb4ce243c6184562",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/yolov8_pd_focal_test",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/evaluation/yolov8_pd_focal_test",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 41709812,
+      "tree_sha256": "db21a50ff9d476012b84bf8eb88ba6ad9850448e45d88ed472d1605bade8a034",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/yolov8_pd_focal_val",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/evaluation/yolov8_pd_focal_val",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 74468756,
+      "tree_sha256": "6e292ade8cd2303d26a7218f19ad2a31314e4ba9d4f424f9e78bd167e93d4e62",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/yolov8n_focal_test",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/evaluation/yolov8n_focal_test",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 56824506,
+      "tree_sha256": "ad9530b71b383837287b0150f455d733024790f3c81adca65e6221f4c56b7ba6",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/evaluation/yolov8n_focal_val",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/evaluation/yolov8n_focal_val",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 102701978,
+      "tree_sha256": "689ce34674538b51e73ed77fd77be4771c3ae58eb79bd7a6e04647459d85c0bf",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/experiments/yolo_rd_4cls_smoke",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/experiments/yolo_rd_4cls_smoke",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 22,
+      "symlinks": 0,
+      "bytes": 95059647,
+      "tree_sha256": "37c2547b60dd308d8596f72294aed9362dea71e495b63e9f85bdae1c93a71579",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/experiments/yolov8n_4cls_smoke",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/experiments/yolov8n_4cls_smoke",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 21,
+      "symlinks": 0,
+      "bytes": 46182430,
+      "tree_sha256": "69ec327a41eb1bc382868efb811643ab640bdfbdbca58e6009571ab9434ff6fd",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/evaluation/yolo_rd_4cls_smoke_test",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/evaluation/yolo_rd_4cls_smoke_test",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 38254851,
+      "tree_sha256": "6a7e8a6be75102582529deb17b5689c843ca02c04ba133d5084eefeb7d3e02f9",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/evaluation/yolo_rd_4cls_smoke_val",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/evaluation/yolo_rd_4cls_smoke_val",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 67368619,
+      "tree_sha256": "e4018989f10cc7ced297163403a7ae147cbb10309f2263737ea8c70b63fdc43f",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/evaluation/yolo_rd_4cls_test",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/evaluation/yolo_rd_4cls_test",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 38254851,
+      "tree_sha256": "6a7e8a6be75102582529deb17b5689c843ca02c04ba133d5084eefeb7d3e02f9",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/evaluation/yolo_rd_4cls_val",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/evaluation/yolo_rd_4cls_val",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 67368619,
+      "tree_sha256": "e4018989f10cc7ced297163403a7ae147cbb10309f2263737ea8c70b63fdc43f",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/evaluation/yolov8n_4cls_smoke_test",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/evaluation/yolov8n_4cls_smoke_test",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 58678022,
+      "tree_sha256": "24613e824839cb2a1a4840b811c4eba1c3456cf1825639338a08c8cb951eb888",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/evaluation/yolov8n_4cls_smoke_val",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/evaluation/yolov8n_4cls_smoke_val",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 105511089,
+      "tree_sha256": "e6a901099a7a31cd3c55930799be68ba808396c448d7e82d8fc9c24e53452727",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/evaluation/yolov8n_4cls_test",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/evaluation/yolov8n_4cls_test",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 58635054,
+      "tree_sha256": "aa4c99f77cdbdd0b4a229e84cb782a140c8a44b91b0b40d15be619e4823aca14",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/evaluation/yolov8n_4cls_val",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/evaluation/yolov8n_4cls_val",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 105511089,
+      "tree_sha256": "e6a901099a7a31cd3c55930799be68ba808396c448d7e82d8fc9c24e53452727",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/experiments/yolo_rd_4cls_smoke",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/experiments/yolo_rd_4cls_smoke",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 22,
+      "symlinks": 0,
+      "bytes": 95258463,
+      "tree_sha256": "f8e8f6f4727a6dc9e90b75234d91ebb0519c002b025ad0d9fe3ab24aff3953c6",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/experiments/yolov8_pd_4cls",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/experiments/yolov8_pd_4cls",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 2,
+      "symlinks": 0,
+      "bytes": 183384,
+      "tree_sha256": "e1ea4a1f32a0fbf3d8bde3f4d3004944aef0580c1c610e3267a23939d1446bd8",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/experiments/yolov8n_4cls_smoke",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/experiments/yolov8n_4cls_smoke",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 22,
+      "symlinks": 0,
+      "bytes": 46104680,
+      "tree_sha256": "cb1bb0b8b5fce4b2c7bd33caacfc26823d018c2b47a3161cb79d66dec5c89698",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/evaluation/yolo_rd_4cls_test",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/evaluation/yolo_rd_4cls_test",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 61926811,
+      "tree_sha256": "a76f4d5544d3782903a17928471622a66fe0408dd8201aa8cb30bb86d659bf7d",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/evaluation/yolo_rd_4cls_val",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/evaluation/yolo_rd_4cls_val",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 112032884,
+      "tree_sha256": "66008929a3d92b9bfdf1febd8e0ffc90fddde9167e681765e44a865528c55d96",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/evaluation/yolov8n_4cls_test",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/evaluation/yolov8n_4cls_test",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 9,
+      "symlinks": 0,
+      "bytes": 49344996,
+      "tree_sha256": "3cd63ca7a43e8a30143b3cc1ee0f9f55fdbc0ad0e94232f729ddcf41873bc5bb",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/evaluation/yolov8n_4cls_val",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/evaluation/yolov8n_4cls_val",
+      "reason": "Earlier/smoke experiment or evaluation; preserve method names and original args.",
+      "compatibility_alias": true,
+      "regular_files": 13,
+      "symlinks": 0,
+      "bytes": 90461196,
+      "tree_sha256": "d7c223d15ff3acb71280a6c7f090e6c9cf0234173ce857015591b65138d9979b",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolo_rd_4cls_f1_summary.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolo_rd_4cls_f1_summary.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 140,
+      "tree_sha256": "fbf414addeb3151eb5fa33d2f0371870218826a85329859d64f5936ac2338ab8",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolo_rd_4cls_smoke_f1_summary.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolo_rd_4cls_smoke_f1_summary.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 140,
+      "tree_sha256": "fbf414addeb3151eb5fa33d2f0371870218826a85329859d64f5936ac2338ab8",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolo_rd_4cls_smoke_summary.json",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolo_rd_4cls_smoke_summary.json",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 1390,
+      "tree_sha256": "c5064d63a86ecae7ff2ca970eb3b2b89aba943a0e667f14ae14197e20532fd62",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolo_rd_4cls_smoke_test_per_class_metrics.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolo_rd_4cls_smoke_test_per_class_metrics.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 557,
+      "tree_sha256": "2ae036d8e859e6d897b18f7bc4dd4b16f4418b5fbcc251ec211d3b0e1000410f",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolo_rd_4cls_smoke_val_per_class_metrics.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolo_rd_4cls_smoke_val_per_class_metrics.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 554,
+      "tree_sha256": "fb3f93254145bcb00daf53729acae7acdf4e0bf237ea9249f50197c9e5103e7c",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolo_rd_4cls_summary.json",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolo_rd_4cls_summary.json",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 1384,
+      "tree_sha256": "1aaadb94329d9d5bc849d5313b7f3a1e1d623aa95ee4b712670a8e74244e4696",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolo_rd_4cls_test_per_class_metrics.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolo_rd_4cls_test_per_class_metrics.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 557,
+      "tree_sha256": "2ae036d8e859e6d897b18f7bc4dd4b16f4418b5fbcc251ec211d3b0e1000410f",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolo_rd_4cls_val_per_class_metrics.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolo_rd_4cls_val_per_class_metrics.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 554,
+      "tree_sha256": "fb3f93254145bcb00daf53729acae7acdf4e0bf237ea9249f50197c9e5103e7c",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolov8n_4cls_f1_summary.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolov8n_4cls_f1_summary.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 137,
+      "tree_sha256": "a2e945f11a2ae8dc30c6012e152311191626ac39d7a5f3f9ac6715c375606cc8",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolov8n_4cls_smoke_f1_summary.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolov8n_4cls_smoke_f1_summary.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 137,
+      "tree_sha256": "a2e945f11a2ae8dc30c6012e152311191626ac39d7a5f3f9ac6715c375606cc8",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolov8n_4cls_smoke_summary.json",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolov8n_4cls_smoke_summary.json",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 1385,
+      "tree_sha256": "89fab617875384dabcdc01da11278df1140e35b351fd8e2c22f18589768868a6",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolov8n_4cls_smoke_test_per_class_metrics.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolov8n_4cls_smoke_test_per_class_metrics.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 541,
+      "tree_sha256": "a51293b277929b3289b5c0b99f8957414cdd9b04652a9dc5ac2241110d6bdb03",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolov8n_4cls_smoke_val_per_class_metrics.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolov8n_4cls_smoke_val_per_class_metrics.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 549,
+      "tree_sha256": "664b1b1a6801af342533f6a9704eaaedea49885b3fb75d609839dca8c6749a19",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolov8n_4cls_summary.json",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolov8n_4cls_summary.json",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 1380,
+      "tree_sha256": "03b357dec23bbe0552ad6317da0e79515f84c9c3e20746917dbbba91d8680622",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolov8n_4cls_test_per_class_metrics.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolov8n_4cls_test_per_class_metrics.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 541,
+      "tree_sha256": "a51293b277929b3289b5c0b99f8957414cdd9b04652a9dc5ac2241110d6bdb03",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local/yolov8n_4cls_val_per_class_metrics.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local/metrics/yolov8n_4cls_val_per_class_metrics.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 549,
+      "tree_sha256": "664b1b1a6801af342533f6a9704eaaedea49885b3fb75d609839dca8c6749a19",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/yolo_rd_4cls_f1_summary.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/metrics/yolo_rd_4cls_f1_summary.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 139,
+      "tree_sha256": "0cb6fdc4686b8fb697962be484b0b780a9363fef7203c2401adeb0f82d95b2e5",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/yolo_rd_4cls_summary.json",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/metrics/yolo_rd_4cls_summary.json",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 1446,
+      "tree_sha256": "3cad30082125a805d5d7de9d95692655e1630914614db6eb49734757e3609f7a",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/yolo_rd_4cls_test_per_class_metrics.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/metrics/yolo_rd_4cls_test_per_class_metrics.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 557,
+      "tree_sha256": "9ce1432dd22800263ff19193ed9178ca0d17733a1b216c9b4c3c81792b5fa535",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/yolo_rd_4cls_val_per_class_metrics.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/metrics/yolo_rd_4cls_val_per_class_metrics.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 559,
+      "tree_sha256": "e193e03c51c691a8fb7bc3fd66a819f245b755fe1a23896ae2fdf6d3d37a280f",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/yolov8n_4cls_f1_summary.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/metrics/yolov8n_4cls_f1_summary.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 137,
+      "tree_sha256": "9347dc59639ad9ca33a687a60f577c44b6e6ac53a66e31059107ba42730d62a3",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/yolov8n_4cls_summary.json",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/metrics/yolov8n_4cls_summary.json",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 1435,
+      "tree_sha256": "c4a810cb7462cc3a8ad1375e1d9ea680191973dcc7477a70100536eb1b371c89",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/yolov8n_4cls_test_per_class_metrics.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/metrics/yolov8n_4cls_test_per_class_metrics.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 551,
+      "tree_sha256": "408157a77992e26cee411e9dcab32fe10ca7481006670faccd31d8616ca8c0cb",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_4class_local_pc_lab/yolov8n_4cls_val_per_class_metrics.csv",
+      "destination": "runs/_archive/experiments_history/rdd_4class_local_pc_lab/metrics/yolov8n_4cls_val_per_class_metrics.csv",
+      "reason": "Generic/early four-class metric export; final class_weights exports are retained.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 555,
+      "tree_sha256": "7fb0f67c648c4b8bb7354ecc881a19e00dbcb3409073b835776ba9c5067ee4d7",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/baseline_summary.json",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/baseline_metrics/baseline_summary.json",
+      "reason": "Earlier baseline summary/metrics, distinct from final per-model class_weight artifacts.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 1259,
+      "tree_sha256": "4c92c83dddd876b90f135ac7b71b93a84ddd8c7152225b5d20635c410e304ef8",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/test_per_class_metrics.csv",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/baseline_metrics/test_per_class_metrics.csv",
+      "reason": "Earlier baseline summary/metrics, distinct from final per-model class_weight artifacts.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 769,
+      "tree_sha256": "5779753e20d67154b264045d3505c5426c40d37afa9c1e44432e9e43333c492b",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/val_per_class_metrics.csv",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/baseline_metrics/val_per_class_metrics.csv",
+      "reason": "Earlier baseline summary/metrics, distinct from final per-model class_weight artifacts.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 773,
+      "tree_sha256": "b6018a108de1c003c9c0c5b04b8be0dc4e01511e138304cab16b18777b1ab73b",
+      "content_preserved": true
+    },
+    {
+      "source": "runs/rdd_yolov8n_local/f1_summary.csv",
+      "destination": "runs/_archive/experiments_history/rdd_yolov8n_local/baseline_metrics/f1_summary.csv",
+      "reason": "Earlier baseline summary/metrics, distinct from final per-model class_weight artifacts.",
+      "compatibility_alias": false,
+      "regular_files": 1,
+      "symlinks": 0,
+      "bytes": 136,
+      "tree_sha256": "5996c19140d4e4dec837fdb772422a59554fc701f3bac380aa80f3ddf95dc118",
+      "content_preserved": true
+    }
+  ],
+  "verification": {
+    "status": "passed",
+    "preexisting_entries_preserved": 60906,
+    "hashed_original_files_verified": 4352,
+    "notebooks_unchanged_at_original_paths": 16,
+    "source_files_unchanged_at_original_paths": 136,
+    "archive_groups_verified": 80,
+    "compatibility_aliases_verified": 46,
+    "newly_broken_original_symlinks": 0,
+    "original_content_edited": [
+      "AGENTS.md",
+      "docs/INDEX.md"
+    ],
+    "original_navigation_snapshots_verified": true,
+    "final_experiments_resolve": 10,
+    "active_submission_pdf_sha256_verified": true,
+    "permanent_deletions": 0,
+    "scientific_analysis_reruns": "not run",
+    "local_navigation_links_verified": 37,
+    "report_rows_match_manifest": true,
+    "git_diff_whitespace_check": "passed"
+  },
+  "compatibility_policy": "Aliases preserve historical lookup paths. They are not current selections and remain writable. Do not rerun old analysis into an alias: use a new output directory in an authorized future content pass. Physical remapped views were not moved.",
+  "authorized_followups": [
+    {
+      "operation": "authorized_relocation_with_relative_link_updates",
+      "source": "latex/IEEE-Conference/draft/draft-analisis-rapih.md",
+      "destination": "docs/draft-analisis-rapih.md",
+      "old_sha256": "e1f7a560686a2ce364a2a74db14a6ad2e164a8c8ac60ae588209123459f8f29c",
+      "new_sha256": "f0627d6179e099f1ed9c7037139578875ab8d6c9fa4bf0063ee73622ea01a6db",
+      "image_links_rebased": 15,
+      "scientific_text_unchanged_except_image_paths": true,
+      "all_image_targets_same_and_hashes_unchanged": true,
+      "dependency_updated": {
+        "path": "scripts/paper/make_docx_rapih.py",
+        "changes": "Input Markdown path and image resolution relative to Markdown parent only; no DOCX generated.",
+        "old_sha256": "55e5702d9b9fb6cf01b45a769ece68ee44c368000e26570e471d003e0e2ca248",
+        "new_sha256": "10d751c8aa4916f3214bf1ee5ff2beb1be1ffa6537d1adf5e818588e70f210cd"
+      },
+      "compatibility_alias": false
+    }
+  ],
+  "authorized_content_updates": {
+    "scope": "User authorized final CSV-based docs/figures/script updates; then explicitly deferred GPU/domain work. Notebooks and submitted manuscript sources/PDFs remain protected.",
+    "existing_files": [
+      {
+        "path": "README.md",
+        "backup": "docs/archive/content-before-update/README.md",
+        "before_sha256": "8e1b3315914442f9adfb0b4c48a0b228bd257bedef5681c73fa1eacc521fa5e6",
+        "after_sha256": "030b67e348c96d2233eb18257e1ba73fc29d1aea7f0567bd7a64396827ccbc06"
+      },
+      {
+        "path": "code/models/README.md",
+        "backup": "docs/archive/content-before-update/code/models/README.md",
+        "before_sha256": "2fd2e2fd6234aac48a6f597210c361c4bb50981f813cec3ee0e7ea97acdf9914",
+        "after_sha256": "03a9b9ffea846a66622a5ae438d07dacef3a5ca291358b306a4113718696d350"
+      },
+      {
+        "path": "code/models/custom_modules.py",
+        "backup": "docs/archive/content-before-update/code/models/custom_modules.py",
+        "before_sha256": "fd192cc0ed504e41629d88d5ca1a75a3b4ddc2dbf46dcac97aed4997c2c31793",
+        "after_sha256": "6ddff27fdc3d2f0cc0087a4040d4e74870ce99881b64d54022334a635d49d89e"
+      },
+      {
+        "path": "data/README.md",
+        "backup": "docs/archive/content-before-update/data/README.md",
+        "before_sha256": "3aa44a0a7dd14cf79c3ebb8c92a422a39562d41e9eb0c88f04df93b5d1f70509",
+        "after_sha256": "ec7c395daa450ec9f1eaf78caecee388737bcbbad1a38f1b34af760161be502b"
+      },
+      {
+        "path": "docs/FINAL_ARTIFACTS.json",
+        "backup": "docs/archive/content-before-update/docs/FINAL_ARTIFACTS.json",
+        "before_sha256": "daa1e4afe57f6ff7f10014452fd646637c18c917f2d1a07715a187a017067fac",
+        "after_sha256": "3bcbdbe47192631315c3067f9694dcee86fbeff1d96107edeed03cce48c3b6fc"
+      },
+      {
+        "path": "docs/INDEX.md",
+        "backup": "docs/archive/content-before-update/docs/INDEX.md",
+        "before_sha256": "7500d80895012416d59db1d6a7eedeb60480c529a633aff3e4e0466ab399269e",
+        "after_sha256": "fc971d60e53f23f3dac367990e7afb336aa7eded4c6db4c98927b97e5099d776"
+      },
+      {
+        "path": "docs/REORGANIZATION.md",
+        "backup": "docs/archive/content-before-update/docs/REORGANIZATION.md",
+        "before_sha256": "f417aec3aa90f5b635147525b577b50ec9c296a245e7f2110377c965bc5ac379",
+        "after_sha256": "7f200342fb0550dc7f6f9873eb3c36c9096a4fcf0451dd53d40352c6b35a1ccd"
+      },
+      {
+        "path": "docs/RESULTS_TABLE.md",
+        "backup": "docs/archive/content-before-update/docs/RESULTS_TABLE.md",
+        "before_sha256": "2e691b28689068f8eb080f377e9a666e74b7f8e15b34029643550646f8e8506b",
+        "after_sha256": "80cce6bd8372bd8e3d9b13a3949f3928c35ecdea5ffc71f2e94fb3ebca603d49"
+      },
+      {
+        "path": "docs/draft-analisis-rapih.md",
+        "backup": "docs/archive/content-before-update/docs/draft-analisis-rapih.md",
+        "before_sha256": "f0627d6179e099f1ed9c7037139578875ab8d6c9fa4bf0063ee73622ea01a6db",
+        "after_sha256": "f91b4e11a146dde8c4ef63f4f249daaabba0eac963c560d6c4fd6a9d8d0856f2"
+      },
+      {
+        "path": "latex/IEEE-Conference/draft/draft-analisis-hasil.md",
+        "backup": "docs/archive/content-before-update/latex/IEEE-Conference/draft/draft-analisis-hasil.md",
+        "before_sha256": "720e09f06ed4d4dbfe1b903140ddf7a6e97f99693980828f84672a8f4aa55ca4",
+        "after_sha256": "853ca4ab4e2ebfddd12c3d6a77ea5321838d0982d60b480caaf7d25dd7668a22"
+      },
+      {
+        "path": "latex/ISRITI-submission/README.md",
+        "backup": "docs/archive/content-before-update/latex/ISRITI-submission/README.md",
+        "before_sha256": "20d9693a9e28c044c9b335ab0df7230fa26cdce452c599f638da4c308228f81f",
+        "after_sha256": "3d4f6620c567db4f0cbddb8bc1e2159807e75103c8b7c65c3d820078f4b778ad"
+      },
+      {
+        "path": "scripts/paper/make_docx_v4.py",
+        "backup": "docs/archive/content-before-update/scripts/paper/make_docx_v4.py",
+        "before_sha256": "079fb24a861775f3ae1314281abf8157564330c876be456df572cd5c7ed6dee9",
+        "after_sha256": "8d085bb71371588012f97be006b53c649c52cebc356fab299883fae7cce0b648"
+      },
+      {
+        "path": "scripts/paper/paper_fig_umap.py",
+        "backup": "docs/archive/content-before-update/scripts/paper/paper_fig_umap.py",
+        "before_sha256": "5cd7f72e211e447291f3d541ad0e50e8960770988f4bb912a9778662ab7b4d9c",
+        "after_sha256": "1c602a8de6bd0009789493f17b0d333f44cc5313cf6ec34e3c05e8031d8f2801"
+      },
+      {
+        "path": "scripts/paper/paper_figs_summary.py",
+        "backup": "docs/archive/content-before-update/scripts/paper/paper_figs_summary.py",
+        "before_sha256": "99853aff194a196b4155131add89ce1568631cf9e59aa5dbbbc3dbc8fa48ab08",
+        "after_sha256": "4da27da4833f2629d263e2e4b8613a38af6cac735e2a8c13000d0f6e272f6f2b"
+      }
+    ],
+    "new_producers": [
+      "scripts/build_final_results.py",
+      "scripts/build_analysis_narrative.py",
+      "scripts/domain_analysis_v4.py",
+      "scripts/domain_bundle.py"
+    ],
+    "domain_v4_status": "deferred_by_user; incomplete inputs/manifest only; no completed V4 embeddings/projections/statistics published",
+    "validation": {
+      "protected_files": 172,
+      "notebooks_unchanged": 16,
+      "active_local_links": 111,
+      "syntax": "passed",
+      "domain_status": "deferred_by_user; no complete results",
+      "raw_csvs": "read only",
+      "report_input_hashes_verified": 35,
+      "domain_completion_gate_fixtures": "passed (no model execution)"
+    },
+    "publication": "User authorized commit and push main; task-owned files prepared for staging."
+  }
+}

@@ -1,26 +1,27 @@
 """
-Custom modules reconstructing TWO road-damage-detection YOLOv8 variants for
-use as comparison baselines, since neither paper released architecture code:
+Local reimplementations of two published road-damage YOLO designs:
 
-  1. YOLOv8-PD — Zeng, J. & Zhong, H., Sci Rep 14, 12052 (2024).
-     BoT + LSKA + C2fGhost + LSCDHead.  (see section below)
-  2. YOLO-RD  — Wang, W. et al., Sensors 25, 1442 (2025).
-     SOM + ARM + WTHead.               (see section further below)
+  1. YOLOv8-PD — Zeng & Zhong, Scientific Reports 14, 12052 (2024).
+     BoT, LSKA, C2fGhost and a local shared-convolution head.
+  2. YOLO-RD — Wang et al., Sensors 25, 1442 (2025).
+     Star-operation blocks, ARM and a wavelet-based head.
 
-Both share one `patch_ultralytics()` call and one parse_model patch (all
-model classes from both papers are registered together), so a single yaml
-using any mix of the modules below will work. Use a separate yaml per model
-(yolov8-pd.yaml / yolo-rd.yaml) — same custom_modules.py for both.
+These are research reimplementations, not the authors' official code or exact
+reproductions. Both use patch_ultralytics() before model construction/loading.
+See README.md and the architecture YAMLs for implementation differences,
+including RD auxiliary fusion by Upsample-Concat-Conv rather than weighted sum.
 
-This is a best-effort reproduction from each paper's figures/equations, not
-official code — exact parameter counts / mAP will differ from the papers.
-Validate against your own dataset before treating either as a strict
-baseline, and see each yaml's header comment / the README for the specific
-interpretation choices made where a paper's description was ambiguous.
+The copied parser is based on Ultralytics 8.4.108. The project's dependency
+range does not establish compatibility with every later internal API. Recorded
+CPU packaging checks used torch 2.5.1+cpu / torchvision 0.20.1+cpu; the historical
+source-evaluation log records torch 2.5.1+cu121 but no torchvision version.
+Conflicting older version claims are retained in the archived original files.
+See README.md for evidence and the maintenance note at this file's end.
 
-Tested against ultralytics==8.4.108 / torchvision==0.28.0. If you're on
-different versions and `patch_ultralytics()` raises an AttributeError, see
-the note at the bottom of this file.
+Final experiments used effective-number weights on classification BCE, configured
+by the training notebooks, not by this architecture module. No Focal Loss setting
+is activated merely by importing this file. This documentation update changes no
+module implementation or model behavior.
 """
 
 import math

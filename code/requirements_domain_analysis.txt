@@ -1,0 +1,5 @@
+# Additional analysis packages imported in the Python 3.12 content-update environment.
+# Detector/plotting requirements remain in the shared file; install torch/torchvision separately.
+-r requirements_yolov8_local.txt
+scikit-learn==1.9.0
+umap-learn==0.5.12
