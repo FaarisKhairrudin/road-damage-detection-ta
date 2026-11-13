@@ -1,8 +1,14 @@
 # Project memory
 
+## Project objective and stage (user-confirmed)
+- The enduring goal is completing the Data Science final research and thesis book at Telkom University as part of graduation requirements.
+- The conference paper has been submitted. Acceptance, publication, review status and graduation have not been established; do not infer them.
+- The user is now beginning/continuing the thesis-book writing stage in `latex/buku-ta-template/`; check actual chapter content and the writing guide for each task.
+- Keep this larger objective in STATE across sessions; update recent progress in place and change the objective only on explicit user direction (ask if ambiguous).
+
 ## Working agreements (user-confirmed)
 - This is the private research workspace. The curated public portfolio is a separate sibling repository.
-- Earlier structural-only scope is superseded by explicit approval to synchronize research docs/tables/report scripts. Notebooks and submitted/manuscript LaTeX/PDFs remain protected.
+- The earlier structural-only scope was superseded for the approved research-docs/analysis update. Submitted PDF snapshots remain protected; the active thesis-book source may be edited when the user authorizes that writing scope. Preserve unrelated notebook edits.
 - Keep superseded artifacts as archives and provide an original-path → destination report.
 - GPU/domain processing was initially deferred; after the user resumed, V4 completed with 1302×256 embeddings and verified output hashes. V2 remains a separate archive; do not relabel it as V4.
 - User-supplied continuity guidance supersedes adding per-session dated progress logs: use STATE for present work and MEMORY for durable lessons. Preserve existing docs/progress history.
@@ -28,6 +34,7 @@
 - Its recorded SHA-256 is 8e00e6dea660c80b9ef28d942d6b9a27358950e42c7cfce6e0ce8b7873f7a690.
 - The seven-page architecture discussion was reverted at the user's request and archived under latex/ISRITI-submission/build/archived-architecture-discussion-2026-11-13/. Do not restore it from stale README/index instructions.
 - latex/buku-ta-template is current book work; latex/skripsi-telkom still supplies older proposal identity/reference context. Keep both paths stable for now.
+- User explicitly authorized publishing the existing thesis-book source, required assets/bibliography/guides and its asset-generation helper on main. These are draft sources; build/hasil outputs remain local under the existing ignore rules.
 
 ## Source of truth
 Use docs/INDEX.md and docs/FINAL_ARTIFACTS.json for current routing. Old dataset/results/summary paths may be compatibility aliases to archives; they are not active selections and remain writable. Use new output locations for a future rerun to avoid overwriting history.

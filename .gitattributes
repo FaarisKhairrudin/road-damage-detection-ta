@@ -1,2 +1,5 @@
 # Retain byte-exact historical snapshots, including original whitespace/line endings.
 docs/archive/** -text -whitespace
+# Preserve imported bibliography/template sources byte-for-byte.
+latex/buku-ta-template/IEEEtran.bst -text -whitespace
+latex/buku-ta-template/PANDUAN-PENGISIAN.md -text -whitespace

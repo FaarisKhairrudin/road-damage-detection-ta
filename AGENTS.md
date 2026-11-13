@@ -29,7 +29,7 @@ Act as a data science research collaborator.
 ## Project continuity
 
 ### Files
-- `.agents/STATE.md` stores the current work state: goal, completed work, remaining work, blockers, relevant file paths, checks actually run and their results, and the next concrete action.
+- `.agents/STATE.md` stores the stable project-wide goal, current project stage, recent meaningful work, remaining work, blockers, relevant paths, checks actually run and their results, and the next concrete action.
 - `.agents/MEMORY.md` stores durable project knowledge: decisions and their reasons, explicit user corrections, verified gotchas, and reusable fixes.
 - Keep progress and learned facts in these files rather than expanding AGENTS.md. Link to existing documentation instead of duplicating it.
 
@@ -41,6 +41,8 @@ Act as a data science research collaborator.
 ### Updating
 - Save important decisions and verified reusable lessons when established.
 - Refresh STATE.md after meaningful milestones and before handing work off. Record unfinished work clearly so another agent can continue.
+- Keep the project-wide goal across chats and sessions. Update the current stage and recent progress in place without replacing the larger goal with a session task.
+- Change the project-wide goal only when the user explicitly directs it. If a proposed change to that goal is unclear, ask the user; do not ask merely to record ordinary progress or a completed subtask.
 - Update existing sections in place. Merge duplicates and remove obsolete guidance. Mark a decision as superseded when its history still matters.
 - Skip edits when nothing meaningful changed.
 - Create additional memory files only when there is useful content to save.

@@ -1,0 +1,92 @@
+\chapter{PENDAHULUAN}
+\label{bab:pendahuluan}
+
+\section{Latar Belakang}
+Infrastruktur jalan mendukung mobilitas masyarakat dan kegiatan ekonomi. Kerusakan permukaan, seperti retak dan lubang, dapat mengganggu kenyamanan perjalanan serta keselamatan pengguna jalan. Pada konteks Indonesia, beban kendaraan, kondisi lingkungan, dan kualitas perkerasan menjadi faktor yang dibahas dalam penelitian kerusakan jalan~\cite{hugo2025efficientdet,kusumah2023deep}. Pemantauan kondisi jalan karena itu diperlukan sebagai masukan bagi pemeliharaan infrastruktur.
+
+Inspeksi manual melalui pengamatan petugas dan dokumentasi lapangan membutuhkan waktu serta tenaga. Penilaiannya juga dapat dipengaruhi oleh subjektivitas pengamat~\cite{Li2024,hugo2025efficientdet}. Pengolahan citra menawarkan pendekatan untuk membantu mengenali kerusakan secara lebih terstruktur. Dalam tugas deteksi objek, sistem menghasilkan kategori kerusakan beserta lokasi kotak pembatasnya. Keluaran tersebut dapat mendukung pemeriksaan citra, meskipun tidak langsung menentukan tingkat keparahan atau tindakan perbaikan jalan.
+
+Perkembangan \textit{deep learning} memungkinkan ekstraksi fitur dan prediksi objek dilakukan melalui jaringan yang dipelajari dari data. Salah satu pendekatannya adalah \textit{You Only Look Once} (YOLO), yang memadukan prediksi lokasi dan kelas dalam satu jaringan~\cite{redmon2016you}. Berbagai penelitian kemudian mengadaptasi keluarga YOLO untuk citra jalan. RDD-YOLO, YOLOv8-PD, dan YOLO-RD mengembangkan struktur ekstraksi atau penggabungan fitur untuk kebutuhan deteksi kerusakan~\cite{Li2024,Zeng2024,Wang2025}. Pengembangan model ringan juga mempertimbangkan kebutuhan komputasi pada perangkat bergerak~\cite{Wu2023}.
+
+Evaluasi deteksi kerusakan jalan banyak memanfaatkan RDD2022. Dataset ini memuat 47.420 citra dari enam negara dengan empat kategori kerusakan utama~\cite{Arya2024846}. Kategori tersebut mencakup retak memanjang, retak melintang, retak buaya, dan lubang jalan. Ketersediaan data lintas negara mendukung pengembangan model, tetapi tidak memastikan bahwa model akan bekerja sama baiknya pada lingkungan lain. Penelitian lintas negara menunjukkan pentingnya pengujian di luar distribusi data pelatihan~\cite{arya2021deep}. Indonesia juga tidak termasuk negara sumber dalam RDD2022~\cite{Arya2024846}.
+
+Perbedaan distribusi data sumber dan target, atau \textit{domain shift}, menjadi persoalan ketika model digunakan pada citra jalan Indonesia. Perubahan tampilan perkerasan, sudut pengambilan gambar, dan kondisi perekaman dapat menyertai perbedaan domain. Namun, pengaruh masing-masing faktor tidak dapat disimpulkan hanya dari penurunan metrik deteksi. Penelitian EfficientDet pada jalan Indonesia juga memperlihatkan bahwa evaluasi lokal diperlukan untuk memahami kemampuan model pada data yang digunakan~\cite{hugo2025efficientdet}. Hasil dari dataset lain tidak dapat langsung diperlakukan sebagai perkiraan kinerja pada data penelitian ini.
+
+Persoalan berikutnya adalah kemiripan visual antara lubang jalan, penutup saluran, dan tambalan. Matouq dkk. membahas pentingnya mempertimbangkan objek permukaan tersebut dalam pengembangan deteksi lubang jalan~\cite{matouq2024ai}. N-RDD2024 memperluas kategori anotasi menjadi sepuluh kelas, termasuk penutup saluran dan jalan bertambal~\cite{kaya2024nrdd2024}. Kedua kategori ini dapat digunakan sebagai kelas eksplisit untuk menguji dugaan kebingungan visual. Akan tetapi, keberadaan label tambahan tidak dengan sendirinya membuktikan berkurangnya kesalahan deteksi.
+
+Selain ketepatan deteksi, pemilihan model perlu mempertimbangkan jumlah parameter, kebutuhan operasi komputasi, dan kecepatan pemrosesan~\cite{Wu2023}. Ketiga ukuran tersebut memberikan informasi yang berbeda. Model dengan operasi lebih sedikit belum tentu menghasilkan kecepatan tertinggi pada setiap perangkat. Oleh sebab itu, evaluasi efisiensi perlu menyebutkan perangkat dan prosedur pengukurannya. Pengukuran pada GPU desktop juga tidak cukup untuk menyatakan kelayakan penerapan pada perangkat terbatas.
+
+Berdasarkan persoalan tersebut, penelitian ini membandingkan lima implementasi detektor ringkas pada subset Asia N-RDD2024. Model yang digunakan adalah YOLOv8n, YOLOv12n, YOLO26n, serta rekonstruksi YOLOv8-PD dan YOLO-RD. Evaluasi mencakup deteksi enam kelas, keseimbangan ketepatan dan efisiensi, serta pengujian \textit{zero-shot} pada citra jalan di Kabupaten Bandung. Perbandingan pelatihan empat dan enam kelas digunakan sebagai analisis tambahan terhadap peran label pengecoh.
+
+Arah penelitian tetap mengikuti proposal, yaitu evaluasi komparatif dan pengujian generalisasi. Pelaksanaannya memperluas pengujian target dari satu model terpilih menjadi seluruh model pembanding. Dengan demikian, peringkat pada domain sumber dapat dibandingkan dengan peringkat pada target. Kontribusi penelitian berupa bukti empiris pada data dan konfigurasi yang diuji, sehingga pemilihan model tidak hanya bertumpu pada hasil di domain sumber.
+
+\section{Rumusan Masalah}
+Berdasarkan latar belakang tersebut, rumusan masalah penelitian adalah sebagai berikut.
+\begin{enumerate}
+\item Bagaimana kinerja deteksi lima model pembanding pada subset Asia N-RDD2024 yang memuat kelas kerusakan dan kelas pengecoh, serta bagaimana perubahan kinerja empat kelas kerusakan ketika label pengecoh dihilangkan dari pelatihan?
+\item Bagaimana keseimbangan ketepatan deteksi dan efisiensi komputasi model ditinjau dari jumlah parameter, GFLOPs, dan estimasi FPS pada perangkat pengujian?
+\item Bagaimana kemampuan generalisasi model ketika diuji secara \textit{zero-shot} pada citra jalan Indonesia, ditinjau dari kinerja dan penurunannya pada kelas kerusakan yang sama di kedua domain?
+\end{enumerate}
+
+\section{Tujuan dan Manfaat}
+Penelitian ini bertujuan mengevaluasi dan membandingkan kinerja lima model deteksi pada subset Asia N-RDD2024. Ketepatan deteksi diukur melalui mAP@0,5, mAP@0,5:0,95, presisi, \textit{recall}, dan F1. Perbandingan pelatihan empat dan enam kelas digunakan untuk mengamati perubahan kinerja pada empat kategori kerusakan yang sama. Analisis ini menempatkan manfaat label pengecoh sebagai pertanyaan yang diuji.
+
+Tujuan berikutnya adalah menilai keseimbangan ketepatan deteksi dan kebutuhan komputasi. Jumlah parameter dan GFLOPs digunakan untuk menggambarkan kompleksitas model, sedangkan estimasi FPS menggambarkan kecepatan pada lingkungan evaluasi. Penilaian tersebut mendukung pemilihan model sesuai prioritas penggunaan, tanpa mengasumsikan adanya satu model yang unggul pada seluruh ukuran.
+
+Penelitian ini juga bertujuan mengukur kemampuan generalisasi melalui pengujian langsung pada citra jalan Indonesia tanpa penyesuaian bobot. Perbandingan menggunakan empat kelas kerusakan yang sama pada sumber dan target. Penurunan mAP digunakan sebagai ringkasan kesenjangan kinerja antardataset, bukan sebagai ukuran langsung penyebab \textit{domain shift}.
+
+Manfaat penelitian adalah menyediakan dasar empiris untuk memilih kandidat model dan merancang evaluasi lanjutan pada lingkungan jalan lokal. Protokol yang terdokumentasi juga membantu pembacaan ulang hasil dan penelusuran keterbatasan implementasi. Keterkaitan tujuan dengan pengujian serta arah penarikan kesimpulan dirangkum pada Tabel~\ref{tab:keterkaitan}.
+
+\begin{table}[H]
+\centering
+\caption{Keterkaitan tujuan, pengujian, dan dasar kesimpulan.}
+\label{tab:keterkaitan}
+\begingroup\fontsize{10}{13}\selectfont
+\begin{tabularx}{\linewidth}{|X|X|X|}\hline
+\rowcolor{black}\HeaderTabel{Tujuan}&\HeaderTabel{Pengujian}&\HeaderTabel{Dasar kesimpulan}\\\hline
+Membandingkan kinerja deteksi & Evaluasi sumber; perbandingan label empat dan enam kelas & Perbedaan metrik antarmodel dan antarkonfigurasi label\\\hline
+Menilai keseimbangan ketepatan dan efisiensi & Parameter, GFLOPs, dan estimasi FPS & Kompromi ketepatan dan komputasi pada perangkat uji\\\hline
+Mengukur generalisasi & Evaluasi target tanpa pelatihan ulang & Kinerja target dan penurunan mAP pada empat kelas yang sama\\\hline
+\end{tabularx}
+\endgroup
+\end{table}
+Tabel~\ref{tab:keterkaitan} menghubungkan setiap tujuan dengan bukti yang diperlukan untuk menjawabnya. Kolom terakhir menyatakan dasar penarikan kesimpulan, sehingga tidak mendahului pembahasan hasil eksperimen.
+
+\section{Batasan Masalah}
+Pembatasan penelitian ditetapkan untuk menjaga kesesuaian antara pertanyaan penelitian dan bukti eksperimen yang tersedia.
+\begin{enumerate}
+\item Data sumber dibatasi pada subset Asia N-RDD2024 dari Tiongkok, Jepang, dan India. Pemilihan ini mempertahankan lingkup proposal dan tidak menyatakan bahwa ketiganya mewakili kondisi jalan Indonesia.
+\item Pelatihan utama menggunakan empat kelas kerusakan, yaitu D00, D10, D20, dan D40, serta dua kelas pengecoh, yaitu D70 dan D80. Kategori lain tidak digunakan karena perbandingan difokuskan pada kerusakan tersebut dan objek permukaan yang menyerupai lubang.
+\item Model pembanding menggunakan varian nano atau penskalaan nano pada rekonstruksi. Penskalaan ini membatasi ukuran rancangan, tetapi tidak menyamakan jumlah parameter atau kapasitas seluruh model.
+\item Tugas yang diteliti adalah lokalisasi dan klasifikasi objek dalam citra. Estimasi tingkat keparahan, rekonstruksi tiga dimensi, dan pengambilan keputusan pemeliharaan berada di luar lingkup penelitian.
+\item Data target terdiri atas 307 citra jalan yang terutama diambil di Jalan Raya Bojongsoang dan jalan sekitarnya di Kabupaten Bandung. Cakupan lokasi serta anotasi oleh satu anotator membatasi generalisasi temuan. Kesepakatan antar-anotator tidak diukur.
+\item Pengujian target menggunakan bobot hasil pelatihan sumber tanpa \textit{fine-tuning}. Perbandingan lintas domain dibatasi pada empat kelas kerusakan yang memiliki anotasi di kedua domain.
+\item Pengukuran kecepatan yang dilaporkan berasal dari evaluasi pada NVIDIA GeForce RTX 4070 SUPER 12 GB. Penelitian tidak mencakup pengujian aplikasi waktu nyata pada perangkat \textit{edge} atau penerapan sistem siap pakai.
+\item Perbandingan utama menggunakan satu \textit{seed} pelatihan yang terdokumentasi. Hasil dibahas secara deskriptif, tanpa klaim signifikansi statistik atau pemisahan pengaruh setiap modul arsitektur secara kausal.
+\end{enumerate}
+
+\section{Metode Penelitian}
+Penelitian menggunakan pendekatan eksperimen komparatif. Studi literatur digunakan untuk merumuskan persoalan, memilih arsitektur, dan menentukan metrik evaluasi. Data sumber kemudian diseleksi sesuai kelas penelitian dan dipisahkan menjadi data latih, validasi, serta uji. Distribusi anotasi diperiksa untuk menetapkan pembobotan kelas pada pelatihan.
+
+Implementasi mencakup model bawaan dan rekonstruksi dua arsitektur berdasarkan literatur. Setiap model dilatih menggunakan konfigurasi yang terdokumentasi, dengan pemilihan bobot berdasarkan validasi sumber. Evaluasi dilakukan pada data uji sumber untuk ketepatan dan efisiensi. Pengujian target menggunakan bobot yang sama tanpa pembaruan parameter model.
+
+Analisis membandingkan metrik agregat dan per kelas. Penghilangan label pengecoh dari pelatihan menjadi eksperimen tambahan pada pembagian citra sumber yang sama. Rincian rancangan dan protokol dijelaskan pada Bab~\ref{bab:perancangan-sistem}; hasil numerik dan interpretasinya ditempatkan pada bab hasil percobaan dan analisis.
+
+\section{Jadwal Pelaksanaan}
+Jadwal enam bulan pada proposal dipertahankan sebagai acuan tahapan pekerjaan pada Tabel~\ref{tab:jadwal}. Penomoran bulan menunjukkan urutan waktu dalam rencana, bukan tanggal realisasi yang ditetapkan kembali secara retrospektif.
+\begin{table}[H]
+\centering
+\caption{Rencana tahapan penelitian berdasarkan proposal.}
+\label{tab:jadwal}
+\begingroup\fontsize{10}{12}\selectfont\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{|X|*{6}{>{\centering\arraybackslash}p{.65cm}|}}\hline
+\rowcolor{black}\HeaderTabel{Tahapan}&\HeaderTabel{1}&\HeaderTabel{2}&\HeaderTabel{3}&\HeaderTabel{4}&\HeaderTabel{5}&\HeaderTabel{6}\\\hline
+Kajian pustaka & X&X&X&X&&\\\hline
+Pengumpulan dan prapemrosesan data & X&X&&&&\\\hline
+Perancangan evaluasi &&X&X&&&\\\hline
+Pelatihan dan implementasi model &&&X&X&&\\\hline
+Pengujian dan analisis &&&&X&X&\\\hline
+Penyusunan laporan &&X&X&X&X&X\\\hline
+\end{tabularx}\endgroup
+\end{table}
+Tabel~\ref{tab:jadwal} menunjukkan hubungan waktu antartahap dalam rencana awal. Tonggak pencapaiannya meliputi tersedianya dataset berlabel, implementasi model, bobot hasil pelatihan, hasil evaluasi, dan naskah penelitian. Pada penyusunan Bab I--III ini, artefak pelatihan serta evaluasi sumber dan target telah tersedia. Uraian metode karena itu mengikuti pelaksanaan aktual, sedangkan jadwal tetap dibaca sebagai rencana proposal.

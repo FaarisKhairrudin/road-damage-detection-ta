@@ -1,38 +1,44 @@
-# Current work state
+# Status proyek TA
 
-## Goal
-Complete the previously deferred domain analysis on Indonesia V4, integrate the
-verified results into documentation, and push task-owned changes to main.
+## Tujuan besar
+Menyelesaikan penelitian dan buku Tugas Akhir program Data Science Telkom
+University sebagai bagian dari persyaratan kelulusan. Pertahankan tujuan ini
+lintas sesi; pekerjaan satu sesi adalah bagian dari tujuan tersebut.
 
-## Completed
-- User resumed the V4 run after NVIDIA was enabled. Python 3.12 / torch CUDA
-  detected the RTX 3050; no model training was performed.
-- Extracted 1,302 × 256 embeddings for 995 source + 307 Indonesia V4 images;
-  generated UMAP, t-SNE, image statistics and sample montage in a new bundle.
-- Updated the final artifact map, index, 15-figure narrative and move/status report.
-- Preserved the historical V2 bundle and all submitted manuscript/PDF artifacts.
+## Tahap sekarang
+- Paper konferensi ISRITI sudah disubmit menurut pengguna. Status penerimaan atau
+  hasil review belum diketahui; jangan menyebut paper sudah diterima/terbit.
+- Fokus proyek berlanjut ke penyusunan dan penyempurnaan buku TA di
+  `latex/buku-ta-template/`, sesuai arahan pembimbing dan pedoman kampus.
+- README template mencatat Bab I–IV sudah berupa draf; abstrak, Bab V dan
+  lampiran masih perlu disusun. Periksa file aktual sebelum pekerjaan lanjutan.
 
-## Checks actually run
-- Verified complete status, all bundle output hashes, 1,302 image/label hashes,
-  source checkpoint hash, manifest/domain ordering and finite projection shapes.
-- Inspected all four V4 figures visually. No notebook or manuscript was executed.
-- Independent detection/F1 results remain from the archived final CSVs; the
-  domain projections describe features and are not evidence of causal effects.
+## Progres penting
+- Repo riset telah ditata dan hasil final didokumentasikan; riwayat arsip ada
+  di `docs/REORGANIZATION.md` dan `docs/archive/MANIFEST.json`.
+- Analisis domain V4 selesai: 995 gambar sumber + 307 target, embedding
+  1.302 × 256, beserta UMAP/t-SNE/statistik. Ini analisis eksploratif.
+- Tabel hasil final dan narasi bergambar ada di `docs/RESULTS_TABLE.md` dan
+  `docs/draft-analisis-rapih.md`; perhatikan cakupan kelas dan batas klaim.
+- Snapshot paper review terunggah dipertahankan di `latex/ISRITI-submission/hasil/`.
 
-## Publication completed
-- GPU analysis and documentation commit 8787408 was pushed to origin/main.
-- Report input hashes, 15 narrative figures and current local links passed.
-- This continuity update records the completed publication.
+## Pekerjaan tersisa dan hal yang perlu dipantau
+- Lanjutkan buku TA sesuai permintaan pengguna: tinjau draf yang ada, lengkapi
+  bagian yang masih berupa petunjuk, dan selaraskan isi dengan hasil final.
+- Jika ada tanggapan konferensi atau arahan pembimbing, ikuti instruksi terbaru
+  pengguna; jangan mengubah snapshot paper yang sudah disubmit.
+- Kurva training PD empat kelas `results.csv` belum ditemukan. Jangan mengganti
+  dengan run lain atau mengarang data.
+- Source buku `latex/buku-ta-template/` ditambahkan ke Git atas izin pengguna,
+  beserta aset, bibliografi, panduan dan script pembuat tabel/kurva Bab IV.
+- Notebook 07 memiliki perubahan lokal yang sudah ada sebelumnya; pertahankan.
 
-## Remaining
-- Locate the missing PD four-class training results.csv if its source is available.
-- Notebook edits remain out of scope; notebook07 had a pre-existing local edit.
+## Acuan dan pemeriksaan
+- Mulai dari `docs/INDEX.md`, `.agents/MEMORY.md` dan `docs/FINAL_ARTIFACTS.json`.
+- Pedoman penulisan: `latex/buku-ta-template/PEDOMAN-PENULISAN.md`.
+- Referensi 40 dependensi TeX dan syntax script kompilasi buku diperiksa; isi
+  source dipertahankan. Tidak dilakukan training, eksekusi notebook atau build PDF.
 
-## Key paths
-- docs/INDEX.md; docs/draft-analisis-rapih.md; docs/figures/domain_v4/.
-- runs/rdd_yolov8n_local/evaluation/domain_viz_v4/provenance.json.
-- docs/FINAL_ARTIFACTS.json; docs/REORGANIZATION.md; docs/archive/MANIFEST.json.
-
-## Next concrete action
-The V4 run is complete and published. Preserve the existing unrelated notebook
-edit. Future analysis changes remain separate, authorized work.
+## Tindakan berikutnya
+Tunggu tugas buku TA berikutnya dari pengguna; sebelum menulis, baca bab yang
+relevan dan pedomannya. Perbarui progres di tempat tanpa mengganti tujuan besar.

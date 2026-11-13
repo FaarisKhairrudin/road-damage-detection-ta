@@ -1,0 +1,37 @@
+% Buku TA FIF: Bab I--IV telah diisi; abstrak, Bab V, dan lampiran belum disusun.
+\documentclass[a4paper,12pt,oneside,openany]{book}
+\input{format}
+\input{metadata}
+\hypersetup{pdftitle={\Judul},pdfauthor={\Nama}}
+\begin{document}
+\pagenumbering{roman}
+\pagestyle{awal}
+\input{Cover}
+\include{Lembar-Pengesahan}
+\include{Lembar-Orisinalitas}
+\include{Abstrak-Indo}
+\include{Abstract}
+\include{Kata-Pengantar}
+\include{Ucapan-Terima-Kasih}
+\clearpage\phantomsection\addcontentsline{toc}{chapter}{DAFTAR ISI}
+{\titlespacing*{\chapter}{0pt}{-15.95pt}{52pt}\setlength{\parskip}{0pt}\tableofcontents}
+\clearpage\phantomsection\addcontentsline{toc}{chapter}{DAFTAR GAMBAR}
+{\titlespacing*{\chapter}{0pt}{-15.95pt}{30pt}\setlength{\parskip}{0pt}\listoffigures}
+\clearpage\phantomsection\addcontentsline{toc}{chapter}{DAFTAR TABEL}
+{\titlespacing*{\chapter}{0pt}{-15.95pt}{30pt}\setlength{\parskip}{0pt}\listoftables}
+\AwalIsi
+\include{Pendahuluan}
+\include{Tinjauan-Pustaka}
+\include{Perancangan-Sistem}
+\include{Hasil-Percobaan-dan-Analisis}
+\include{Kesimpulan-dan-Saran}
+\clearpage
+\phantomsection\addcontentsline{toc}{chapter}{DAFTAR PUSTAKA}
+\begingroup
+\referencefont\fontsize{10}{12}\selectfont
+\setlength{\bibsep}{3pt}
+\bibliographystyle{IEEEtran}
+\bibliography{References}
+\endgroup
+\include{Lampiran}
+\end{document}
